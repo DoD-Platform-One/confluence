@@ -1,0 +1,94 @@
+---
+# Source: confluence-server/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: confluence-confluence-server
+  labels:
+    app.kubernetes.io/name: confluence-server
+    helm.sh/chart: confluence-server-2.0.1
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8090
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 8091
+      targetPort: synchrony
+      protocol: TCP
+      name: synchrony
+  selector:
+    app.kubernetes.io/name: confluence-server
+    app.kubernetes.io/instance: confluence
+---
+# Source: confluence-server/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: confluence-confluence-server
+  labels:
+    app.kubernetes.io/name: confluence-server
+    helm.sh/chart: confluence-server-2.0.1
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: confluence-server
+      app.kubernetes.io/instance: confluence
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: confluence-server
+        app.kubernetes.io/instance: confluence
+    spec:
+      containers:
+        - name: confluence-server
+          image: "registry.dsop.io/platform-one/apps/confluence:7.4.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8090
+              protocol: TCP
+            - name: synchrony
+              containerPort: 8091
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: http
+            initialDelaySeconds: 300
+            periodSeconds: 30
+            failureThreshold: 6
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: http
+            initialDelaySeconds: 480
+            periodSeconds: 30
+            failureThreshold: 6
+            timeoutSeconds: 10
+          volumeMounts:
+            - mountPath: /var/atlassian/application-data/confluence
+              name: confluence-confluence-server-data
+          env:
+            - name: JVM_MINIMUM_MEMORY
+              value: "384M"
+            - name: JVM_MAXIMUM_MEMORY
+              value: "768M"
+            - name: JVM_SUPPORT_RECOMMENDED_ARGS
+              value: "-XX:MaxMetaspaceSize=512m -XX:MaxDirectMemorySize=10m -Dsynchrony.memory.max=0m"
+          resources:
+            {}
+      securityContext:
+        fsGroup: 2002
+      volumes:
+        - name: confluence-confluence-server-data
+          emptyDir: {}
