@@ -4,7 +4,7 @@ Confluence is a collaborative document and workflow tool.  This is a licensed po
 
 Additional docs for using  and its plugins can be found at <https://www.atlassian.com/software/confluence/features>
 
-This baseline uses Confluence version 7.4.0.  This image was available in Iron Bank as a hardened container, but is in a peanding approval status.  The image has been retagged and added to the public apps Confluence Registry.  
+This baseline uses Confluence version 7.3.4, this is retagged from the atlassan repo.  This image was available in Iron Bank as a hardened container, but is in a peanding approval status on 7.4.0.  The image has been retagged and added to the public apps Confluence Registry.  
 
 The generated yaml was peoduced by following these instructions
 

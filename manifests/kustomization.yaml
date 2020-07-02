@@ -1,4 +1,4 @@
 namespace: confluence
 
 resources:
-  - generated/generated.yaml
+  - generated.yaml
