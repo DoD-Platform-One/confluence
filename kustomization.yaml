@@ -1,0 +1,14 @@
+namespace: confluence
+
+resources:
+  - namespace.yaml
+  - manifests/statefulset.yaml
+  - resources/confluence-pvc.yaml
+
+configMapGenerator:
+  - name: init-script
+    files:
+      - resources/init-script.sh
+  - name: server-xml-j2
+    files:
+      - resources/server.xml.j2
