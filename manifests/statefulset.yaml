@@ -114,6 +114,8 @@ spec:
       labels:
         app: confluence
     spec:
+      securityContext:
+        fsGroup: 2002
       initContainers:
         - name: nodepeers
           image: registry.dsop.io/platform-one/apps/confluence/alpine:confluence-1.0
@@ -146,6 +148,9 @@ spec:
       - name: confluence
         image: registry.dsop.io/platform-one/apps/confluence/confluence-server:7.4.1
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 2002
+          runAsGroup: 2002
         resources:
           requests:
             cpu: "1"
