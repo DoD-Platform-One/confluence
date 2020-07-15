@@ -31,7 +31,25 @@
                relaxedQueryChars="[]|{}^\`&quot;&lt;&gt;"
                bindOnInit="false"
                maxHttpHeaderSize="{{ atl_tomcat_maxhttpheadersize | default('8192') }}"
-               useBodyEncodingForURI="true"
+               useBodyEncodingForURI="false"
+               disableUploadTimeout="true" />
+
+    <Connector port="8081"
+               maxThreads="100"
+               minSpareThreads="10"
+               connectionTimeout="20000"
+               enableLookups="false"
+               protocol="HTTP/1.1"
+               redirectPort="8443"
+               acceptCount="10"
+               maxConnections="10000"
+               acceptorThreadCount="10"
+
+               relaxedPathChars="[]|"
+               relaxedQueryChars="[]|{}^\`&quot;&lt;&gt;"
+               bindOnInit="false"
+               maxHttpHeaderSize="8192"
+               useBodyEncodingForURI="false"
                disableUploadTimeout="true" />
 
     <Engine name="Standalone"
