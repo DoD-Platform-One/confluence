@@ -12,3 +12,6 @@ configMapGenerator:
   - name: server-xml-j2
     files:
       - resources/server.xml.j2
+  - name: server-xml
+    files:
+      - resources/server.xml
