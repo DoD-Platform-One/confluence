@@ -99,7 +99,7 @@ spec:
       securityContext:
         fsGroup: 2002
       initContainers:
-        - name: nodepeers
+        - name: configure
           image: registry.dsop.io/platform-one/apps/confluence/alpine:confluence-1.0
           imagePullPolicy: Always
           command: ["/bin/bash", "-c", "/tmp/init-script.sh"]
@@ -110,11 +110,6 @@ spec:
               mountPath: /var/atlassian/confluence-datacenter/
             - name: "init-script"
               mountPath: /tmp
-            - name: "confluence-opt-conf"
-              mountPath: /opt/atlassian/confluence/conf
-            - name: "server-xml"
-              mountPath: /opt/atlassian/confluence/conf/server.xml.tpl
-              subPath: server.xml
           env:
             - name: POD_IP
               valueFrom:
@@ -128,10 +123,6 @@ spec:
               value: confluence
             - name: CONFLUENCE_HOME
               value: /var/atlassian/application-data/confluence
-            - name: CONFLUENCE_OPT_HOME
-              value: /opt/atlassian/confluence/conf
-            - name: PROXY_NAME
-              value: "confluence.dev.dsop.io"
 
       serviceAccountName: confluence
       terminationGracePeriodSeconds: 50
@@ -197,8 +188,9 @@ spec:
           - name: "server-xml-j2"
             mountPath: /opt/atlassian/etc/server.xml.j2
             subPath: server.xml.j2
-          - name: "confluence-opt-conf"
-            mountPath: /opt/atlassian/confluence/conf
+          - name: "server-xml"
+            mountPath: /opt/atlassian/confluence/conf/server.xml
+            subPath: server.xml
 
       volumes:
         - name: "confluence-datacenter"
@@ -216,8 +208,6 @@ spec:
           configMap:
             name: server-xml
             defaultMode: 0744
-        - name: confluence-opt-conf
-          emptyDir: {}
 
   volumeClaimTemplates:
   - metadata:

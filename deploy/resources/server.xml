@@ -24,7 +24,7 @@
                acceptCount="10"
                secure="true"
                scheme="https"
-               proxyName="$PROXY_NAME"
+               proxyName="confluence.dev.dsop.io"
                proxyPort="443"
                maxConnections="10000"
                acceptorThreadCount="10"
