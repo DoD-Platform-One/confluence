@@ -2,7 +2,7 @@ namespace: confluence
 
 resources:
   - namespace.yaml
-  - manifests/statefulset.yaml
+  - resources/statefulset.yaml
   - resources/confluence-pvc.yaml
 
 configMapGenerator:

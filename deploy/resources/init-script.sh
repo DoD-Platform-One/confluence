@@ -39,3 +39,10 @@ if [ -f ${CONFLUENCE_HOME}/confluence.cfg.xml ]; then
 else
   echo "The file ${CONFLUENCE_HOME}/confluence.cfg.xml was not found; because, this may be the first node - still booting up."
 fi
+
+# Configure tomcat for specific environments with 
+if [ -f ${CONFLUENCE_OPT_HOME}/server.xml.tpl ]; then
+  echo "Templating confluence server.xml with appropriate PROXY_NAME: ${PROXY_NAME} ..."
+  # Note only templating: https://unix.stackexchange.com/questions/404189/find-and-sed-string-in-docker-got-error-device-or-resource-busy
+  sed 's|$PROXY_NAME|'$PROXY_NAME'|g' ${CONFLUENCE_OPT_HOME}/server.xml.tpl > ${CONFLUENCE_OPT_HOME}/server.xml
+fi

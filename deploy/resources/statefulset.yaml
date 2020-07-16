@@ -51,18 +51,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: confluence
-  labels:    
-      generator: helm
-      date: 2020-07-06
-      chart: confluence
-      version: 1.1.0
-      app_name: confluence
-      app_version: conf-7.5.0
-      release: confluence
-      heritage: Helm
-
-  annotations:
-    traefik.backend.loadbalancer.sticky: "true"
 
 spec:
   ports:
@@ -93,19 +81,10 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: confluence
-  labels:    
-      generator: helm
-      date: 2020-07-06
-      chart: confluence
-      version: 1.1.0
-      app_name: confluence
-      app_version: conf-7.5.0
-      release: confluence
-      heritage: Helm
 spec:
   # This service should already exist
   serviceName: confluence
-  replicas: 1    ## replicas 2
+  replicas: 1
   selector:
     matchLabels:
       app: confluence
@@ -128,6 +107,11 @@ spec:
               mountPath: /var/atlassian/confluence-datacenter/
             - name: "init-script"
               mountPath: /tmp
+            - name: "confluence-opt-conf"
+              mountPath: /opt/atlassian/confluence/conf
+            - name: "server-xml"
+              mountPath: /opt/atlassian/confluence/conf/server.xml.tpl
+              subPath: server.xml
           env:
             - name: POD_IP
               valueFrom:
@@ -140,7 +124,11 @@ spec:
             - name: CONFLUENCE_SERVICE_NAME
               value: confluence
             - name: CONFLUENCE_HOME
-              value: /var/atlassian/application-data/confluence/
+              value: /var/atlassian/application-data/confluence
+            - name: CONFLUENCE_OPT_HOME
+              value: /opt/atlassian/confluence/conf
+            - name: PROXY_NAME
+              value: "confluence.dev.dsop.io"
 
       serviceAccountName: confluence
       terminationGracePeriodSeconds: 50
@@ -204,9 +192,8 @@ spec:
           - name: "server-xml-j2"
             mountPath: /opt/atlassian/etc/server.xml.j2
             subPath: server.xml.j2
-          - name: "server-xml"
-            mountPath: /opt/atlassian/confluence/conf/server.xml
-            subPath: server.xml
+          - name: "confluence-opt-conf"
+            mountPath: /opt/atlassian/confluence/conf
 
       volumes:
         - name: "confluence-datacenter"
@@ -224,6 +211,8 @@ spec:
           configMap:
             name: server-xml
             defaultMode: 0744
+        - name: confluence-opt-conf
+          emptyDir: {}
 
   volumeClaimTemplates:
   - metadata:
