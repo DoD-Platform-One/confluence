@@ -63,6 +63,9 @@ spec:
       name: confluence-internal-connector
       targetPort: 8888
       protocol: TCP
+    - name: tcp-inter-svc
+      port: 8081
+      protocol: TCP
     - port: 8091
       name: synchrony
       protocol: TCP
@@ -150,6 +153,8 @@ spec:
         ports:
           - containerPort: 8090
             name: confluence-main
+          - containerPort: 8081
+            name: inter-svc
           - containerPort: 8091
             name: synchrony
 
