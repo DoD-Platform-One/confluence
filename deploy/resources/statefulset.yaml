@@ -194,7 +194,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /status
-            port: http
+            port: confluence-main
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 1
