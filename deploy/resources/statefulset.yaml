@@ -191,6 +191,15 @@ spec:
           - name: "server-xml"
             mountPath: /opt/atlassian/confluence/conf/server.xml
             subPath: server.xml
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
 
       volumes:
         - name: "confluence-datacenter"
