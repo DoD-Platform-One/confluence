@@ -4,7 +4,7 @@ metadata:
   name: confluence
 spec:
   hosts:
-  - confluence.dev.dsop.io
+  - confluence.bigbang.dev
   gateways:
   - istio-ingressgateway.istio-system.svc.cluster.local
   http:
