@@ -1,12 +1,10 @@
 # Confluence
 
-Confluence is a collaborative document and workflow tool.  This is a licensed poduct and will require a license code when first going tothe web site.  
+Confluence is a collaborative document and workflow tool.  This is a licensed poduct and will require a license code the first time you access the product.  Additional docs for using confluence can be found at <https://www.atlassian.com/software/confluence/features>.
 
-Additional docs for using  and its plugins can be found at <https://www.atlassian.com/software/confluence/features>
+This repository provides a Helm chart for deploying Confluence using Iron Bank images.  It is also used by Big Bang to deploy Confluence as an addon
 
-This baseline uses Confluence version 7.3.4, this is retagged from the atlassan repo.  This image was available in Iron Bank as a hardened container, but is in a peanding approval status on 7.4.0.  The image has been retagged and added to the public apps Confluence Registry.  
-
-The generated yaml was peoduced by following these instructions
+The generated yaml was produced by following these instructions
 
 * git clone <https://github.com/stevehipwell/helm-charts.git>
 
