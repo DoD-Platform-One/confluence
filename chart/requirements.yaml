@@ -1,0 +1,5 @@
+dependencies:
+  - name: postgresql
+    version: 4.2.2
+    repository: file://./charts/postgresql-4.2.2.tgz
+    condition: postgresql.enabled
