@@ -129,3 +129,9 @@ psql:
 ##
 postgresql:
   enabled: false
+
+
+# Big Bang Additions
+hostname: bigbang.dev
+istio:
+  enabled: true
