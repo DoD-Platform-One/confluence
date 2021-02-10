@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "confluence.labels" . | nindent 4 }}
 spec:
-  host: {{ include "confluence-server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  host: {{ include "confluence.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
   trafficPolicy:
     loadBalancer:
       consistentHash:

@@ -16,9 +16,9 @@ spec:
         prefix: /
     route:
     - destination:
-        host: {{ include "confluence-server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+        host: {{ include "confluence.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
         port:
-          number: {{ .Values.service.port }}
+          number: {{ .Values.confluence.service.port }}
       headers:
         request:
           remove:
