@@ -2,8 +2,16 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "confluence-server.name" -}}
+{{- define "confluence.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+The name the synchrony app within the chart.
+TODO: This will break if the confluence.name exceeds 63 characters, need to find a more rebust way to do this
+*/}}
+{{- define "synchrony.name" -}}
+{{ include "confluence.name" . }}-synchrony
 {{- end }}
 
 {{/*
@@ -11,7 +19,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "confluence-server.fullname" -}}
+{{- define "confluence.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -25,55 +33,293 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{/*
+The full-qualfied name of the synchrony app within the chart.
+TODO: This will break if the confluence.fullname exceeds 63 characters, need to find a more rebust way to do this
+*/}}
+{{- define "synchrony.fullname" -}}
+{{ include "confluence.fullname" . }}-synchrony
+{{- end }}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "confluence-server.chart" -}}
+{{- define "confluence.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
-Common labels
+The name of the service account to be used.
+If the name is defined in the chart values, then use that,
+else if we're creating a new service account then use the name of the Helm release,
+else just use the "default" service account.
 */}}
-{{- define "confluence-server.labels" -}}
-helm.sh/chart: {{ include "confluence-server.chart" . }}
-{{ include "confluence-server.selectorLabels" . }}
+{{- define "confluence.serviceAccountName" -}}
+{{- if .Values.serviceAccount.name -}}
+{{- .Values.serviceAccount.name -}}
+{{- else -}}
+{{- if .Values.serviceAccount.create -}}
+{{- include "confluence.fullname" . -}}
+{{- else -}}
+default
+{{- end -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+The name of the ClusterRole that will be created.
+If the name is defined in the chart values, then use that,
+else use the name of the Helm release.
+*/}}
+{{- define "confluence.clusterRoleName" -}}
+{{- if .Values.serviceAccount.clusterRole.name }}
+{{- .Values.serviceAccount.clusterRole.name }}
+{{- else }}
+{{- include "confluence.fullname" . -}}
+{{- end }}
+{{- end }}
+
+{{/*
+The name of the ClusterRoleBinding that will be created.
+If the name is defined in the chart values, then use that,
+else use the name of the ClusterRole.
+*/}}
+{{- define "confluence.clusterRoleBindingName" -}}
+{{- if .Values.serviceAccount.clusterRoleBinding.name }}
+{{- .Values.serviceAccount.clusterRoleBinding.name }}
+{{- else }}
+{{- include "confluence.clusterRoleName" . -}}
+{{- end }}
+{{- end }}
+
+{{/*
+These labels will be applied to all Confluence (non-Synchrony) resources in the chart
+*/}}
+{{- define "confluence.labels" -}}
+helm.sh/chart: {{ include "confluence.chart" . }}
+{{ include "confluence.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ with .Values.additionalLabels }}
+{{- toYaml . }}
+{{- end }}
 {{- end }}
 
 {{/*
-Selector labels
+These labels will be applied to all Synchrony resources in the chart
 */}}
-{{- define "confluence-server.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "confluence-server.name" . }}
+{{- define "synchrony.labels" -}}
+helm.sh/chart: {{ include "confluence.chart" . }}
+{{ include "synchrony.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ with .Values.additionalLabels }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Selector labels for finding Confluence (non-Synchrony) resources
+*/}}
+{{- define "confluence.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "confluence.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create the name of the service account to use
+Selector labels for finding Synchrony resources
 */}}
-{{- define "confluence-server.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "confluence-server.fullname" .) .Values.serviceAccount.name }}
+{{- define "synchrony.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "synchrony.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{- define "confluence.sysprop.hazelcastListenPort" -}}
+-Dconfluence.cluster.hazelcast.listenPort={{ .Values.confluence.ports.hazelcast }}
+{{- end }}
+
+{{- define "confluence.sysprop.synchronyServiceUrl" -}}
+{{- if .Values.synchrony.enabled -}}
+-Dsynchrony.service.url={{ .Values.synchrony.ingressUrl }}/v1
+{{- else -}}
+-Dsynchrony.btf.disabled=true
+{{- end -}}
+{{- end }}
+
+{{- define "confluence.sysprop.disableHomeLogAppender" -}}
+-DConfluenceHomeLogAppender.disabled=true
+{{- end }}
+
+{{/*
+The command that should be run by the nfs-fixer init container to correct the permissions of the shared-home root directory.
+*/}}
+{{- define "sharedHome.permissionFix.command" -}}
+{{- if .Values.volumes.sharedHome.nfsPermissionFixer.command }}
+{{ .Values.volumes.sharedHome.nfsPermissionFixer.command }}
 {{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- printf "(chgrp %s %s; chmod g+w %s)" .Values.confluence.gid .Values.volumes.sharedHome.nfsPermissionFixer.mountPath .Values.volumes.sharedHome.nfsPermissionFixer.mountPath }}
 {{- end }}
 {{- end }}
 
+{{- define "confluence.image" -}}
+{{- if .Values.image.registry -}}
+{{ .Values.image.registry}}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+{{- else -}}
+{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+{{- end }}
+{{- end }}
 
 {{/*
-Create pvc name.
+For each additional library declared, generate a volume mount that injects that library into the Confluence lib directory
 */}}
-{{- define "confluence-server.pvcname" -}}
-{{- template "confluence-server.fullname" . -}}-data
-{{- end -}}
+{{- define "confluence.additionalLibraries" -}}
+{{- range .Values.confluence.additionalLibraries -}}
+- name: {{ .volumeName }}
+  mountPath: "/opt/atlassian/confluence/confluence/WEB-INF/lib/{{ .fileName }}"
+  {{- if .subDirectory }}
+  subPath: {{ printf "%s/%s" .subDirectory .fileName | quote }}
+  {{- else }}
+  subPath: {{ .fileName | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}
 
 {{/*
-Create a default fully qualified app name for the postgres requirement.
+For each additional plugin declared, generate a volume mount that injects that library into the Confluence plugins directory
 */}}
-{{- define "confluence-server.postgresql.fullname" -}}
-{{- $postgresContext := dict "Values" .Values.postgresql "Release" .Release "Chart" (dict "Name" "postgresql") -}}
-{{ template "postgresql.fullname" $postgresContext }}
-{{- end -}}
+{{- define "confluence.additionalBundledPlugins" -}}
+{{- range .Values.confluence.additionalBundledPlugins -}}
+- name: {{ .volumeName }}
+  mountPath: "/opt/atlassian/confluence/confluence/WEB-INF/atlassian-bundled-plugins/{{ .fileName }}"
+  {{- if .subDirectory }}
+  subPath: {{ printf "%s/%s" .subDirectory .fileName | quote }}
+  {{- else }}
+  subPath: {{ .fileName | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "confluence.volumes" -}}
+{{ if not .Values.volumes.localHome.persistentVolumeClaim.create }}
+{{ include "confluence.volumes.localHome" . }}
+{{- end }}
+{{ include "confluence.volumes.sharedHome" . }}
+{{- with .Values.volumes.additional }}
+{{- toYaml . | nindent 0 }}
+{{- end }}
+{{- end }}
+
+{{- define "confluence.volumes.localHome" -}}
+{{- if not .Values.volumes.localHome.persistentVolumeClaim.create }}
+- name: local-home
+{{ if .Values.volumes.localHome.customVolume }}
+{{- toYaml .Values.volumes.localHome.customVolume | nindent 2 }}
+{{ else }}
+  emptyDir: {}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "confluence.volumes.sharedHome" -}}
+- name: shared-home
+{{- if .Values.volumes.sharedHome.persistentVolumeClaim.create }}
+  persistentVolumeClaim:
+    claimName: {{ include "confluence.fullname" . }}-shared-home
+{{ else }}
+{{ if .Values.volumes.sharedHome.customVolume }}
+{{- toYaml .Values.volumes.sharedHome.customVolume | nindent 2 }}
+{{ else }}
+  emptyDir: {}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "confluence.volumeClaimTemplates" -}}
+{{ if .Values.volumes.localHome.persistentVolumeClaim.create }}
+volumeClaimTemplates:
+- metadata:
+    name: local-home
+  spec:
+    accessModes: [ "ReadWriteOnce" ]
+    {{- if .Values.volumes.localHome.persistentVolumeClaim.storageClassName }}
+    storageClassName: {{ .Values.volumes.localHome.persistentVolumeClaim.storageClassName | quote }}
+    {{- end }}
+    {{- with .Values.volumes.localHome.persistentVolumeClaim.resources }}
+    resources:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "confluence.databaseEnvVars" -}}
+{{ with .Values.database.type }}
+- name: ATL_DB_TYPE
+  value: {{ . | quote }}
+{{ end }}
+{{ with .Values.database.url }}
+- name: ATL_JDBC_URL
+  value: {{ . | quote }}
+{{ end }}
+{{ with .Values.database.credentials.secretName }}
+- name: ATL_JDBC_USER
+  valueFrom:
+    secretKeyRef:
+      name: {{ . }}
+      key: {{ $.Values.database.credentials.usernameSecretKey }}
+- name: ATL_JDBC_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ . }}
+      key: {{ $.Values.database.credentials.passwordSecretKey }}
+{{ end }}
+{{ end }}
+
+{{- define "synchrony.databaseEnvVars" -}}
+{{ with .Values.database.url }}
+- name: SYNCHRONY_DATABASE_URL
+  value: {{ . | quote }}
+{{ end }}
+{{ with .Values.database.credentials.secretName }}
+- name: SYNCHRONY_DATABASE_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ . }}
+      key: {{ $.Values.database.credentials.usernameSecretKey }}
+- name: SYNCHRONY_DATABASE_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ . }}
+      key: {{ $.Values.database.credentials.passwordSecretKey }}
+{{ end }}
+{{ end }}
+
+{{- define "confluence.clusteringEnvVars" -}}
+{{ if .Values.confluence.clustering.enabled }}
+- name: KUBERNETES_NAMESPACE
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.namespace
+- name: HAZELCAST_KUBERNETES_SERVICE_NAME
+  value: {{ include "confluence.fullname" . | quote }}
+- name: ATL_CLUSTER_TYPE
+  value: "kubernetes"
+- name: ATL_CLUSTER_NAME
+  value: {{ include "confluence.fullname" . | quote }}
+{{ end }}
+{{ end }}
+
+{{- define "synchrony.clusteringEnvVars" -}}
+{{ if .Values.confluence.clustering.enabled }}
+- name: KUBERNETES_NAMESPACE
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.namespace
+- name: HAZELCAST_KUBERNETES_SERVICE_NAME
+  value: {{ include "synchrony.fullname" . | quote }}
+- name: CLUSTER_JOIN_TYPE
+  value: "kubernetes"
+{{ end }}
+{{ end }}

@@ -1,39 +1,41 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "confluence-server.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if .Values.ingress.create }}
 apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ include "confluence.fullname" . }}
   labels:
-    {{- include "confluence-server.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+    {{- include "confluence.labels" . | nindent 4 }}
   annotations:
-    {{- . | toYaml | trim | nindent 4 }}
+    {{ if .Values.ingress.nginx }}
+    "kubernetes.io/ingress.class": "nginx"
+    "nginx.ingress.kubernetes.io/affinity": "cookie"
+    "nginx.ingress.kubernetes.io/affinity-mode": "persistent"
+    "nginx.ingress.kubernetes.io/proxy-connect-timeout": "60"
+    "nginx.ingress.kubernetes.io/proxy-read-timeout": "60"
+    "nginx.ingress.kubernetes.io/proxy-send-timeout": "60"
+    {{- end }}
+    {{- with .Values.ingress.annotations }}
+  {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.ingress.tls }}
+{{ if and (.Values.ingress.tlsSecretName) (.Values.ingress.host) }}
   tls:
-    {{- range .Values.ingress.tls }}
     - hosts:
-      {{- range .hosts }}
-      - {{ . | quote }}
-      {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
-  {{- end }}
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tlsSecretName }}
+{{ end }}
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ . | quote }}
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
-          - path: {{ $ingressPath }}
+          - path: "/"
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: http
-  {{- end }}
-{{- end }}
+              serviceName: {{ include "confluence.fullname" . }}
+              servicePort: {{ $.Values.confluence.service.port }}
+          {{ if .Values.synchrony.enabled }}
+          - path: "/synchrony"
+            backend:
+              serviceName: {{ include "synchrony.fullname" . }}
+              servicePort: {{ $.Values.synchrony.service.port }}
+          {{ end }}
+{{ end }}
