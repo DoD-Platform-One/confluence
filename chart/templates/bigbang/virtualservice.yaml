@@ -17,7 +17,7 @@ spec:
     - destination:
         host: {{ include "confluence-server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
         port:
-          number: 8090
+          number: {{ .Values.service.port }}
       headers:
         request:
           remove:
