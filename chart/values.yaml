@@ -245,3 +245,10 @@ additionalInitContainers: []
 
 # -- Additional labels that should be applied to all resources
 additionalLabels: {}
+
+# Big Bang Additions
+hostname: bigbang.dev
+istio:
+  enabled: true
+monitoring:
+  enabled: false
