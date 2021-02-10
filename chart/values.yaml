@@ -4,7 +4,8 @@
 replicaCount: 1
 
 image:
-  repository: atlassian/confluence-server
+  # repository: atlassian/confluence-server
+  repository: registry.dso.mil/platform-one/big-bang/apps/collaboration-tools/confluence/confluence-server
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
   tag:
