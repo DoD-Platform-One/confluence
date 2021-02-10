@@ -2,8 +2,9 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: {{ .Release.Name }}-sticky
-  namespace: {{ .Release.Namespace }}
+  name: {{ include "confluence.fullname" . }}-sticky
+  labels:
+    {{- include "confluence.labels" . | nindent 4 }}
 spec:
   host: {{ include "confluence-server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
   trafficPolicy:
