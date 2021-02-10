@@ -1,4 +1,6 @@
-apiVersion: rbac.authorization.k8s.io/v1beta1
+{{- if .Values.rbac.enabled }}
+# https://github.com/Praqma/ask/blob/master/confluence/templates/clusterrolebindings.yaml
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: {{ .Release.Name }}
@@ -11,3 +13,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "confluence-server.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
+{{- end }}
