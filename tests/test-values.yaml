@@ -1,17 +1,5 @@
-image:
-  pullSecrets: []
-
-psql:
-  # host: postgresdb.local
-  # port: 5432
-  # database: jira
-  # username: jira
-  # password:
-  #   secret: jira-postgres
-  #   key: password
-
-postgresql:
-  enabled: true
+serviceAccount:
+  imagePullSecrets: []
 
 istio:
   enabled: true
