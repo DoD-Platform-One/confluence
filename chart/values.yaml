@@ -133,5 +133,9 @@ postgresql:
 
 # Big Bang Additions
 hostname: bigbang.dev
+rbac:
+  enabled: true
 istio:
   enabled: true
+monitoring:
+  enabled: false
