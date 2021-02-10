@@ -1,5 +1,5 @@
 serviceAccount:
-  imagePullSecrets: []
-
+  imagePullSecrets:
+  - name: private-registry-mil
 istio:
   enabled: true
