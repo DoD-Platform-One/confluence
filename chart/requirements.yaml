@@ -1,5 +1,6 @@
 dependencies:
   - name: postgresql
     version: 4.2.2
+    # Modified to use 'app/v1' for StatefulSet instead of deprecated 'app/v1beta2'
     repository: file://./charts/postgresql-4.2.2.tgz
     condition: postgresql.enabled
