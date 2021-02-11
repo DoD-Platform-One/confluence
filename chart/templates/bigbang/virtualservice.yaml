@@ -9,7 +9,7 @@ spec:
   hosts:
   - confluence.{{ .Values.hostname }}
   gateways:
-  - main.istio-system.svc.cluster.local
+  - istio-system/main
   http:
   - match:
     - uri:
