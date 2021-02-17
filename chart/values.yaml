@@ -6,6 +6,8 @@ replicaCount: 1
 image:
   # repository: atlassian/confluence-server
   repository: registry.dso.mil/platform-one/big-bang/apps/collaboration-tools/confluence/confluence-server
+  # -- Adding this P1 pull secret
+  imagePullSecrets: private-registry
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
   tag:
@@ -36,15 +38,15 @@ database:
   # -- The type of database being used.
   # Valid values include 'postgresql', 'mysql', 'oracle', 'mssql'.
   # If not specified, then it will need to be provided via browser during initial startup.
-  type:
+  type: 
   # -- The JDBC URL of the database to be used by Confluence and Synchrony, e.g. jdbc:postgresql://host:port/database
   # If not specified, then it will need to be provided via browser during initial startup.
-  url:
+  url: 
   credentials:
     # -- The name of the Kubernetes Secret that contains the database login credentials.
     # If specified, then the credentials will be automatically populated during Confluence setup.
     # Otherwise, they will need to be provided via the browser after initial startup.
-    secretName:
+    secretName: 
     # -- The key in the Secret used to store the database login username
     usernameSecretKey: username
     # -- The key in the Secret used to store the database login password
@@ -81,7 +83,7 @@ confluence:
   clustering:
     # -- Set to true if Data Center clustering should be enabled
     # This will automatically configure cluster peer discovery between cluster nodes.
-    enabled: true
+    enabled: false
 
   resources:
     jvm:
@@ -250,6 +252,6 @@ additionalLabels: {}
 # Big Bang Additions
 hostname: bigbang.dev
 istio:
-  enabled: true
+  enabled: false
 monitoring:
   enabled: false
