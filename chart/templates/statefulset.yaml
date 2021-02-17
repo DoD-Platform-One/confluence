@@ -33,6 +33,8 @@ spec:
         - name: confluence
           image: {{ include "confluence.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullSecrets:
+          - name: {{ .Values.image.imagePullSecrets }}
           ports:
             - name: http
               containerPort: {{ .Values.confluence.ports.http }}
