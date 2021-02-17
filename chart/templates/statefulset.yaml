@@ -1,4 +1,5 @@
 apiVersion: apps/v1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "confluence.fullname" . }}
@@ -29,12 +30,12 @@ spec:
       initContainers:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      imagePullSecrets:
+        - name: {{ .Values.image.imagePullSecrets }}
       containers:
         - name: confluence
           image: {{ include "confluence.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          imagePullSecrets:
-          - name: {{ .Values.image.imagePullSecrets }}
           ports:
             - name: http
               containerPort: {{ .Values.confluence.ports.http }}
