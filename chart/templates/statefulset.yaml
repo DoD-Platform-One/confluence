@@ -31,7 +31,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       imagePullSecrets:
+        {{- if .Values.image.imagePullSecrets }}
         - name: {{ .Values.image.imagePullSecrets }}
+        {{- end }}
       containers:
         - name: confluence
           image: {{ include "confluence.image" . | quote }}
