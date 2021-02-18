@@ -145,7 +145,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Values.synchrony.enabled -}}
 -Dsynchrony.service.url={{ .Values.synchrony.ingressUrl }}/v1
 {{- else -}}
--Dsynchrony.btf.disabled=true
+-Dsynchrony.btf.disabled=false
 {{- end -}}
 {{- end }}
 

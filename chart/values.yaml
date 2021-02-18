@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   # repository: atlassian/confluence-server
   repository: registry.dso.mil/platform-one/big-bang/apps/collaboration-tools/confluence/confluence-server
-  # -- Adding this P1 pull secret
+  # -- Optional image repository pull secret
   imagePullSecrets: private-registry
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
@@ -65,6 +65,14 @@ confluence:
     http: 8090
     # -- The port on which the Confluence container listens for Hazelcast traffic
     hazelcast: 5701
+    # -- The port used for Confluence Inernal Connecitons between multiple Confluence nodes
+    intconnector: 8888
+    # --  The port used for Confluence internal services
+    intersvc: 8081
+    # -- The port on which Synchrony is used for collaborative editing
+    # It is easier to manage Synchrony on the container itself rather than deploying a separate stateful set and services
+    synchrony: 8091
+
   license:
     # -- The name of the Kubernetes Secret which contains the Confluence license key.
     # If specified, then the license will be automatically populated during Confluence setup.
@@ -136,9 +144,8 @@ confluence:
   additionalEnvironmentVariables: []
 
 synchrony:
-  # -- True if Synchrony (i.e. Collaborative Editing) should be enabled.
-  # This will result in a separate StatefulSet and Service to be created for Synchrony.
-  # If disabled, then Collaborative Editing will be disabled in Confluence.
+  # -- Leave this 'enabled' setting to 'false' as we are deploying Synchrony (i.e. Collaborative Editing) in the Confluence container.
+  # This allows for easier management of the Synchrony services so we don't have to deploy a eparate StatefulSet and Service to be created for Synchrony.
   enabled: false
   service:
     # -- The port on which the Synchrony Kubernetes service will listen

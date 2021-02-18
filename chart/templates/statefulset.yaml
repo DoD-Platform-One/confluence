@@ -1,5 +1,4 @@
 apiVersion: apps/v1
-apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "confluence.fullname" . }}
@@ -38,12 +37,21 @@ spec:
         - name: confluence
           image: {{ include "confluence.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            runAsUser: {{ .Values.confluence.gid }}
+            runAsGroup: {{ .Values.confluence.gid }}
           ports:
             - name: http
               containerPort: {{ .Values.confluence.ports.http }}
               protocol: TCP
             - name: hazelcast
               containerPort: {{ .Values.confluence.ports.hazelcast }}
+              protocol: TCP
+            - name: intersvc
+              containerPort: {{ .Values.confluence.ports.intersvc }}
+              protocol: TCP
+            - name: synchrony
+              containerPort: {{ .Values.confluence.ports.synchrony }}
               protocol: TCP
           readinessProbe:
             httpGet:
