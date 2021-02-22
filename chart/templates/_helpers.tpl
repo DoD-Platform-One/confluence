@@ -98,9 +98,13 @@ These labels will be applied to all Confluence (non-Synchrony) resources in the 
 helm.sh/chart: {{ include "confluence.chart" . }}
 {{ include "confluence.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+app.kubernetes.io/Appversion: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/component: "collaboration"
+app.kubernetes.io/part-of: "bigbang"
+app.kubernetes.io/managed-by: "flux"
+app.kubernetes.io/bigbang-version: {{ .Chart.Version | quote }}
 {{ with .Values.additionalLabels }}
 {{- toYaml . }}
 {{- end }}
