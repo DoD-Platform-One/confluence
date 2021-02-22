@@ -1,4 +1,4 @@
-{{- if .Values.metrics.enabled }}
+{{- if .Values.monitoring.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -13,6 +13,5 @@ spec:
   - port: {{ .Values.confluence.service.port }}
     interval: 30s
     scheme: http
-    jobLabel: {{ include "confluence.fullname" . }}
     path: "/plugins/servlet/prometheus/metrics"
 {{ end }}
