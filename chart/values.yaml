@@ -256,9 +256,16 @@ additionalInitContainers: []
 # -- Additional labels that should be applied to all resources
 additionalLabels: {}
 
+# -- Enable integrated Promethus metrics exporter
+metrics:
+  # -- This will enable monitoring via Prometheus.  In order for this to work, the Prometheus monitoring plugin needs to be installed via the Confluence UI
+  # -- ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview
+  enabled: false
+
 # Big Bang Additions
 hostname: bigbang.dev
 istio:
   enabled: true
 monitoring:
+  # -- If metrics is enabled, this setting will also need to be enabled
   enabled: false

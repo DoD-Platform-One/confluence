@@ -1,0 +1,18 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "confluence.fullname" . }}
+  labels:
+    prometheus: k8s
+spec:
+  selector:
+    matchLabels:
+      {{- include "confluence.selectorLabels" . | nindent 6 }}
+  endpoints:
+  - port: {{ .Values.confluence.service.port }}
+    interval: 30s
+    scheme: http
+    jobLabel: {{ include "confluence.fullname" . }}
+    path: "/plugins/servlet/prometheus/metrics"
+{{ end }}
