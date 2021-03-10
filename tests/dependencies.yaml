@@ -2,8 +2,8 @@
 apostgresoperator:
   git: "https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/postgres-operator.git"
   namespace: "postgres-operator"
-  branch: "bb-16/BigBang-Addon"
+  tag: "1.6.1-bb.0"
 bpostgresdatabase:
   git: "https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/postgresql.git"
   namespace: "confluence"
-  branch: "bb-17/bigbang-addon"
+  tag: "1.6.1-bb.0"
