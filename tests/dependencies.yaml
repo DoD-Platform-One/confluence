@@ -1,0 +1,9 @@
+# Dependencies are deployed in alphabetical order.  We need the operator to be first.
+apostgresoperator:
+  git: "https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/postgres-operator.git"
+  namespace: "postgres-operator"
+  branch: "bb-16/BigBang-Addon"
+bpostgresdatabase:
+  git: "https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/postgresql.git"
+  namespace: "confluence"
+  branch: "bb-17/bigbang-addon"

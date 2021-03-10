@@ -1,2 +1,0 @@
-FROM atlassian/confluence-server:7.10.1
-RUN curl -L "https://marketplace.atlassian.com/download/apps/1218360/version/1001001801" --create-dirs -o /var/atlassian/application-data/jira/plugins/installed-plugins/confluence-oauth.jar

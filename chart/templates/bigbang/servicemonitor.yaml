@@ -1,0 +1,15 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "confluence.fullname" . }}
+  labels:
+    {{- include "confluence.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "confluence.selectorLabels" . | nindent 6 }}
+  endpoints:
+  - port: http
+    path: "/plugins/servlet/prometheus/metrics"
+{{ end }}

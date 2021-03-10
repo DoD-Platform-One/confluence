@@ -1,0 +1,13 @@
+serviceAccount:
+  imagePullSecrets:
+  - name: private-registry-mil
+confluence:
+  license:
+    secretName: license
+database:
+  type: postgresql
+  url: jdbc:postgresql://postgresql-database.confluence.svc.cluster.local:5432/testdb
+  credentials:
+    secretName: test-user.postgresql-database.credentials.postgresql.acid.zalan.do
+istio:
+  enabled: true
