@@ -252,7 +252,6 @@ additionalContainers: []
 
 # -- Additional initContainer definitions that will be added to all Confluence pods
 additionalInitContainers: 
-  initContainers:
         - name: configure
           image: registry.dso.mil/platform-one/apps/confluence/alpine:confluence-1.0
           imagePullPolicy: Always
