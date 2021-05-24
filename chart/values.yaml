@@ -39,8 +39,8 @@ database:
   # Valid values include 'postgresql', 'mysql', 'oracle', 'mssql'.
   # If not specified, then it will need to be provided via browser during initial startup.
   type: postgresql
-  user: confluence_admin
-  password: ofc0urseitsm4ttsm0m
+  user:
+  password:
   # -- The JDBC URL of the database to be used by Confluence and Synchrony, e.g. jdbc:postgresql://host:port/database
   # If not specified, then it will need to be provided via browser during initial startup.
   url: jdbc:postgresql://confluence-db.dev.dsop.io:5432/confluence 
