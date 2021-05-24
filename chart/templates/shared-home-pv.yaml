@@ -1,0 +1,22 @@
+{{- if .Values.volumes.sharedHome.efs }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "confluence.fullname" . }}-shared-home-pv
+  labels:
+  {{- include "confluence.labels" . | nindent 4 }}
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: efs-sc
+  claimRef:
+    name: {{ include "confluence.fullname" . }}-shared-home
+    namespace: {{ .Release.Namespace }}
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: {{ .Values.volumes.sharedHome.efsid }}
+{{ end }}

@@ -1,0 +1,472 @@
+---
+# Source: confluence/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: confluence
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+---
+# Source: confluence/templates/config-jvm.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: confluence-jvm-config
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+data:
+  additional_jvm_args: >-
+    -Dconfluence.cluster.hazelcast.listenPort=5701
+    -Dsynchrony.btf.disabled=false
+    -DConfluenceHomeLogAppender.disabled=true
+  max_heap: 16184m
+  min_heap: 1024m
+  reserved_code_cache: 512m
+---
+# Source: confluence/templates/init-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-script
+data:
+  init-script.sh: "---\n\n#!/bin/bash\n\nchown 2002.2002 /var/atlassian/confluence-datacenter/\n
+    \          \n# Get ips of cluster nodes from confluence service\nif [ -f ${CONFLUENCE_HOME}/confluence.cfg.xml
+    ]; then\n  if [ -z \"${CLUSTER_PEER_IPS}\" ]; then\n    # This is a special case,
+    where confluence is running in kubernetes, not on plain docker host.\n    KUBE_TOKEN=$(</var/run/secrets/kubernetes.io/serviceaccount/token)\n
+    \   # Note: In the command below, \"this node\" will not show up in the service
+    endpoints,\n    #       because it is still \"booting up\" and \"not ready\".\n
+    \   CLUSTER_PEER_IPS=$(curl -sSk -H \"Authorization: Bearer $KUBE_TOKEN\" https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_PORT_443_TCP_PORT/api/v1/namespaces/${CONFLUENCE_NAMESPACE}/endpoints/${CONFLUENCE_SERVICE_NAME}
+    | jq -r .subsets[].addresses[].ip | paste -sd \",\" -)\n\n  else\n    # This is
+    a special case, which caters for confluence running on plain docker host instead
+    of Kubernetes.\n    echo \"Using CLUSTER_PEER_IPS = ${CLUSTER_PEER_IPS} , as received
+    by ENV variable.\"\n\n  fi\n\n  # Lets manage POD_IP first, as it will be used later.\n
+    \ # So, POD_IP is being obtained through the helm chart.\n  # But, if the container
+    is being run without Kubernetes, such as on plain docker host, then POD_IP will
+    be empty.\n  # In that case, we need to find the IP of this pod/container ourselves,
+    using 'ip addr'\n  if [ -z \"${POD_IP}\" ]; then\n    POD_IP=$(ip addr | egrep -w
+    inet | egrep -e \"eth|ens\" | awk '{print $2}' | cut -d '/' -f1)\n  fi\n\n  if [
+    -z \"${CLUSTER_PEER_IPS}\" ]; then\n    # if there are no peer IPs found, then we
+    need to add at least the IP of this node in the cluster.peers file.\n    CLUSTER_PEER_IPS=${POD_IP}\n
+    \ else\n    # append our IP to the peers list:\n    CLUSTER_PEER_IPS=\"${POD_IP},${CLUSTER_PEER_IPS}\"\n
+    \ fi\n\n  echo \"Updating ${CONFLUENCE_HOME}/confluence.cfg.xml with PEER IPS: ${CLUSTER_PEER_IPS}
+    ...\"\n  xmlstarlet edit -L -u \"//properties/property[@name='confluence.cluster.peers']\"
+    \\\n    --value \"${CLUSTER_PEER_IPS}\" ${CONFLUENCE_HOME}/confluence.cfg.xml\nelse\n
+    \ echo \"The file ${CONFLUENCE_HOME}/confluence.cfg.xml was not found; because,
+    this may be the first node - still booting up.\"\nfi\n"
+---
+# Source: confluence/templates/shared-home-pv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: confluence-shared-home-pv
+spec:
+  capacity:
+    storage: 30Gi
+  csi:
+    volumeHandle: fsxxxx
+---
+# Source: confluence/templates/shared-home-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: confluence-shared-home
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+---
+# Source: confluence/templates/service.yaml
+apiVersion: v1
+apiVersion: v1
+kind: Service
+metadata:
+  name: confluence
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 5701
+      targetPort: hazelcast
+      protocol: TCP
+      name: hazelcast
+    - port: 8888
+      targetPort: intconnector
+      protocol: TCP
+      name: intconnector
+    - port: 8081
+      targetPort: intersvc
+      protocol: TCP
+      name: intersvc
+    - port: 8091
+      targetPort: synchrony
+      protocol: TCP
+      name: synchrony
+  selector:
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+---
+# Source: confluence/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: confluence
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  replicas: 1
+  serviceName: confluence
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: confluence
+      app.kubernetes.io/instance: confluence
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: confluence
+        app.kubernetes.io/instance: confluence
+    spec:
+      serviceAccountName: confluence
+      terminationGracePeriodSeconds: 1
+      securityContext:
+        # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Cnfluence container.
+        # However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260
+        fsGroup: 2002
+      initContainers:
+        - command:
+          - /bin/bash
+          - -c
+          - /tmp/init-script.sh
+          env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: CONFLUENCE_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: CONFLUENCE_SERVICE_NAME
+            value: confluence
+          - name: CONFLUENCE_HOME
+            value: /var/atlassian/application-data/confluence
+          image: registry.dso.mil/platform-one/apps/confluence/alpine:confluence-1.0
+          imagePullPolicy: Always
+          name: configure
+          volumeMounts:
+          - mountPath: /var/atlassian/application-data/confluence/
+            name: local-home
+          - mountPath: /var/atlassian/confluence-datacenter/
+            name: shared-home
+          - mountPath: /tmp
+            name: init-script
+      imagePullSecrets:
+        - name: private-registry
+      containers:
+        - name: confluence
+          image: "registry.dso.mil/platform-one/big-bang/apps/third-party/confluence/confluence-server:7.4.8:7.9.0-jdk11"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 2002
+            runAsGroup: 2002
+          ports:
+            - name: http
+              containerPort: 8090
+              protocol: TCP
+            - name: hazelcast
+              containerPort: 5701
+              protocol: TCP
+            - name: intersvc
+              containerPort: 8081
+              protocol: TCP
+            - name: synchrony
+              containerPort: 8091
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              port: 8090
+              path: /status
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 30
+          resources:
+            limits:
+              cpu: "2"
+              memory: 25G
+            requests:
+              cpu: 500m
+              memory: 19G
+          volumeMounts:
+            - name: local-home
+              mountPath: "/var/atlassian/application-data/confluence"
+            - name: shared-home
+              mountPath: "/var/atlassian/confluence-datacenter"
+            
+            
+          env:
+            
+            - name: ATL_TOMCAT_SCHEME
+              value: "https"
+            - name: ATL_TOMCAT_SECURE
+              value: "true"
+            
+            - name: ATL_PRODUCT_HOME_SHARED
+              value: "/var/atlassian/confluence-datacenter"
+            - name: JVM_SUPPORT_RECOMMENDED_ARGS
+              valueFrom:
+                configMapKeyRef:
+                  key: additional_jvm_args
+                  name: confluence-jvm-config
+            
+            
+            
+            
+            
+            
+            
+            - name: JVM_MINIMUM_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  key: min_heap
+                  name: confluence-jvm-config
+            - name: JVM_MAXIMUM_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  key: max_heap
+                  name: confluence-jvm-config
+            - name: JVM_RESERVED_CODE_CACHE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  key: reserved_code_cache
+                  name: confluence-jvm-config
+      nodeSelector:
+        category: memory
+      tolerations:
+        - effect: NoSchedule
+          key: MemoryOnly
+          operator: Equal
+          value: "true"
+      volumes:
+        
+        
+        - name: shared-home
+          persistentVolumeClaim:
+            claimName: confluence-shared-home
+        
+        - configMap:
+            defaultMode: 484
+            name: init-script
+          name: init-script
+
+  
+  
+  volumeClaimTemplates:
+  - metadata:
+      name: local-home
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ebs"
+      resources:
+        requests:
+          storage: 50Gi
+---
+# Source: confluence/templates/bigbang/destinationrule.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: confluence-sticky
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  host: confluence.default.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          # set a new session cookie with istio per atlassian guidelines: https://confluence.atlassian.com/enterprise/confluence-data-center-load-balancer-examples-781200827.html
+          # note: this cookie is explicitly different than JSESSIONID, let confluence handle that
+          name: CONFLUENCECONSISTENTHASH
+          path: /
+          ttl: 300m
+---
+# Source: confluence/templates/bigbang/virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: confluence
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  hosts:
+  - confluence.bigbang.dev
+  gateways:
+  - istio-system/main
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: confluence.default.svc.cluster.local
+        port:
+          number: 80
+      headers:
+        request:
+          remove:
+            - x-b3-sampled
+          add:
+            x-b3-sampled: '0'
+---
+# Source: confluence/templates/tests/test-application-status.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "confluence-application-status-test"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  containers:
+    - name: test
+      image: alpine
+      env:
+        - name: STATUS_URL
+          value: "http://confluence:80/status"
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          apk add -q jq curl
+          STATUS=$(curl -s "$STATUS_URL")
+          echo "Verifying application state is RUNNING or FIRST_RUN: $STATUS"
+          echo $STATUS | jq -e '.state|test("RUNNING|FIRST_RUN")'
+  restartPolicy: Never
+---
+# Source: confluence/templates/tests/test-shared-home-permissions.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "confluence-shared-home-permissions-test"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: confluence
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  containers:
+    - name: test
+      image: debian:stable-slim
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        # Slightly dodgy; we assume that the UID and GID used by the product images are the same, which in practice they are
+        runAsUser: 2002
+        runAsGroup: 2002
+      volumeMounts:
+        - name: shared-home
+          mountPath: /shared-home
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          ls -ld /shared-home
+          echo "Creating temporary file in shared home as user $(id -u):$(id -g)"
+          touch /shared-home/permissions-test
+          ls -l /shared-home/permissions-test
+          rm /shared-home/permissions-test
+  volumes:
+    
+    - name: shared-home
+      persistentVolumeClaim:
+        claimName: confluence-shared-home
+    
+  restartPolicy: Never

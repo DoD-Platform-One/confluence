@@ -38,19 +38,21 @@ database:
   # -- The type of database being used.
   # Valid values include 'postgresql', 'mysql', 'oracle', 'mssql'.
   # If not specified, then it will need to be provided via browser during initial startup.
-  type: 
+  type: postgresql
+  user: confluence_admin
+  password: ofc0urseitsm4ttsm0m
   # -- The JDBC URL of the database to be used by Confluence and Synchrony, e.g. jdbc:postgresql://host:port/database
   # If not specified, then it will need to be provided via browser during initial startup.
-  url: 
+  url: jdbc:postgresql://confluence-db.dev.dsop.io:5432/confluence 
   credentials:
     # -- The name of the Kubernetes Secret that contains the database login credentials.
     # If specified, then the credentials will be automatically populated during Confluence setup.
     # Otherwise, they will need to be provided via the browser after initial startup.
-    secretName: 
+    secretName: db-credentials
     # -- The key in the Secret used to store the database login username
-    usernameSecretKey: username
+    usernameSecretKey: PGUSER
     # -- The key in the Secret used to store the database login password
-    passwordSecretKey: password
+    passwordSecretKey: PGPASSWORD
 
 confluence:
   service:
@@ -91,7 +93,7 @@ confluence:
   clustering:
     # -- Set to true if Data Center clustering should be enabled
     # This will automatically configure cluster peer discovery between cluster nodes.
-    enabled: false
+    enabled: true
 
   resources:
     jvm:
@@ -137,11 +139,27 @@ confluence:
 
   # -- Defines any additional volumes mounts for the Confluence container.
   # These can refer to existing volumes, or new volumes can be defined in volumes.additional.
-  additionalVolumeMounts: []
+  additionalVolumeMounts:
+    - name: "server-xml-j2"
+      mountPath: /opt/atlassian/etc/server.xml.j2
+      subPath: server.xml.j2
+    - name: "server-xml"
+      mountPath: /opt/atlassian/confluence/conf/server.xml
+      subPath: server.xml
 
   # -- Defines any additional environment variables to be passed to the Confluence container.
   # See https://hub.docker.com/r/atlassian/confluence-server for supported variables.
-  additionalEnvironmentVariables: []
+  additionalEnvironmentVariables:
+     - name: CATALINA_OPTS
+       value: "-Dfile.encoding=UTF-8 -Dconfluence.cluster.node.name=$(hostname)"
+     - name: ATL_PROXY_NAME
+       value: confluence.dev.dsop.io
+     - name: ATL_PROXY_PORT
+       value: "443"
+     - name: CONFLUENCE_HOME
+       value: /var/atlassian/application-data/confluence/
+     - name: ATL_JDBC_URL
+       value: "jdbc:postgresql://confluence-db.dev.dsop.io:5432/confluence"
 
 synchrony:
   # -- Leave this 'enabled' setting to 'false' as we are deploying Synchrony (i.e. Collaborative Editing) in the Confluence container.
@@ -197,11 +215,11 @@ volumes:
       # -- If true, then a PersistentVolumeClaim will be created for each local-home volume.
       create: true
       # -- Specifies the name of the storage class that should be used for the local-home volume claim.
-      storageClassName:
+      storageClassName: ebs
       # -- Specifies the standard Kubernetes resource requests and/or limits for the local-home volume claims.
       resources:
         requests:
-          storage: 1Gi
+          storage: 50Gi
     # -- When persistentVolumeClaim.create is false, then this value can be used to define a standard Kubernetes
     # volume which will be used for the local-home volumes. If not defined, then defaults to an emptyDir volume.
     customVolume: {}
@@ -211,11 +229,14 @@ volumes:
       # -- If true, then a PersistentVolumeClaim will be created for the shared-home volume.
       create: true
       # -- Specifies the name of the storage class that should be used for the shared-home volume claim.
-      storageClassName:
+      storageClassName: efs-sc
       # -- Specifies the standard Kubernetes resource requests and/or limits for the shared-home volume claims.
       resources:
         requests:
-          storage: 500Gi
+          storage: 5Gi
+    # -- If AWS efs is utilized, please make efs true and put id of efs volume to create pv
+    efs: true
+    efsid: fs-5c3f3d5d
     # -- When persistentVolumeClaim.create is false, then this value can be used to define a standard Kubernetes
     # volume which will be used for the shared-home volume. If not defined, then defaults to an emptyDir (i.e. unshared) volume.
     customVolume: {}
@@ -236,13 +257,26 @@ volumes:
   # -- Defines additional volumes that should be applied to all Confluence pods.
   # Note that this will not create any corresponding volume mounts;
   # those needs to be defined in confluence.additionalVolumeMounts
-  additional: []
+  additional:
+    - name: server-xml-j2
+      configMap:
+        name: server-xml-j2
+        defaultMode: 0744
+    - name: server-xml
+      configMap:
+        name: server-xml
+        defaultMode: 0744
 
 # -- Standard Kubernetes node-selectors that will be applied to all Confluence and Synchrony pods
-nodeSelector: {}
+nodeSelector:
+  category: memory
 
 # -- Standard Kubernetes tolerations that will be applied to all Confluence and Synchrony pods
-tolerations: []
+tolerations: 
+  - key: "MemoryOnly"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
 
 # -- Standard Kubernetes affinities that will be applied to all Confluence and Synchrony pods
 affinity: {}
@@ -276,13 +310,19 @@ additionalInitContainers:
               value: confluence
             - name: CONFLUENCE_HOME
               value: /var/atlassian/application-data/confluence
+initcontainervolumes:
+        - name: init-script
+          configMap:
+            name: init-script
+            defaultMode: 0744
 
 
 # -- Additional labels that should be applied to all resources
 additionalLabels: {}
 
 # Big Bang Additions
-hostname: bigbang.dev
+proxyName: confluence.dev.dsop.io
+hostname: dev.dsop.io
 istio:
   enabled: true
 monitoring:
