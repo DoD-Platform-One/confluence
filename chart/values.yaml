@@ -43,7 +43,7 @@ database:
   password: 
   # -- The JDBC URL of the database to be used by Confluence and Synchrony, e.g. jdbc:postgresql://host:port/database
   # If not specified, then it will need to be provided via browser during initial startup.
-  url: jdbc:postgresql://confluence-db.dev.dsop.io:5432/confluence 
+  url: 
   credentials:
     # -- The name of the Kubernetes Secret that contains the database login credentials.
     # If specified, then the credentials will be automatically populated during Confluence setup.
