@@ -1,0 +1,467 @@
+---
+# Source: confluence/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: RELEASE-NAME-confluence
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+---
+# Source: confluence/templates/config-jvm.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: RELEASE-NAME-confluence-jvm-config
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+data:
+  additional_jvm_args: >-
+    -Dconfluence.cluster.hazelcast.listenPort=5701
+    -Dsynchrony.btf.disabled=false
+    -DConfluenceHomeLogAppender.disabled=true
+  max_heap: 1g
+  min_heap: 1g
+  reserved_code_cache: 512m
+---
+# Source: confluence/templates/init-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-script
+data:
+  {}
+---
+# Source: confluence/templates/server-xml-j2.configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-xml-j2
+data:
+  server.xml.j2: |
+    <?xml version="1.0" encoding="utf-8"?>
+  
+    <Server port="{{ atl_tomcat_mgmt_port | default('8000') }}"
+            shutdown="SHUTDOWN">
+  
+      <Listener className="org.apache.catalina.startup.VersionLoggerListener"/>
+      <Listener className="org.apache.catalina.core.AprLifecycleListener"
+                SSLEngine="on"/>
+      <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener"/>
+      <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener"/>
+      <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener"/>
+  
+      <Service name="Catalina">
+  
+        <Connector port="{{ atl_tomcat_port | default('8090') }}"
+                   maxThreads="{{ atl_tomcat_maxthreads | default('100') }}"
+                   minSpareThreads="{{ atl_tomcat_minsparethreads | default('10') }}"
+                   connectionTimeout="{{ atl_tomcat_connectiontimeout | default('20000') }}"
+                   enableLookups="{{ atl_tomcat_enablelookups | default('false') }}"
+                   protocol="{{ atl_tomcat_protocol | default('HTTP/1.1') }}"
+                   redirectPort="{{ atl_tomcat_redirectport | default('8443') }}"
+                   acceptCount="{{ atl_tomcat_acceptcount | default('10') }}"
+                   secure="{{ atl_tomcat_secure | default(catalina_connector_secure) | default('false') }}"
+                   scheme="{{ atl_tomcat_scheme | default(catalina_connector_scheme) | default('http') }}"
+                   proxyName="{{ atl_proxy_name | default(catalina_connector_proxyname) | default('') }}"
+                   proxyPort="{{ atl_proxy_port | default(catalina_connector_proxyport) | default('') }}"
+                   maxConnections="{{ atl_tomcat_maxconnections | default('10000') }}"
+                   acceptorThreadCount="{{ atl_tomcat_acceptorthreadcount | default('10') }}"
+  
+                   relaxedPathChars="[]|"
+                   relaxedQueryChars="[]|{}^\`&quot;&lt;&gt;"
+                   bindOnInit="false"
+                   maxHttpHeaderSize="{{ atl_tomcat_maxhttpheadersize | default('8192') }}"
+                   useBodyEncodingForURI="true"
+                   disableUploadTimeout="true" />
+  
+        <Connector port="8081"
+                   maxThreads="100"
+                   minSpareThreads="10"
+                   connectionTimeout="20000"
+                   enableLookups="false"
+                   protocol="HTTP/1.1"
+                   redirectPort="8443"
+                   acceptCount="10"
+                   maxConnections="10000"
+                   acceptorThreadCount="10"
+  
+                   relaxedPathChars="[]|"
+                   relaxedQueryChars="[]|{}^\`&quot;&lt;&gt;"
+                   bindOnInit="false"
+                   maxHttpHeaderSize="8192"
+                   useBodyEncodingForURI="false"
+                   disableUploadTimeout="true" />
+  
+        <Engine name="Standalone"
+                defaultHost="localhost"
+                debug="0">
+          <Host name="localhost"
+                debug="0"
+                appBase="webapps"
+                unpackWARs="true"
+                autoDeploy="false"
+                startStopThreads="4">
+            <Context path="{{ atl_tomcat_contextpath | default(catalina_context_path) | default('') }}"
+                     docBase="../confluence"
+                     debug="0"
+                     reloadable="false"
+                     useHttpOnly="true">
+              <!-- Logging configuration for Confluence is specified in confluence/WEB-INF/classes/log4j.properties -->
+              <Manager pathname=""/>
+              <Valve className="org.apache.catalina.valves.StuckThreadDetectionValve"
+                     threshold="60"/>
+            {% if atl_tomcat_access_log == 'true' %}
+              <Valve className="org.apache.catalina.valves.AccessLogValve"
+                     requestAttributesEnabled="true"
+                     directory="logs"
+                     prefix="confluence_access"
+                     suffix=".log"
+                     rotatable="true"
+                     pattern="%h %{X-AUSERNAME}o %t &quot;%r&quot; %s %b %D %U %I &quot;%{User-Agent}i&quot;" />
+              <Valve className="org.apache.catalina.valves.RemoteIpValve"
+                     proxiesHeader="x-forwarded-by"
+                     internalProxies="{{ atl_tomcat_proxy_internal_ips | default('') }}"
+                     remoteIpHeader="x-forwarded-for"
+                     protocolHeader="x-forwarded-proto"
+                     requestAttributesEnabled="true"
+                     resolveHosts="false" />
+            {% endif %}
+            </Context>
+  
+            <Context path="${confluence.context.path}/synchrony-proxy"
+                     docBase="../synchrony-proxy"
+                     debug="0"
+                     reloadable="false"
+                     useHttpOnly="true">
+              <Valve className="org.apache.catalina.valves.StuckThreadDetectionValve"
+                     threshold="60"/>
+            </Context>
+  
+          </Host>
+        </Engine>
+  
+      </Service>
+  
+    </Server>
+---
+# Source: confluence/templates/server-xml.configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-xml
+data:
+  server.xml: "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\n<!-- Note: this file is
+    volume mounted and not templated -->\n\n<Server port=\"8000\"\n        shutdown=\"SHUTDOWN\">\n\n
+    \ <Listener className=\"org.apache.catalina.startup.VersionLoggerListener\"/>\n
+    \ <Listener className=\"org.apache.catalina.core.AprLifecycleListener\"\n            SSLEngine=\"on\"/>\n
+    \ <Listener className=\"org.apache.catalina.core.JreMemoryLeakPreventionListener\"/>\n
+    \ <Listener className=\"org.apache.catalina.mbeans.GlobalResourcesLifecycleListener\"/>\n
+    \ <Listener className=\"org.apache.catalina.core.ThreadLocalLeakPreventionListener\"/>\n\n
+    \ <Service name=\"Catalina\">\n\n    <Connector port=\"8090\"\n               maxThreads=\"100\"\n
+    \              minSpareThreads=\"10\"\n               connectionTimeout=\"20000\"\n
+    \              enableLookups=\"false\"\n               protocol=\"HTTP/1.1\"\n               redirectPort=\"8443\"\n
+    \              acceptCount=\"10\"\n               secure=\"true\"\n               scheme=\"https\"\n
+    \              proxyName= \"\"\n               proxyPort=\"443\"\n
+    \              maxConnections=\"10000\"\n               acceptorThreadCount=\"10\"\n\n
+    \              relaxedPathChars=\"[]|\"\n               relaxedQueryChars=\"[]|{}^\\`&quot;&lt;&gt;\"\n
+    \              bindOnInit=\"false\"\n               maxHttpHeaderSize=\"8192\"\n
+    \              useBodyEncodingForURI=\"true\"\n               disableUploadTimeout=\"true\"
+    />\n\n    <Connector port=\"8081\"\n               maxThreads=\"100\"\n               minSpareThreads=\"10\"\n
+    \              connectionTimeout=\"20000\"\n               enableLookups=\"false\"\n
+    \              protocol=\"HTTP/1.1\"\n               redirectPort=\"8443\"\n               acceptCount=\"10\"\n
+    \              maxConnections=\"10000\"\n               acceptorThreadCount=\"10\"\n\n
+    \              relaxedPathChars=\"[]|\"\n               relaxedQueryChars=\"[]|{}^\\`&quot;&lt;&gt;\"\n
+    \              bindOnInit=\"false\"\n               maxHttpHeaderSize=\"8192\"\n
+    \              useBodyEncodingForURI=\"false\"\n               disableUploadTimeout=\"true\"
+    />\n\n    <Engine name=\"Standalone\"\n            defaultHost=\"localhost\"\n            debug=\"0\">\n
+    \     <Host name=\"localhost\"\n            debug=\"0\"\n            appBase=\"webapps\"\n
+    \           unpackWARs=\"true\"\n            autoDeploy=\"false\"\n            startStopThreads=\"4\">\n
+    \       <Context path=\"\"\n                 docBase=\"../confluence\"\n                 debug=\"0\"\n
+    \                reloadable=\"false\"\n                 useHttpOnly=\"true\">\n
+    \         <!-- Logging configuration for Confluence is specified in confluence/WEB-INF/classes/log4j.properties
+    -->\n          <Manager pathname=\"\"/>\n          <Valve className=\"org.apache.catalina.valves.StuckThreadDetectionValve\"\n
+    \                threshold=\"60\"/>\n        \n        </Context>\n\n        <Context
+    path=\"${confluence.context.path}/synchrony-proxy\"\n                 docBase=\"../synchrony-proxy\"\n
+    \                debug=\"0\"\n                 reloadable=\"false\"\n                 useHttpOnly=\"true\">\n
+    \         <Valve className=\"org.apache.catalina.valves.StuckThreadDetectionValve\"\n
+    \                threshold=\"60\"/>\n        </Context>\n\n      </Host>\n    </Engine>\n\n
+    \ </Service>\n\n</Server>\n"
+---
+# Source: confluence/templates/service.yaml
+apiVersion: v1
+apiVersion: v1
+kind: Service
+metadata:
+  name: RELEASE-NAME-confluence
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 5701
+      targetPort: hazelcast
+      protocol: TCP
+      name: hazelcast
+    - port: 8888
+      targetPort: intconnector
+      protocol: TCP
+      name: intconnector
+    - port: 8081
+      targetPort: intersvc
+      protocol: TCP
+      name: intersvc
+    - port: 8091
+      targetPort: synchrony
+      protocol: TCP
+      name: synchrony
+  selector:
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: RELEASE-NAME
+---
+# Source: confluence/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: RELEASE-NAME-confluence
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  replicas: 1
+  serviceName: RELEASE-NAME-confluence
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: confluence
+      app.kubernetes.io/instance: RELEASE-NAME
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: confluence
+        app.kubernetes.io/instance: RELEASE-NAME
+    spec:
+      serviceAccountName: RELEASE-NAME-confluence
+      terminationGracePeriodSeconds: 1
+      securityContext:
+        # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Cnfluence container.
+        # However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260
+        fsGroup: 2002
+      imagePullSecrets:
+        - name: private-registry
+      containers:
+        - name: confluence
+          image: registry.dso.mil/platform-one/big-bang/apps/third-party/confluence/confluence-server:7.4.8
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 2002
+            runAsGroup: 2002
+          ports:
+            - name: http
+              containerPort: 8090
+              protocol: TCP
+            - name: hazelcast
+              containerPort: 5701
+              protocol: TCP
+            - name: intersvc
+              containerPort: 8081
+              protocol: TCP
+            - name: synchrony
+              containerPort: 8091
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              port: 8090
+              path: /status
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 30
+          volumeMounts:
+            - name: local-home
+              mountPath: "/var/atlassian/application-data/confluence"
+            - name: shared-home
+              mountPath: "/var/atlassian/confluence-datacenter"
+            - mountPath: /opt/atlassian/etc/server.xml.j2
+              name: server-xml-j2
+              subPath: server.xml.j2
+            - mountPath: /opt/atlassian/confluence/conf/server.xml
+              name: server-xml
+              subPath: server.xml
+            
+            
+          env:
+            
+            - name: ATL_TOMCAT_SCHEME
+              value: "https"
+            - name: ATL_TOMCAT_SECURE
+              value: "true"
+            
+            - name: ATL_PRODUCT_HOME_SHARED
+              value: "/var/atlassian/confluence-datacenter"
+            - name: JVM_SUPPORT_RECOMMENDED_ARGS
+              valueFrom:
+                configMapKeyRef:
+                  key: additional_jvm_args
+                  name: RELEASE-NAME-confluence-jvm-config
+            
+            
+            
+            - name: ATL_DB_TYPE
+              value: "postgresql"
+            
+            
+            
+            
+            
+            - name: JVM_MINIMUM_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  key: min_heap
+                  name: RELEASE-NAME-confluence-jvm-config
+            - name: JVM_MAXIMUM_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  key: max_heap
+                  name: RELEASE-NAME-confluence-jvm-config
+            - name: JVM_RESERVED_CODE_CACHE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  key: reserved_code_cache
+                  name: RELEASE-NAME-confluence-jvm-config
+      volumes:
+        
+        
+        
+        - name: local-home
+        
+          emptyDir: {}
+        - name: shared-home
+        
+          emptyDir: {}
+        - configMap:
+            defaultMode: 484
+            name: server-xml-j2
+          name: server-xml-j2
+        - configMap:
+            defaultMode: 484
+            name: server-xml
+          name: server-xml
+---
+# Source: confluence/templates/tests/test-application-status.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "RELEASE-NAME-confluence-application-status-test"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  containers:
+    - name: test
+      image: alpine
+      env:
+        - name: STATUS_URL
+          value: "http://RELEASE-NAME-confluence:80/status"
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          apk add -q jq curl
+          STATUS=$(curl -s "$STATUS_URL")
+          echo "Verifying application state is RUNNING or FIRST_RUN: $STATUS"
+          echo $STATUS | jq -e '.state|test("RUNNING|FIRST_RUN")'
+  restartPolicy: Never
+---
+# Source: confluence/templates/tests/test-shared-home-permissions.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "RELEASE-NAME-confluence-shared-home-permissions-test"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
+  labels:
+    helm.sh/chart: confluence-0.1.0-bb.04
+    app.kubernetes.io/name: confluence
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/Appversion: "7.9.0-jdk11"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "collaboration"
+    app.kubernetes.io/part-of: "bigbang"
+    app.kubernetes.io/managed-by: "flux"
+    app.kubernetes.io/bigbang-version: "0.1.0-bb.04"
+    
+spec:
+  containers:
+    - name: test
+      image: debian:stable-slim
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        # Slightly dodgy; we assume that the UID and GID used by the product images are the same, which in practice they are
+        runAsUser: 2002
+        runAsGroup: 2002
+      volumeMounts:
+        - name: shared-home
+          mountPath: /shared-home
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          ls -ld /shared-home
+          echo "Creating temporary file in shared home as user $(id -u):$(id -g)"
+          touch /shared-home/permissions-test
+          ls -l /shared-home/permissions-test
+          rm /shared-home/permissions-test
+  volumes:
+    
+    - name: shared-home
+    
+      emptyDir: {}
+  restartPolicy: Never

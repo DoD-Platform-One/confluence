@@ -40,7 +40,7 @@ database:
   # If not specified, then it will need to be provided via browser during initial startup.
   type: 
   user: 
-  password: 
+  password: userpassword
   # -- The JDBC URL of the database to be used by Confluence and Synchrony, e.g. jdbc:postgresql://host:port/database
   # If not specified, then it will need to be provided via browser during initial startup.
   url: 
