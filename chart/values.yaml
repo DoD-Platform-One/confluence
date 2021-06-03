@@ -38,9 +38,9 @@ database:
   # -- The type of database being used.
   # Valid values include 'postgresql', 'mysql', 'oracle', 'mssql'.
   # If not specified, then it will need to be provided via browser during initial startup.
-  type: postgresql
-  user:
-  password:
+  type: 
+  user: 
+  password: 
   # -- The JDBC URL of the database to be used by Confluence and Synchrony, e.g. jdbc:postgresql://host:port/database
   # If not specified, then it will need to be provided via browser during initial startup.
   url: jdbc:postgresql://confluence-db.dev.dsop.io:5432/confluence 
@@ -48,11 +48,11 @@ database:
     # -- The name of the Kubernetes Secret that contains the database login credentials.
     # If specified, then the credentials will be automatically populated during Confluence setup.
     # Otherwise, they will need to be provided via the browser after initial startup.
-    secretName: db-credentials
+    secretName: 
     # -- The key in the Secret used to store the database login username
-    usernameSecretKey: PGUSER
+    usernameSecretKey: username
     # -- The key in the Secret used to store the database login password
-    passwordSecretKey: PGPASSWORD
+    passwordSecretKey: password
 
 confluence:
   service:
@@ -93,27 +93,27 @@ confluence:
   clustering:
     # -- Set to true if Data Center clustering should be enabled
     # This will automatically configure cluster peer discovery between cluster nodes.
-    enabled: true
+    enabled: false
 
   resources:
     jvm:
       # -- The maximum amount of heap memory that will be used by the Confluence JVM
-      maxHeap: "16184m"
+      maxHeap: "1g"
       # -- The minimum amount of heap memory that will be used by the Confluence JVM
-      minHeap: "1024m"
+      minHeap: "1g"
       # -- The memory reserved for the Confluence JVM code cache
       reservedCodeCache: "512m"
     # -- Specifies the standard Kubernetes resource requests and/or limits for the Confluence container.
     # It is important that if the memory resources are specified here, they must allow for the size of the Confluence JVM.
     # That means the maximum heap size, the reserved code cache size, plus other JVM overheads, must be accommodated.
     # Allowing for (maxHeap+codeCache)*1.5 would be an example.
-    container:
-      limits:
-        cpu: "2"
-        memory: "25G"
-      requests:
-        cpu: "500m"
-        memory: "19G"
+    container: {}
+    #  limits:
+    #    cpu: "4"
+    #    memory: "2G"
+    #  requests:
+    #    cpu: "4"
+    #    memory: "2G"
 
   # -- Specifies a list of additional arguments that can be passed to the Confluence JVM, e.g. system properties
   additionalJvmArgs: []
@@ -149,18 +149,8 @@ confluence:
 
   # -- Defines any additional environment variables to be passed to the Confluence container.
   # See https://hub.docker.com/r/atlassian/confluence-server for supported variables.
-  additionalEnvironmentVariables:
-     - name: CATALINA_OPTS
-       value: "-Dfile.encoding=UTF-8 -Dconfluence.cluster.node.name=$(hostname)"
-     - name: ATL_PROXY_NAME
-       value: confluence.dev.dsop.io
-     - name: ATL_PROXY_PORT
-       value: "443"
-     - name: CONFLUENCE_HOME
-       value: /var/atlassian/application-data/confluence/
-     - name: ATL_JDBC_URL
-       value: "jdbc:postgresql://confluence-db.dev.dsop.io:5432/confluence"
-
+  additionalEnvironmentVariables: []
+     
 synchrony:
   # -- Leave this 'enabled' setting to 'false' as we are deploying Synchrony (i.e. Collaborative Editing) in the Confluence container.
   # This allows for easier management of the Synchrony services so we don't have to deploy a eparate StatefulSet and Service to be created for Synchrony.
@@ -213,13 +203,13 @@ volumes:
   localHome:
     persistentVolumeClaim:
       # -- If true, then a PersistentVolumeClaim will be created for each local-home volume.
-      create: true
+      create: false
       # -- Specifies the name of the storage class that should be used for the local-home volume claim.
-      storageClassName: ebs
+      storageClassName: 
       # -- Specifies the standard Kubernetes resource requests and/or limits for the local-home volume claims.
       resources:
         requests:
-          storage: 50Gi
+          storage: 
     # -- When persistentVolumeClaim.create is false, then this value can be used to define a standard Kubernetes
     # volume which will be used for the local-home volumes. If not defined, then defaults to an emptyDir volume.
     customVolume: {}
@@ -227,16 +217,16 @@ volumes:
   sharedHome:
     persistentVolumeClaim:
       # -- If true, then a PersistentVolumeClaim will be created for the shared-home volume.
-      create: true
+      create: false
       # -- Specifies the name of the storage class that should be used for the shared-home volume claim.
-      storageClassName: efs-sc
+      storageClassName: 
       # -- Specifies the standard Kubernetes resource requests and/or limits for the shared-home volume claims.
       resources:
         requests:
-          storage: 5Gi
+          storage: 
     # -- If AWS efs is utilized, please make efs true and put id of efs volume to create pv
-    efs: true
-    efsid: fs-5c3f3d5d
+    efs: 
+    efsid: 
     # -- When persistentVolumeClaim.create is false, then this value can be used to define a standard Kubernetes
     # volume which will be used for the shared-home volume. If not defined, then defaults to an emptyDir (i.e. unshared) volume.
     customVolume: {}
@@ -268,15 +258,10 @@ volumes:
         defaultMode: 0744
 
 # -- Standard Kubernetes node-selectors that will be applied to all Confluence and Synchrony pods
-nodeSelector:
-  category: memory
+nodeSelector: {}
 
 # -- Standard Kubernetes tolerations that will be applied to all Confluence and Synchrony pods
-tolerations: 
-  - key: "MemoryOnly"
-    operator: "Equal"
-    value: "true"
-    effect: "NoSchedule"
+tolerations: []
 
 # -- Standard Kubernetes affinities that will be applied to all Confluence and Synchrony pods
 affinity: {}
@@ -285,46 +270,18 @@ affinity: {}
 additionalContainers: []
 
 # -- Additional initContainer definitions that will be added to all Confluence pods
-additionalInitContainers: 
-        - name: configure
-          image: registry.dso.mil/platform-one/apps/confluence/alpine:confluence-1.0
-          imagePullPolicy: Always
-          command: ["/bin/bash", "-c", "/tmp/init-script.sh"]
-          volumeMounts:
-            - name: "local-home"
-              mountPath: /var/atlassian/application-data/confluence/
-            - name: "shared-home"
-              mountPath: /var/atlassian/confluence-datacenter/
-            - name: "init-script"
-              mountPath: /tmp
-          env:
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: CONFLUENCE_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: CONFLUENCE_SERVICE_NAME
-              value: confluence
-            - name: CONFLUENCE_HOME
-              value: /var/atlassian/application-data/confluence
-initcontainervolumes:
-        - name: init-script
-          configMap:
-            name: init-script
-            defaultMode: 0744
+additionalInitContainers: [] 
 
 
 # -- Additional labels that should be applied to all resources
 additionalLabels: {}
 
 # Big Bang Additions
-proxyName: confluence.dev.dsop.io
-hostname: dev.dsop.io
+proxyName:
+## This is domain name as per chat from bigbang 
+hostname: 
 istio:
-  enabled: true
+  enabled: false
 monitoring:
   # -- This will enable monitoring via Prometheus.  In order for this to work, the Prometheus monitoring plugin needs to be installed via the Confluence UI
   # -- ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview
