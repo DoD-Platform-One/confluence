@@ -26,4 +26,6 @@ spec:
           STATUS=$(curl -s "$STATUS_URL")
           echo "Verifying application state is RUNNING or FIRST_RUN: $STATUS"
           echo $STATUS | jq -e '.state|test("RUNNING|FIRST_RUN")'
+    imagePullSecrets:
+    - name: private-registry
   restartPolicy: Never
