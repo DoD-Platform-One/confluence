@@ -11,7 +11,8 @@ metadata:
   labels:
     {{- include "confluence.labels" . | nindent 4 }}
 spec:
-  serviceAccountName: {{ include "confluence.serviceAccountName" . }}
+  imagePullSecrets:
+  - name: private-registry
   containers:
     - name: test
       image: registry1.dso.mil/ironbank/redhat/ubi/ubi7:7.9
