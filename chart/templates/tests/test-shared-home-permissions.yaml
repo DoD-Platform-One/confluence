@@ -11,6 +11,7 @@ metadata:
   labels:
     {{- include "confluence.labels" . | nindent 4 }}
 spec:
+  serviceAccountName: {{ include "confluence.serviceAccountName" . }}
   containers:
     - name: test
       image: registry1.dso.mil/ironbank/redhat/ubi/ubi7:7.9
@@ -34,8 +35,6 @@ spec:
           touch /shared-home/permissions-test
           ls -l /shared-home/permissions-test
           rm /shared-home/permissions-test
-    imagePullSecrets:
-    - name: private-registry
   volumes:
     {{ include "confluence.volumes.sharedHome" . | nindent 4 }}
   restartPolicy: Never

@@ -11,6 +11,7 @@ metadata:
   labels:
     {{- include "confluence.labels" . | nindent 4 }}
 spec:
+  serviceAccountName: {{ include "confluence.serviceAccountName" . }}
   containers:
     - name: test
       image: registry1.dso.mil/ironbank/redhat/ubi/ubi7:7.9
@@ -26,6 +27,5 @@ spec:
           STATUS=$(curl -s "$STATUS_URL")
           echo "Verifying application state is RUNNING or FIRST_RUN: $STATUS"
           echo $STATUS | jq -e '.state|test("RUNNING|FIRST_RUN")'
-    imagePullSecrets:
-    - name: private-registry
+  
   restartPolicy: Never
