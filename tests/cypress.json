@@ -1,0 +1,10 @@
+{
+ 
+  "pluginsFile": false,
+  "supportFile": false,
+  "fixturesFolder": false,
+  "env": {
+    "confluence_url": "https://confluence.bigbang.dev"
+  }
+}
+
