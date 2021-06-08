@@ -14,7 +14,7 @@ spec:
   containers:
     - name: test
       image: registry1.dso.mil/ironbank/redhat/ubi/ubi7:7.9
-      imagePullPolicy: private-registry
+      imagePullPolicy: IfNotPresent 
       env:
         - name: STATUS_URL
           value: "http://{{ include "confluence.fullname" . }}:{{ .Values.confluence.service.port }}/status"

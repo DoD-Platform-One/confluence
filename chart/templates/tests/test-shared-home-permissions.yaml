@@ -14,7 +14,7 @@ spec:
   containers:
     - name: test
       image: registry1.dso.mil/ironbank/redhat/ubi/ubi7:7.9
-      imagePullPolicy: private-registry
+      imagePullPolicy: IfNotPresent
       securityContext:
         # Slightly dodgy; we assume that the UID and GID used by the product images are the same, which in practice they are
         runAsUser: {{ .Values.confluence.gid }}
