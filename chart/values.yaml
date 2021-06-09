@@ -279,7 +279,7 @@ additionalLabels: {}
 # Big Bang Additions
 proxyName:
 ## This is domain name as per chat from bigbang 
-hostname: 
+hostname: bigbang.dev
 istio:
   enabled: false
 monitoring:
