@@ -4,7 +4,7 @@
   "supportFile": false,
   "fixturesFolder": false,
   "env": {
-    "confluence_url": "http://confluence"
+    "confluence_url": "http://confluence.confluence.svc.cluster.local"
   }
 }
 
