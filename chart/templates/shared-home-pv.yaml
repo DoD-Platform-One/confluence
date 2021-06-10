@@ -17,6 +17,6 @@ spec:
     name: {{ include "confluence.fullname" . }}-shared-home
     namespace: {{ .Release.Namespace }}
   csi:
-    driver: efs.csi.aws.com
+    driver: {{ .Values.volumes.sharedHome.driver }}
     volumeHandle: {{ .Values.volumes.sharedHome.efsid }}
 {{ end }}

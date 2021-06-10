@@ -226,7 +226,8 @@ volumes:
           storage: 
     # -- If AWS efs is utilized, please make efs true and put id of efs volume to create pv
     efs: 
-    efsid: 
+    efsid:
+    driver: efs.csi.aws.com 
     # -- When persistentVolumeClaim.create is false, then this value can be used to define a standard Kubernetes
     # volume which will be used for the shared-home volume. If not defined, then defaults to an emptyDir (i.e. unshared) volume.
     customVolume: {}
