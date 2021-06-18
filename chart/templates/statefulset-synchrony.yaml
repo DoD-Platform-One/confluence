@@ -22,10 +22,15 @@ spec:
     spec:
       serviceAccountName: {{ include "confluence.serviceAccountName" . }}
       terminationGracePeriodSeconds: 1
+      securityContext:
+        fsGroup: {{ .Values.confluence.gid }}
       containers:
         - name: synchrony
-          image: {{ include "confluence.image" . | quote }}
+          image: {{ .Values.image.repository }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            runAsUser: {{ .Values.confluence.gid }}
+            runAsGroup: {{ .Values.confluence.gid }}
           command: ["/scripts/start-synchrony.sh"]
           volumeMounts:
             - mountPath: /scripts
