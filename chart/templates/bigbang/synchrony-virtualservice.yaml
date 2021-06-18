@@ -9,7 +9,9 @@ spec:
   hosts:
   - synchrony.{{ .Values.hostname }}
   gateways:
-  - {{ .Values.istio.gateway }}
+  {{- range .Values.istio.gateways }}
+    - {{ . }}
+  {{- end }}
   http:
   - match:
     - uri:

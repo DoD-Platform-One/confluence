@@ -283,7 +283,9 @@ proxyName:
 hostname: bigbang.dev
 istio:
   enabled: false
-  gateway: istio-system/main
+  gateways: 
+  - istio-system/main
+
 monitoring:
   # -- This will enable monitoring via Prometheus.  In order for this to work, the Prometheus monitoring plugin needs to be installed via the Confluence UI
   # -- ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview
