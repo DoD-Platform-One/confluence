@@ -15,6 +15,20 @@ spec:
   http:
   - match:
     - uri:
+        prefix: /synchrony
+    route:
+    - destination:
+        host: {{ include "synchrony.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+        port:
+          number: {{ .Values.synchrony.service.port }}
+      headers:
+        request:
+          remove:
+            - x-b3-sampled
+          add:
+            x-b3-sampled: '0'
+  - match:
+    - uri:
         prefix: /
     route:
     - destination:
