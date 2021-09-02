@@ -103,7 +103,6 @@ app.kubernetes.io/Appversion: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/component: "collaboration"
 app.kubernetes.io/part-of: "bigbang"
-app.kubernetes.io/managed-by: "flux"
 app.kubernetes.io/bigbang-version: {{ .Chart.Version | quote }}
 {{ with .Values.additionalLabels }}
 {{- toYaml . }}
