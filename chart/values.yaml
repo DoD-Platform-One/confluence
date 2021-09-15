@@ -5,12 +5,12 @@ replicaCount: 1
 
 image:
   # repository: atlassian/confluence-server
-  repository: registry.dso.mil/platform-one/big-bang/apps/third-party/confluence/confluence-server:7.4.8
+  repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node
   # -- Optional image repository pull secret
   imagePullSecrets: private-registry
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
-  tag: "7.9.0-jdk11"
+  tag: "7.13.0"
 
 serviceAccount:
   # -- Specifies the name of the ServiceAccount to be used by the pods.
