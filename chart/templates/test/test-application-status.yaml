@@ -15,7 +15,7 @@ spec:
   - name: private-registry
   containers:
     - name: test
-      image: registry1.dso.mil/ironbank/redhat/ubi/ubi7:7.9
+      image: registry1.dso.mil/ironbank/big-bang/base:8.4
       imagePullPolicy: IfNotPresent 
       env:
         - name: STATUS_URL
@@ -24,7 +24,6 @@ spec:
         - /bin/sh
         - -ec
         - |
-          apk add -q jq curl
           STATUS=$(curl -s "$STATUS_URL")
           echo "Verifying application state is RUNNING or FIRST_RUN: $STATUS"
           echo $STATUS | jq -e '.state|test("RUNNING|FIRST_RUN")'
