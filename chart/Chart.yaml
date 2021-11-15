@@ -14,3 +14,7 @@ home: https://github.com/atlassian-labs/data-center-helm-charts
 sources:
   - https://github.com/atlassian-labs/data-center-helm-charts
 deprecated: false
+dependencies:
+- name: gluon
+  version: "0.2.4"
+  repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
