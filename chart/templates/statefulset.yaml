@@ -35,7 +35,7 @@ spec:
         {{- end }}
       containers:
         - name: confluence
-          image: {{ .Values.image.repository }}
+          image: {{ include "confluence.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             runAsUser: {{ .Values.confluence.gid }}
