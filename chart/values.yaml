@@ -146,6 +146,9 @@ confluence:
     - name: "server-xml"
       mountPath: /opt/atlassian/confluence/conf/server.xml
       subPath: server.xml
+    - mountPath: /opt/atlassian/confluence/confluence/decorators/includes/footer-content.vm
+      name: footer-content-vm
+      subPath: footer-content.vm
 
   # -- Defines any additional environment variables to be passed to the Confluence container.
   # See https://hub.docker.com/r/atlassian/confluence-server for supported variables.
@@ -256,6 +259,10 @@ volumes:
     - name: server-xml
       configMap:
         name: server-xml
+        defaultMode: 0744
+    - name: footer-content-vm
+      configMap:
+        name: footer-content-vm
         defaultMode: 0744
 
 # -- Standard Kubernetes node-selectors that will be applied to all Confluence and Synchrony pods
