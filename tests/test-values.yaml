@@ -4,14 +4,3 @@ serviceAccount:
 
 bbtests:
   enabled: true
-  cypress:
-    artifacts: true
-    envs:
-      cypress_url: 'http://{{ include "confluence.fullname" . }}:{{ .Values.confluence.service.port }}/setup/setuplicense.action'
-    resources:
-      requests:
-        cpu: "1"
-        memory: "1Gi"
-      limits:
-        cpu: "1"
-        memory: "1Gi"

@@ -297,3 +297,18 @@ monitoring:
   # -- This will enable monitoring via Prometheus.  In order for this to work, the Prometheus monitoring plugin needs to be installed via the Confluence UI
   # -- ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview
   enabled: false
+
+# Values for bigbang helm tests
+bbtests:
+  enabled: false
+  cypress:
+    artifacts: true
+    envs:
+      cypress_url: 'http://{{ include "confluence.fullname" . }}:{{ .Values.confluence.service.port }}/setup/setuplicense.action'
+    resources:
+      requests:
+        cpu: "1"
+        memory: "1Gi"
+      limits:
+        cpu: "1"
+        memory: "1Gi"
