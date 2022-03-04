@@ -6,7 +6,7 @@
     "dependencyDashboardTitle": "Renovate: Upgrade Confluence Package Dependencies",
     "draftPR": true,
     "ignorePaths": ["chart/charts/**"],
-    "labels": ["confluence","Package Sustainment","kind::chore"],
+    "labels": ["confluence","Package Sustainment","kind::maintenance"],
     "packageRules": [
         {
             "matchDatasources": ["docker"],
