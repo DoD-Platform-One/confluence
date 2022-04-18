@@ -10,7 +10,7 @@ spec:
     matchLabels:
       {{- include "confluence.selectorLabels" . | nindent 6 }}
   endpoints:
-  - port: {{ .Values.confluence.service.port }}
+  - port: {{ .Values.confluence.service.port | quote }}
     interval: 30s
     scheme: http
     path: "/plugins/servlet/prometheus/metrics"
