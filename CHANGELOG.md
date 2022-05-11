@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [0.1.0-bb.15] - 2022-05-10
+### Added
+- Horizontal pod scaling yaml added with Value file update
+
 ## [0.1.0-bb.14] - 2022-04-18
 ### Fixed
 - serviceMonitor for confluence by adding quote for endpoint port
