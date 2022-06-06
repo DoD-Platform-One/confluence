@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 0.1.0-bb.17](https://img.shields.io/badge/Version-0.1.0--bb.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.17.1](https://img.shields.io/badge/AppVersion-7.17.1-informational?style=flat-square)
+![Version: 0.1.0-bb.18](https://img.shields.io/badge/Version-0.1.0--bb.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.17.1](https://img.shields.io/badge/AppVersion-7.17.1-informational?style=flat-square)
 
 A chart for installing Confluence DC on Kubernetes
 
@@ -120,10 +120,11 @@ helm install confluence chart/
 | additionalInitContainers | list | `[]` | Additional initContainer definitions that will be added to all Confluence pods |
 | additionalLabels | object | `{}` | Additional labels that should be applied to all resources |
 | proxyName | string | `nil` |  |
+| hostnamePrefix | string | `"confluence"` |  |
 | hostname | string | `"bigbang.dev"` |  |
 | istio.enabled | bool | `false` |  |
 | istio.gateways[0] | string | `"istio-system/main"` |  |
-| monitoring.enabled | bool | `false` | ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview |
+| monitoring.enabled | bool | `false` | This will enable monitoring via Prometheus.  In order for this to work, the Prometheus monitoring plugin needs to be installed via the Confluence UI -- ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview |
 | bbtests.enabled | bool | `false` |  |
 | bbtests.cypress.artifacts | bool | `true` |  |
 | bbtests.cypress.envs.cypress_url | string | `"http://{{ include \"confluence.fullname\" . }}:{{ .Values.confluence.service.port }}/setup/setuplicense.action"` |  |
@@ -140,4 +141,4 @@ helm install confluence chart/
 
 ## Contributing
 
-Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
+Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing. 

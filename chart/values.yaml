@@ -286,6 +286,8 @@ additionalLabels: {}
 
 # Big Bang Additions
 proxyName:
+## hostnamePrefix added to allow custom configuration of entire hostname
+hostnamePrefix: confluence
 ## This is domain name as per chat from bigbang 
 hostname: bigbang.dev
 istio:
