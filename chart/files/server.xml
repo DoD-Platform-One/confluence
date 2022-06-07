@@ -69,6 +69,14 @@
           <Valve className="org.apache.catalina.valves.StuckThreadDetectionValve"
                  threshold="60"/>
         
+          <Valve className="org.apache.catalina.valves.AccessLogValve"
+                 requestAttributesEnabled="true"
+                 maxDays="10"
+                 directory="logs"
+                 prefix="confluence_access"
+                 suffix=".log"
+                 rotatable="true"
+                 pattern="%h %{X-AUSERNAME}o %t &quot;%r&quot; %s %b %D %U %I &quot;%{User-Agent}i&quot;" />
         </Context>
 
         <Context path="${confluence.context.path}/synchrony-proxy"
