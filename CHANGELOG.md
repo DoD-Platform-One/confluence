@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [0.1.0-bb.18] - 2022-06-08
+### Update
+- Hostname and synchrony updates to BB VirtualService
+
 ## [0.1.0-bb.17] - 2022-06-07
 ### Changed
 - Enable user access logs by default in server.xml

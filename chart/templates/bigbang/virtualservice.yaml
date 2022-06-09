@@ -7,12 +7,13 @@ metadata:
     {{- include "confluence.labels" . | nindent 4 }}
 spec:
   hosts:
-  - confluence.{{ .Values.hostname }}
+  - {{ .Values.hostnamePrefix }}.{{ .Values.hostname }}
   gateways:
   {{- range .Values.istio.gateways }}
     - {{ . }}
   {{- end }}
   http:
+  {{- if .Values.synchrony.enabled }}
   - match:
     - uri:
         prefix: /synchrony
@@ -27,6 +28,7 @@ spec:
             - x-b3-sampled
           add:
             x-b3-sampled: '0'
+  {{- end }}
   - match:
     - uri:
         prefix: /
