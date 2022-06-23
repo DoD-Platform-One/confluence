@@ -2,8 +2,8 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence DC on Kubernetes
 type: application
-version: 0.1.0-bb.18
-appVersion: 7.17.1
+version: 0.1.0-bb.19
+appVersion: 7.18.1
 kubeVersion: ">=1.17.x-0"
 keywords:
   - Confluence
@@ -16,5 +16,5 @@ sources:
 deprecated: false
 dependencies:
 - name: gluon
-  version: "0.2.9"
+  version: "0.2.10"
   repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
