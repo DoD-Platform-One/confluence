@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 0.1.0-bb.18](https://img.shields.io/badge/Version-0.1.0--bb.18-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.17.1](https://img.shields.io/badge/AppVersion-7.17.1-informational?style=flat-square)
+![Version: 0.1.0-bb.19](https://img.shields.io/badge/Version-0.1.0--bb.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.18.1](https://img.shields.io/badge/AppVersion-7.18.1-informational?style=flat-square)
 
 A chart for installing Confluence DC on Kubernetes
 
@@ -41,7 +41,7 @@ helm install confluence chart/
 | image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node"` |  |
 | image.imagePullSecrets | string | `"private-registry"` | Optional image repository pull secret |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.tag | string | `"7.17.1"` | The docker image tag to be used. Defaults to the Chart appVersion. |
+| image.tag | string | `"7.18.1"` | The docker image tag to be used. Defaults to the Chart appVersion. |
 | serviceAccount.name | string | `nil` | Specifies the name of the ServiceAccount to be used by the pods. If not specified, but the the "serviceAccount.create" flag is set, then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. |
 | serviceAccount.create | bool | `true` | true if a ServiceAccount should be created, or false if it already exists |
 | serviceAccount.imagePullSecrets | list | `[]` | The list of image pull secrets that should be added to the created ServiceAccount |
