@@ -15,7 +15,7 @@ spec:
   - name: private-registry
   containers:
     - name: test
-      image: registry1.dso.mil/ironbank/big-bang/base:8.4
+      image: {{ .Values.helmTestImage }}
       imagePullPolicy: IfNotPresent
       securityContext:
         # Slightly dodgy; we assume that the UID and GID used by the product images are the same, which in practice they are

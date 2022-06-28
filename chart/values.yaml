@@ -314,6 +314,10 @@ bbtests:
       limits:
         cpu: "1"
         memory: "1Gi"
+
+# -- Image used for the upstream provided helm tests
+helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.0.0"
+
 hpa:
   enabled: false
   maxReplicas: 4
