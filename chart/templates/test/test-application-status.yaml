@@ -15,7 +15,7 @@ spec:
   - name: private-registry
   containers:
     - name: test
-      image: registry1.dso.mil/ironbank/big-bang/base:8.4
+      image: {{ .Values.helmTestImage }}
       imagePullPolicy: IfNotPresent 
       env:
         - name: STATUS_URL

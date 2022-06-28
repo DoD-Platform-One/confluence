@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 0.1.0-bb.19](https://img.shields.io/badge/Version-0.1.0--bb.19-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.18.1](https://img.shields.io/badge/AppVersion-7.18.1-informational?style=flat-square)
+![Version: 0.1.0-bb.20](https://img.shields.io/badge/Version-0.1.0--bb.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.18.1](https://img.shields.io/badge/AppVersion-7.18.1-informational?style=flat-square)
 
 A chart for installing Confluence DC on Kubernetes
 
@@ -124,7 +124,7 @@ helm install confluence chart/
 | hostname | string | `"bigbang.dev"` |  |
 | istio.enabled | bool | `false` |  |
 | istio.gateways[0] | string | `"istio-system/main"` |  |
-| monitoring.enabled | bool | `false` | This will enable monitoring via Prometheus.  In order for this to work, the Prometheus monitoring plugin needs to be installed via the Confluence UI -- ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview |
+| monitoring.enabled | bool | `false` | ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview |
 | bbtests.enabled | bool | `false` |  |
 | bbtests.cypress.artifacts | bool | `true` |  |
 | bbtests.cypress.envs.cypress_url | string | `"http://{{ include \"confluence.fullname\" . }}:{{ .Values.confluence.service.port }}/setup/setuplicense.action"` |  |
@@ -132,6 +132,7 @@ helm install confluence chart/
 | bbtests.cypress.resources.requests.memory | string | `"1Gi"` |  |
 | bbtests.cypress.resources.limits.cpu | string | `"1"` |  |
 | bbtests.cypress.resources.limits.memory | string | `"1Gi"` |  |
+| helmTestImage | string | `"registry1.dso.mil/ironbank/big-bang/base:2.0.0"` | Image used for the upstream provided helm tests |
 | hpa.enabled | bool | `false` |  |
 | hpa.maxReplicas | int | `4` |  |
 | hpa.cpu | int | `70` |  |
@@ -141,4 +142,4 @@ helm install confluence chart/
 
 ## Contributing
 
-Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing. 
+Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
