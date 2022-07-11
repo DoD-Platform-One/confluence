@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 0.1.0-bb.20](https://img.shields.io/badge/Version-0.1.0--bb.20-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.18.1](https://img.shields.io/badge/AppVersion-7.18.1-informational?style=flat-square)
+![Version: 0.1.0-bb.21](https://img.shields.io/badge/Version-0.1.0--bb.21-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.18.1](https://img.shields.io/badge/AppVersion-7.18.1-informational?style=flat-square)
 
 A chart for installing Confluence DC on Kubernetes
 
@@ -69,6 +69,10 @@ helm install confluence chart/
 | confluence.readinessProbe.initialDelaySeconds | int | `10` | The initial delay (in seconds) for the Confluence container readiness probe, after which the probe will start running |
 | confluence.readinessProbe.periodSeconds | int | `5` | How often (in seconds) the Confluence container readiness robe will run |
 | confluence.readinessProbe.failureThreshold | int | `30` | The number of consecutive failures of the Confluence container readiness probe before the pod fails readiness checks |
+| confluence.livenessProbe.enabled | bool | `false` | Set to 'true' to enable the liveness probe on Confluence containers.  |
+| confluence.livenessProbe.initialDelaySeconds | int | `10` | The initial delay (in seconds) for the Confluence container liveness probe, after which the probe will start running.  |
+| confluence.livenessProbe.periodSeconds | int | `5` | How often (in seconds) the Confluence container liveness probe will run  |
+| confluence.livenessProbe.failureThreshold | int | `12` | The number of consecutive failures of the Confluence container liveness probe before the pod fails liveness checks.  |
 | confluence.clustering.enabled | bool | `false` | Set to true if Data Center clustering should be enabled This will automatically configure cluster peer discovery between cluster nodes. |
 | confluence.resources.jvm.maxHeap | string | `"1g"` | The maximum amount of heap memory that will be used by the Confluence JVM |
 | confluence.resources.jvm.minHeap | string | `"1g"` | The minimum amount of heap memory that will be used by the Confluence JVM |

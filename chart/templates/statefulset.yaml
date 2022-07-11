@@ -60,6 +60,15 @@ spec:
             initialDelaySeconds: {{ .Values.confluence.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.confluence.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.confluence.readinessProbe.failureThreshold }}
+          {{- if .Values.confluence.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              port: {{ .Values.confluence.ports.http }}
+              path: /status
+            initialDelaySeconds: {{ .Values.confluence.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.confluence.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.confluence.livenessProbe.failureThreshold }}
+          {{- end }}
           {{- with .Values.confluence.resources.container }}
           resources:
           {{- toYaml . | nindent 12 }}

@@ -90,6 +90,18 @@ confluence:
     # -- The number of consecutive failures of the Confluence container readiness probe before the pod fails readiness checks
     failureThreshold: 30
 
+  # Confirm that Confluence is up and running with a Liveness
+  # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command
+  #
+  livenessProbe:
+    enabled: false
+    # -- The initial delay (in seconds) for the Confluence container liveness probe,
+    initialDelaySeconds: 300
+    # -- How often (in seconds) the Confluence container liveness probe will run
+    periodSeconds: 5
+    # -- The number of consecutive failures of the Confluence container liveness probe
+    failureThreshold: 12
+
   clustering:
     # -- Set to true if Data Center clustering should be enabled
     # This will automatically configure cluster peer discovery between cluster nodes.
