@@ -1,20 +1,39 @@
 apiVersion: v2
 name: confluence
-description: A chart for installing Confluence DC on Kubernetes
+description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 0.1.0-bb.21
-appVersion: 7.18.1
-kubeVersion: ">=1.17.x-0"
+version: 1.5.1-bb.0
+appVersion: 7.19.0
+kubeVersion: ">=1.19.x-0"
 keywords:
   - Confluence
   - Confluence Server
   - Confluence Data Center
+  - Confluence DC
   - Atlassian
-home: https://github.com/atlassian-labs/data-center-helm-charts
+home: https://atlassian.github.io/data-center-helm-charts/
+icon: https://atlassian.github.io/data-center-helm-charts/icons/confluence.svg
 sources:
-  - https://github.com/atlassian-labs/data-center-helm-charts
+  - https://github.com/atlassian/data-center-helm-charts
+  - https://bitbucket.org/atlassian-docker/docker-atlassian-confluence-server/
 deprecated: false
+annotations:
+  artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/changes: |
+     - kind: changed
+       description: Fixed Confluence when Synchrony is enabled
+       links:
+       - name: Github PR
+         url: https://github.com/atlassian/data-center-helm-charts/pull/443
+     - kind: changed
+      description: Confluence updated to 7.19.0 version
+      links:
+      - name: Github PR
+        url: https://github.com/atlassian/data-center-helm-charts/pull/445
 dependencies:
-- name: gluon
-  version: "0.2.10"
-  repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
+  - name: common
+    version: 1.0.0
+    repository: https://atlassian.github.io/data-center-helm-charts
+  - name: gluon
+    version: "0.3.0"
+    repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"

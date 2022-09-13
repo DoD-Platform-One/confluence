@@ -13,17 +13,19 @@ spec:
       {{- include "synchrony.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/config-jvm: {{ include (print $.Template.BasePath "/synchrony-start-script.yaml") . | sha256sum }}
+        {{- include "confluence.podAnnotations" . | nindent 8 }}
       labels:
         {{- include "synchrony.selectorLabels" . | nindent 8 }}
+        {{- include "confluence.podLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "confluence.serviceAccountName" . }}
-      terminationGracePeriodSeconds: 1
+      terminationGracePeriodSeconds: {{ .Values.synchrony.shutdown.terminationGracePeriodSeconds }}
       securityContext:
         fsGroup: {{ .Values.confluence.gid }}
+      hostAliases:
+        {{- include "confluence.additionalHosts" . | nindent 8 }}
       containers:
         - name: synchrony
           image: {{ include "confluence.image" . | quote }}
@@ -33,6 +35,9 @@ spec:
             runAsGroup: {{ .Values.confluence.gid }}
           command: ["/scripts/start-synchrony.sh"]
           volumeMounts:
+            {{- include "synchrony.volumeMounts" . | nindent 12 }}
+            {{- include "synchrony.additionalVolumeMounts" . | nindent 12 }}
+            {{- include "synchrony.additionalLibraries" . | nindent 12 }}
             - mountPath: /scripts
               name: entrypoint-script
           ports:
@@ -42,6 +47,7 @@ spec:
             - name: hazelcast
               containerPort: {{ .Values.synchrony.ports.hazelcast }}
               protocol: TCP
+            {{- include "synchrony.additionalPorts" . | nindent 12 }}
           readinessProbe:
             httpGet:
               port: {{ .Values.synchrony.ports.http }}
@@ -49,13 +55,23 @@ spec:
             initialDelaySeconds: {{ .Values.synchrony.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.synchrony.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.synchrony.readinessProbe.failureThreshold }}
+          {{- with .Values.synchrony.resources.container }}
+          resources:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
+            - name: SET_PERMISSIONS
+              value: {{ .Values.synchrony.setPermissions | quote }}
             - name: SYNCHRONY_BIND
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
             - name: SYNCHRONY_SERVICE_URL
-              value: {{ .Values.synchrony.ingressUrl | quote }}
+            {{ if .Values.ingress.https }}
+              value: "https://{{ .Values.ingress.host }}/synchrony"
+            {{ else }}
+              value: "http://{{ .Values.ingress.host }}/synchrony"
+            {{- end }}
             {{- include "synchrony.databaseEnvVars" . | nindent 12 }}
             {{- include "synchrony.clusteringEnvVars" . | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -70,9 +86,15 @@ spec:
       tolerations:
       {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.synchrony.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: entrypoint-script
           configMap:
             name: {{ include "synchrony.fullname" . }}-entrypoint
             defaultMode: 0744
+        {{ include "synchrony.volumes" . | nindent 8 }}
+  {{ include "synchrony.volumeClaimTemplates" . | nindent 2 }}
 {{ end }}

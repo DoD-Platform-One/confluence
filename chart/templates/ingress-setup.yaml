@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "common.names.fullname" . }}
+  name: {{ include "common.names.fullname" . }}-setup
   labels:
     {{- include "common.labels.commonLabels" . | nindent 4 }}
   annotations:
@@ -11,9 +11,9 @@ metadata:
     "nginx.ingress.kubernetes.io/affinity": "cookie"
     "nginx.ingress.kubernetes.io/affinity-mode": "persistent"
     "nginx.ingress.kubernetes.io/proxy-body-size": {{ .Values.ingress.maxBodySize }}
-    "nginx.ingress.kubernetes.io/proxy-connect-timeout": {{ .Values.ingress.proxyConnectTimeout|quote }}
-    "nginx.ingress.kubernetes.io/proxy-read-timeout": {{ .Values.ingress.proxyReadTimeout|quote }}
-    "nginx.ingress.kubernetes.io/proxy-send-timeout": {{ .Values.ingress.proxySendTimeout|quote }}
+    "nginx.ingress.kubernetes.io/proxy-connect-timeout": "300"
+    "nginx.ingress.kubernetes.io/proxy-read-timeout": "300"
+    "nginx.ingress.kubernetes.io/proxy-send-timeout": "300"
     {{- end }}
     {{- with .Values.ingress.annotations }}
   {{- toYaml . | nindent 4 }}
@@ -29,20 +29,18 @@ spec:
     - host: {{ .Values.ingress.host }}
       http:
         paths:
-          - path: {{ include "confluence.ingressPath" . }}
+          - path: {{ trimSuffix "/" (include "confluence.ingressPath" .) }}/setup
             pathType: Prefix
             backend:
               service:
                 name: {{ include "common.names.fullname" . }}
                 port:
                   number: {{ $.Values.confluence.service.port }}
-          {{ if .Values.synchrony.enabled }}
-          - path: /synchrony
+          - path: {{ trimSuffix "/" (include "confluence.ingressPath" .) }}/bootstrap
             pathType: Prefix
             backend:
               service:
-                name: {{ include "synchrony.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
                 port:
-                  number: {{ $.Values.synchrony.service.port }}
-          {{ end }}
+                  number: {{ $.Values.confluence.service.port }}
 {{ end }}

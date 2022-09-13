@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "confluence.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   labels:
-    {{- include "confluence.labels" . | nindent 4 }}
+    {{- include "common.labels.commonLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  serviceName: {{ include "confluence.fullname" . }}
+  serviceName: {{ include "common.names.fullname" . }}
   selector:
     matchLabels:
-      {{- include "confluence.selectorLabels" . | nindent 6 }}
+      {{- include "common.labels.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -17,7 +17,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "confluence.selectorLabels" . | nindent 8 }}
+        {{- include "common.labels.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "confluence.serviceAccountName" . }}
       terminationGracePeriodSeconds: 1
@@ -28,6 +28,24 @@ spec:
       {{- with .Values.additionalInitContainers }}
       initContainers:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      hostAliases:
+        {{- include "confluence.additionalHosts" . | nindent 8 }}
+      initContainers:
+        {{- include "confluence.additionalInitContainers" . | nindent 8 }}
+        {{- if .Values.volumes.sharedHome.nfsPermissionFixer.enabled }}
+        - name: nfs-permission-fixer
+          image: alpine
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 0 # make sure we run as root so we get the ability to change the volume permissions
+          volumeMounts:
+            - name: shared-home
+              mountPath: {{ .Values.volumes.sharedHome.nfsPermissionFixer.mountPath | quote }}
+              {{- if .Values.volumes.sharedHome.subPath }}
+              subPath: {{ .Values.volumes.sharedHome.subPath | quote }}
+              {{- end }}
+          command: ["sh", "-c", {{ include "sharedHome.permissionFix.command" . | quote }}]
       {{- end }}
       imagePullSecrets:
         {{- if .Values.image.imagePullSecrets }}
@@ -99,7 +117,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: additional_jvm_args
-                  name: {{ include "confluence.fullname" . }}-jvm-config
+                  name: {{ include "common.names.fullname" . }}-jvm-config
             {{- include "confluence.clusteringEnvVars" . | nindent 12 }}
             {{- include "confluence.databaseEnvVars" . | nindent 12 }}
             {{ with .Values.confluence.license.secretName }}
@@ -113,17 +131,17 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: min_heap
-                  name: {{ include "confluence.fullname" . }}-jvm-config
+                  name: {{ include "common.names.fullname" . }}-jvm-config
             - name: JVM_MAXIMUM_MEMORY
               valueFrom:
                 configMapKeyRef:
                   key: max_heap
-                  name: {{ include "confluence.fullname" . }}-jvm-config
+                  name: {{ include "common.names.fullname" . }}-jvm-config
             - name: JVM_RESERVED_CODE_CACHE_SIZE
               valueFrom:
                 configMapKeyRef:
                   key: reserved_code_cache
-                  name: {{ include "confluence.fullname" . }}-jvm-config
+                  name: {{ include "common.names.fullname" . }}-jvm-config
             {{- with .Values.confluence.additionalEnvironmentVariables }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -148,4 +166,5 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
 
+        {{ include "fluentd.config.volume" . | nindent 8 }}
   {{ include "confluence.volumeClaimTemplates" . | nindent 2 }}

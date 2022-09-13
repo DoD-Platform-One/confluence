@@ -1,50 +1,25 @@
 {{/* vim: set filetype=mustache: */}}
 {{/*
-Expand the name of the chart.
+Create default value for ingress port
 */}}
-{{- define "confluence.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- define "confluence.ingressPort" -}}
+{{ default (ternary "443" "80" .Values.ingress.https) .Values.ingress.port -}}
 {{- end }}
 
 {{/*
 The name the synchrony app within the chart.
-TODO: This will break if the confluence.name exceeds 63 characters, need to find a more rebust way to do this
+TODO: This will break if the common.names.name exceeds 63 characters, need to find a more rebust way to do this
 */}}
 {{- define "synchrony.name" -}}
-{{ include "confluence.name" . }}-synchrony
-{{- end }}
-
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "confluence.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
+{{ include "common.names.name" . }}-synchrony
 {{- end }}
 
 {{/*
 The full-qualfied name of the synchrony app within the chart.
-TODO: This will break if the confluence.fullname exceeds 63 characters, need to find a more rebust way to do this
+TODO: This will break if the common.names.fullname exceeds 63 characters, need to find a more rebust way to do this
 */}}
 {{- define "synchrony.fullname" -}}
-{{ include "confluence.fullname" . }}-synchrony
-{{- end }}
-
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
-{{- define "confluence.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{ include "common.names.fullname" . }}-synchrony
 {{- end }}
 
 {{/*
@@ -58,7 +33,7 @@ else just use the "default" service account.
 {{- .Values.serviceAccount.name -}}
 {{- else -}}
 {{- if .Values.serviceAccount.create -}}
-{{- include "confluence.fullname" . -}}
+{{- include "common.names.fullname" . -}}
 {{- else -}}
 default
 {{- end -}}
@@ -74,7 +49,7 @@ else use the name of the Helm release.
 {{- if .Values.serviceAccount.clusterRole.name }}
 {{- .Values.serviceAccount.clusterRole.name }}
 {{- else }}
-{{- include "confluence.fullname" . -}}
+{{- include "common.names.fullname" . -}}
 {{- end }}
 {{- end }}
 
@@ -92,28 +67,10 @@ else use the name of the ClusterRole.
 {{- end }}
 
 {{/*
-These labels will be applied to all Confluence (non-Synchrony) resources in the chart
-*/}}
-{{- define "confluence.labels" -}}
-helm.sh/chart: {{ include "confluence.chart" . }}
-{{ include "confluence.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/Appversion: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/component: "collaboration"
-app.kubernetes.io/part-of: "bigbang"
-app.kubernetes.io/bigbang-version: {{ .Chart.Version | quote }}
-{{ with .Values.additionalLabels }}
-{{- toYaml . }}
-{{- end }}
-{{- end }}
-
-{{/*
 These labels will be applied to all Synchrony resources in the chart
 */}}
 {{- define "synchrony.labels" -}}
-helm.sh/chart: {{ include "confluence.chart" . }}
+helm.sh/chart: {{ include "common.names.chart" . }}
 {{ include "synchrony.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -128,7 +85,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels for finding Confluence (non-Synchrony) resources
 */}}
 {{- define "confluence.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "confluence.name" . }}
+app.kubernetes.io/name: {{ include "common.names.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
@@ -140,30 +97,84 @@ app.kubernetes.io/name: {{ include "synchrony.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{/*
+Pod labels
+*/}}
+{{- define "confluence.podLabels" -}}
+{{ with .Values.podLabels }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
 {{- define "confluence.sysprop.hazelcastListenPort" -}}
 -Dconfluence.cluster.hazelcast.listenPort={{ .Values.confluence.ports.hazelcast }}
 {{- end }}
 
+{{- define "confluence.sysprop.clusterNodeName" -}}
+-Dconfluence.clusterNodeName.useHostname={{ .Values.confluence.clustering.usePodNameAsClusterNodeName }}
+{{- end }}
+
+{{- define "confluence.sysprop.fluentdAppender" -}}
+-Datlassian.logging.cloud.enabled={{.Values.fluentd.enabled}}
+{{- end }}
+
+{{- define "confluence.sysprop.debug" -}}
+{{- if .Values.confluence.jvmDebug.enabled }} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 {{ end -}}
+{{- end }}
+
+{{- define "confluence.sysprop.enable.synchrony.by.default" -}}
+-Dsynchrony.by.default.enable.collab.editing.if.manually.managed=true
+{{- end -}}
+
 {{- define "confluence.sysprop.synchronyServiceUrl" -}}
 {{- if .Values.synchrony.enabled -}}
--Dsynchrony.service.url={{ .Values.synchrony.ingressUrl }}/v1
+    {{- if .Values.ingress.https -}}-Dsynchrony.service.url=https://{{ .Values.ingress.host }}/synchrony/v1
+    {{- else }}-Dsynchrony.service.url=http://{{ .Values.ingress.host }}/synchrony/v1
+    {{- end }}
 {{- else -}}
 -Dsynchrony.btf.disabled=false
 {{- end -}}
-{{- end }}
+{{- end -}}
 
-{{- define "confluence.sysprop.disableHomeLogAppender" -}}
--DConfluenceHomeLogAppender.disabled=true
+{{/*
+Create default value for ingress path
+*/}}
+{{- define "confluence.ingressPath" -}}
+{{- if .Values.ingress.path -}}
+{{- .Values.ingress.path -}}
+{{- else -}}
+{{ default ( "/" ) .Values.confluence.service.contextPath -}}
+{{- end }}
 {{- end }}
 
 {{/*
 The command that should be run by the nfs-fixer init container to correct the permissions of the shared-home root directory.
 */}}
 {{- define "sharedHome.permissionFix.command" -}}
-{{- if .Values.volumes.sharedHome.nfsPermissionFixer.command }}
-{{ .Values.volumes.sharedHome.nfsPermissionFixer.command }}
+{{- $securityContext := .Values.confluence.securityContext }}
+{{- with .Values.volumes.sharedHome.nfsPermissionFixer }}
+    {{- if .command }}
+        {{ .command }}
+    {{- else }}
+        {{- if and $securityContext.gid $securityContext.enabled }}
+            {{- printf "(chgrp %v %s; chmod g+w %s)" $securityContext.gid .mountPath .mountPath }}
+        {{- else if $securityContext.fsGroup }}
+            {{- printf "(chgrp %v %s; chmod g+w %s)" $securityContext.fsGroup .mountPath .mountPath }}
+        {{- else }}
+            {{- printf "(chgrp 2001 %s; chmod g+w %s)" .mountPath .mountPath }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+The command that should be run to start the fluentd service
+*/}}
+{{- define "fluentd.start.command" -}}
+{{- if .Values.fluentd.command }}
+{{ .Values.fluentd.command }}
 {{- else }}
-{{- printf "(chgrp %s %s; chmod g+w %s)" .Values.confluence.gid .Values.volumes.sharedHome.nfsPermissionFixer.mountPath .Values.volumes.sharedHome.nfsPermissionFixer.mountPath }}
+{{- print "exec fluentd -c /fluentd/etc/fluent.conf -v" }}
 {{- end }}
 {{- end }}
 
@@ -176,10 +187,36 @@ The command that should be run by the nfs-fixer init container to correct the pe
 {{- end }}
 
 {{/*
+Defines the volume mounts used by the Confluence container.
+Note that the local-home volume is mounted twice, once for the local-home directory itself, and again
+on Tomcat's logs directory. THis ensures that Tomcat+Confluence logs get captured in the same volume.
+*/}}
+{{ define "confluence.volumeMounts" }}
+- name: local-home
+  mountPath: {{ .Values.volumes.localHome.mountPath | quote }}
+- name: local-home
+  mountPath: {{ .Values.confluence.accessLog.mountPath | quote }}
+  subPath: {{ .Values.confluence.accessLog.localHomeSubPath | quote }}
+- name: shared-home
+  mountPath: {{ .Values.volumes.sharedHome.mountPath | quote }}
+  {{- if .Values.volumes.sharedHome.subPath }}
+  subPath: {{ .Values.volumes.sharedHome.subPath | quote }}
+  {{- end }}
+{{ end }}
+
+{{/*
+Defines the volume mounts used by the Synchrony container.
+*/}}
+{{ define "synchrony.volumeMounts" }}
+- name: synchrony-home
+  mountPath: {{ .Values.volumes.synchronyHome.mountPath | quote }}
+{{ end }}
+
+{{/*
 For each additional library declared, generate a volume mount that injects that library into the Confluence lib directory
 */}}
 {{- define "confluence.additionalLibraries" -}}
-{{- range .Values.confluence.additionalLibraries -}}
+{{- range .Values.confluence.additionalLibraries }}
 - name: {{ .volumeName }}
   mountPath: "/opt/atlassian/confluence/confluence/WEB-INF/lib/{{ .fileName }}"
   {{- if .subDirectory }}
@@ -191,10 +228,106 @@ For each additional library declared, generate a volume mount that injects that 
 {{- end }}
 
 {{/*
+For each additional Synchrony library declared, generate a volume mount that injects that library into the Confluence lib directory
+*/}}
+{{- define "synchrony.additionalLibraries" -}}
+{{- range .Values.synchrony.additionalLibraries }}
+- name: {{ .volumeName }}
+  mountPath: "/opt/atlassian/confluence/confluence/WEB-INF/lib/{{ .fileName }}"
+  {{- if .subDirectory }}
+  subPath: {{ printf "%s/%s" .subDirectory .fileName | quote }}
+  {{- else }}
+  subPath: {{ .fileName | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define pod annotations here to allow template overrides when used as a sub chart
+*/}}
+{{- define "confluence.podAnnotations" -}}
+{{- with .Values.podAnnotations }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define additional init containers here to allow template overrides when used as a sub chart
+*/}}
+{{- define "confluence.additionalInitContainers" -}}
+{{- with .Values.additionalInitContainers }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define additional hosts here to allow template overrides when used as a sub chart
+*/}}
+{{- define "confluence.additionalHosts" -}}
+{{- with .Values.additionalHosts }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define additional containers here to allow template overrides when used as a sub chart
+*/}}
+{{- define "confluence.additionalContainers" -}}
+{{- with .Values.additionalContainers }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define additional ports here instead of in values.yaml to allow template overrides
+*/}}
+{{- define "confluence.additionalPorts" -}}
+{{- with .Values.confluence.additionalPorts }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define additional ports here instead of in values.yaml to allow template overrides
+*/}}
+{{- define "synchrony.additionalPorts" -}}
+{{- with .Values.synchrony.additionalPorts }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define additional Confluence volume mounts here to allow template overrides when used as a sub chart
+*/}}
+{{- define "confluence.additionalVolumeMounts" -}}
+{{- with .Values.confluence.additionalVolumeMounts }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define additional Synchrony volume mounts here to allow template overrides when used as a sub chart
+*/}}
+{{- define "synchrony.additionalVolumeMounts" -}}
+{{- with .Values.synchrony.additionalVolumeMounts }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define additional environment variables here to allow template overrides when used as a sub chart
+*/}}
+{{- define "confluence.additionalEnvironmentVariables" -}}
+{{- with .Values.confluence.additionalEnvironmentVariables }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
 For each additional plugin declared, generate a volume mount that injects that library into the Confluence plugins directory
 */}}
 {{- define "confluence.additionalBundledPlugins" -}}
-{{- range .Values.confluence.additionalBundledPlugins -}}
+{{- range .Values.confluence.additionalBundledPlugins }}
 - name: {{ .volumeName }}
   mountPath: "/opt/atlassian/confluence/confluence/WEB-INF/atlassian-bundled-plugins/{{ .fileName }}"
   {{- if .subDirectory }}
@@ -215,6 +348,16 @@ For each additional plugin declared, generate a volume mount that injects that l
 {{- end }}
 {{- end }}
 
+{{- define "synchrony.volumes" -}}
+{{ if not .Values.volumes.synchronyHome.persistentVolumeClaim.create }}
+{{ include "synchrony.volumes.synchronyHome" . }}
+{{- end }}
+{{ include "confluence.volumes.sharedHome" . }}
+{{- with .Values.volumes.additionalSynchrony }}
+{{- toYaml . | nindent 0 }}
+{{- end }}
+{{- end }}
+
 {{- define "confluence.volumes.localHome" -}}
 {{- if not .Values.volumes.localHome.persistentVolumeClaim.create }}
 - name: local-home
@@ -226,11 +369,22 @@ For each additional plugin declared, generate a volume mount that injects that l
 {{- end }}
 {{- end }}
 
+{{- define "synchrony.volumes.synchronyHome" -}}
+{{- if not .Values.volumes.synchronyHome.persistentVolumeClaim.create }}
+- name: synchrony-home
+{{ if .Values.volumes.synchronyHome.customVolume }}
+{{- toYaml .Values.volumes.synchronyHome.customVolume | nindent 2 }}
+{{ else }}
+  emptyDir: {}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{- define "confluence.volumes.sharedHome" -}}
 - name: shared-home
 {{- if .Values.volumes.sharedHome.persistentVolumeClaim.create }}
   persistentVolumeClaim:
-    claimName: {{ include "confluence.fullname" . }}-shared-home
+    claimName: {{ include "common.names.fullname" . }}-shared-home
 {{ else }}
 {{ if .Values.volumes.sharedHome.customVolume }}
 {{- toYaml .Values.volumes.sharedHome.customVolume | nindent 2 }}
@@ -241,8 +395,9 @@ For each additional plugin declared, generate a volume mount that injects that l
 {{- end }}
 
 {{- define "confluence.volumeClaimTemplates" -}}
-{{ if .Values.volumes.localHome.persistentVolumeClaim.create }}
+{{- if or .Values.volumes.localHome.persistentVolumeClaim.create .Values.confluence.additionalVolumeClaimTemplates }}
 volumeClaimTemplates:
+{{- if .Values.volumes.localHome.persistentVolumeClaim.create }}
 - metadata:
     name: local-home
   spec:
@@ -251,6 +406,37 @@ volumeClaimTemplates:
     storageClassName: {{ .Values.volumes.localHome.persistentVolumeClaim.storageClassName | quote }}
     {{- end }}
     {{- with .Values.volumes.localHome.persistentVolumeClaim.resources }}
+    resources:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- range .Values.confluence.additionalVolumeClaimTemplates }}
+- metadata:
+    name: {{ .name }}
+  spec:
+    accessModes: [ "ReadWriteOnce" ]
+    {{- if .storageClassName }}
+    storageClassName: {{ .storageClassName | quote }}
+    {{- end }}
+    {{- with .resources }}
+    resources:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "synchrony.volumeClaimTemplates" -}}
+{{ if .Values.volumes.synchronyHome.persistentVolumeClaim.create }}
+volumeClaimTemplates:
+- metadata:
+    name: synchrony-home
+  spec:
+    accessModes: [ "ReadWriteOnce" ]
+    {{- if .Values.volumes.synchronyHome.persistentVolumeClaim.storageClassName }}
+    storageClassName: {{ .Values.volumes.synchronyHome.persistentVolumeClaim.storageClassName | quote }}
+    {{- end }}
+    {{- with .Values.volumes.synchronyHome.persistentVolumeClaim.resources }}
     resources:
       {{- toYaml . | nindent 6 }}
     {{- end }}
@@ -306,11 +492,11 @@ volumeClaimTemplates:
     fieldRef:
       fieldPath: metadata.namespace
 - name: HAZELCAST_KUBERNETES_SERVICE_NAME
-  value: {{ include "confluence.fullname" . | quote }}
+  value: {{ include "common.names.fullname" . | quote }}
 - name: ATL_CLUSTER_TYPE
   value: "kubernetes"
 - name: ATL_CLUSTER_NAME
-  value: {{ include "confluence.fullname" . | quote }}
+  value: {{ include "common.names.fullname" . | quote }}
 {{ end }}
 {{ end }}
 
@@ -326,3 +512,11 @@ volumeClaimTemplates:
   value: "kubernetes"
 {{ end }}
 {{ end }}
+
+{{- define "flooredCPU" -}}
+    {{- if hasSuffix "m" (. | toString) }}
+    {{- div (trimSuffix "m" .) 1000 | default 1 }}
+    {{- else }}
+    {{- . }}
+    {{- end }}
+{{- end}}
