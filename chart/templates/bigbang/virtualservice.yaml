@@ -2,9 +2,9 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ include "confluence.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   labels:
-    {{- include "confluence.labels" . | nindent 4 }}
+    {{- include "common.labels.commonLabels" . | nindent 4 }}
 spec:
   hosts:
   - {{ .Values.hostnamePrefix }}.{{ .Values.hostname }}
@@ -34,7 +34,7 @@ spec:
         prefix: /
     route:
     - destination:
-        host: {{ include "confluence.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+        host: {{ include "common.names.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
         port:
           number: {{ .Values.confluence.service.port }}
       headers:

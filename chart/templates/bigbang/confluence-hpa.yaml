@@ -2,12 +2,12 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ template "confluence.fullname" . }}
+  name: {{ template "common.names.fullname" . }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: StatefulSet
-    name: {{ template "confluence.fullname" . }}
+    name: {{ template "common.names.fullname" . }}
   minReplicas: {{ .Values.replicaCount }}
   maxReplicas: {{ .Values.hpa.maxReplicas }}
   metrics:
