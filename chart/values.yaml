@@ -669,7 +669,9 @@ confluence:
   # -- Specifies a list of additional arguments that can be passed to the Confluence JVM, e.g.
   # system properties.
   #
-  additionalJvmArgs: []
+  additionalJvmArgs:
+    # https://access.redhat.com/documentation/en-us/openjdk/11/html-single/configuring_openjdk_11_on_rhel_with_fips/index#config-fips-in-openjdk
+    - -Dcom.redhat.fips=false
   
   # -- Specifies a list of additional Java libraries that should be added to the
   # Confluence container. Each item in the list should specify the name of the volume
@@ -857,7 +859,9 @@ synchrony:
   # -- Specifies a list of additional arguments that can be passed to the Synchrony JVM, e.g.
   # system properties.
   #
-  additionalJvmArgs: {}
+  additionalJvmArgs:
+    # https://access.redhat.com/documentation/en-us/openjdk/11/html-single/configuring_openjdk_11_on_rhel_with_fips/index#config-fips-in-openjdk
+    - -Dcom.redhat.fips=false
     #- -Dsynchrony.example.system.property=46
 
   shutdown:
