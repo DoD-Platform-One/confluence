@@ -17,6 +17,13 @@ sources:
   - https://github.com/atlassian/data-center-helm-charts
   - https://bitbucket.org/atlassian-docker/docker-atlassian-confluence-server/
 deprecated: false
+dependencies:
+  - name: common
+    version: 1.0.0
+    repository: https://atlassian.github.io/data-center-helm-charts
+  - name: gluon
+    version: "0.3.2"
+    repository: "oci://registry1.dso.mil/bigbang"
 annotations:
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/changes: |
@@ -30,10 +37,13 @@ annotations:
       links:
       - name: Github PR
         url: https://github.com/atlassian/data-center-helm-charts/pull/445
-dependencies:
-  - name: common
-    version: 1.0.0
-    repository: https://atlassian.github.io/data-center-helm-charts
-  - name: gluon
-    version: "0.3.2"
-    repository: "oci://registry1.dso.mil/bigbang"
+  bigbang.dev/applicationVersions: |
+    - Confluence: 7.19.0
+  helm.sh/images: |
+    - name: confluence-node
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:7.19.0
+    - name: fluentd-kubernetes-daemonset
+      condition: fluentd.enabled
+      image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
+    - name: base
+      images: registry1.dso.mil/ironbank/big-bang/base:2.0.0
