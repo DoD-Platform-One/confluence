@@ -46,7 +46,7 @@ If the name is defined in the chart values, then use that,
 else use the name of the Helm release.
 */}}
 {{- define "confluence.clusterRoleName" -}}
-{{- if .Values.serviceAccount.clusterRole.name }}
+{{- if and .Values.serviceAccount.clusterRole.name .Values.serviceAccount.clusterRole.create }}
 {{- .Values.serviceAccount.clusterRole.name }}
 {{- else }}
 {{- include "common.names.fullname" . -}}
@@ -59,7 +59,7 @@ If the name is defined in the chart values, then use that,
 else use the name of the ClusterRole.
 */}}
 {{- define "confluence.clusterRoleBindingName" -}}
-{{- if .Values.serviceAccount.clusterRoleBinding.name }}
+{{- if and .Values.serviceAccount.clusterRoleBinding.name .Values.serviceAccount.clusterRoleBinding.create }}
 {{- .Values.serviceAccount.clusterRoleBinding.name }}
 {{- else }}
 {{- include "confluence.clusterRoleName" . -}}
@@ -247,6 +247,15 @@ Define pod annotations here to allow template overrides when used as a sub chart
 */}}
 {{- define "confluence.podAnnotations" -}}
 {{- with .Values.podAnnotations }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define pod annotations here to allow template overrides when used as a sub chart
+*/}}
+{{- define "synchrony.podAnnotations" -}}
+{{- with .Values.synchrony.podAnnotations }}
 {{- toYaml . }}
 {{- end }}
 {{- end }}
@@ -444,6 +453,10 @@ volumeClaimTemplates:
 {{- end }}
 
 {{- define "confluence.databaseEnvVars" -}}
+{{- if .Values.confluence.forceConfigUpdate }}
+- name: ATL_FORCE_CFG_UPDATE
+  value: "true"
+{{- end }}
 {{ with .Values.database.type }}
 - name: ATL_DB_TYPE
   value: {{ . | quote }}
@@ -493,6 +506,8 @@ volumeClaimTemplates:
       fieldPath: metadata.namespace
 - name: HAZELCAST_KUBERNETES_SERVICE_NAME
   value: {{ include "common.names.fullname" . | quote }}
+- name: HAZELCAST_KUBERNETES_SERVICE_PORT
+  value: {{ .Values.confluence.ports.hazelcast | quote }}
 - name: ATL_CLUSTER_TYPE
   value: "kubernetes"
 - name: ATL_CLUSTER_NAME
@@ -508,6 +523,8 @@ volumeClaimTemplates:
       fieldPath: metadata.namespace
 - name: HAZELCAST_KUBERNETES_SERVICE_NAME
   value: {{ include "synchrony.fullname" . | quote }}
+- name: HAZELCAST_KUBERNETES_SERVICE_PORT
+  value: {{ .Values.synchrony.ports.hazelcast | quote }}
 - name: CLUSTER_JOIN_TYPE
   value: "kubernetes"
 {{ end }}

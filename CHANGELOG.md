@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.8.1-bb.0] - 2022-01-18
+### Updated
+- Updated confluence to version `8.0.0`
+- Updated chart to version `confluence-1.8.1`
+
 ## [1.5.1-bb.4] - 2023-01-17
 ### Changed
 - Update gluon to new registry1 location + latest version (0.3.2)
