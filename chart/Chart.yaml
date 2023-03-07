@@ -2,8 +2,8 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.8.1-bb.0
-appVersion: 8.0.0
+version: 1.10.0-bb.0
+appVersion: 8.0.3
 kubeVersion: ">=1.21.x-0"
 keywords:
 - Confluence
@@ -26,14 +26,13 @@ dependencies:
     repository: "oci://registry1.dso.mil/bigbang"
 annotations:
   artifacthub.io/containsSecurityUpdates: "true"
-  artifacthub.io/changes: |
-    - kind: changed
-      description: Fix artifacthub annotations
+  artifacthub.io/changes: |-
+    - "Add Bitbucket Mesh to Bitbucket Helm chart (#501)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 8.0.0
+    - Confluence: 8.0.3
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.0.0
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.0.3
     - name: fluentd-kubernetes-daemonset
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
