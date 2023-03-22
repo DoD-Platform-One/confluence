@@ -36,6 +36,10 @@ if [ -f ${CONFLUENCE_HOME}/confluence.cfg.xml ]; then
   echo "Updating ${CONFLUENCE_HOME}/confluence.cfg.xml with PEER IPS: ${CLUSTER_PEER_IPS} ..."
   xmlstarlet edit -L -u "//properties/property[@name='confluence.cluster.peers']" \
     --value "${CLUSTER_PEER_IPS}" ${CONFLUENCE_HOME}/confluence.cfg.xml
+
+  echo "Updating ${CONFLUENCE_HOME}/confluence.cfg.xml with DB Password: ${ATL_JDBC_PASSWORD} ..."
+  xmlstarlet edit -L -u "//properties/property[@name='hibernate.connection.password']" \
+    --value "${ATL_JDBC_PASSWORD}" ${CONFLUENCE_HOME}/confluence.cfg.xml
 else
   echo "The file ${CONFLUENCE_HOME}/confluence.cfg.xml was not found; because, this may be the first node - still booting up."
 fi
