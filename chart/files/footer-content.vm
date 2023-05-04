@@ -58,7 +58,7 @@
 
         $!sitemeshPage.getProperty("page.coherence-copyright")
 
-        <div id="footer-logo"><a href="http://www.atlassian.com/" rel="nofollow">Atlassian</a></div>
+        <div style="padding: inherit;" id="footer-logo"><a href="http://www.atlassian.com/" rel="nofollow">Atlassian</a></div>
 
         #if ($!decorator.name != "admin")
             $!settingsManager.globalSettings.customHtmlSettings.beforeBodyEnd
