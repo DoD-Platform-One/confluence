@@ -1,7 +1,7 @@
 #* @vtlvariable name="licenseService" type="com.atlassian.confluence.license.LicenseService" *#
 
 <div id="footer" role="contentinfo">
-    <section class="footer-body">
+    <section style="background-image: none;" class="footer-body">
 
         #if ($generalUtil.isSetupComplete())
             #if($showHSQLWarning && $action.usingHSQL)
@@ -58,7 +58,7 @@
 
         $!sitemeshPage.getProperty("page.coherence-copyright")
 
-        <div style="padding: inherit;" id="footer-logo"><a href="http://www.atlassian.com/" rel="nofollow">Atlassian</a></div>
+        <div id="footer-logo"><a href="http://www.atlassian.com/" rel="nofollow">Atlassian</a></div>
 
         #if ($!decorator.name != "admin")
             $!settingsManager.globalSettings.customHtmlSettings.beforeBodyEnd
