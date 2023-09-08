@@ -2,8 +2,8 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.10.0-bb.3
-appVersion: 8.0.3
+version: 1.15.0-bb.1
+appVersion: 7.19.12
 kubeVersion: ">=1.21.x-0"
 keywords:
 - Confluence
@@ -19,22 +19,34 @@ sources:
 deprecated: false
 dependencies:
   - name: common
-    version: 1.0.0
+    version: 1.2.3
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: gluon
-    version: "0.3.2"
+    version: "0.4.0"
     repository: "oci://registry1.dso.mil/bigbang"
+  - name: postgresql
+    version: 12.5.2
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.install
 annotations:
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/changes: |-
+    - "Update appVersions for DC apps (#531)"
     - "Add Bitbucket Mesh to Bitbucket Helm chart (#501)"
+    - "Add PodDisruptionBudget to Atlassian DC Helm Charts (#636)"
+    - "Add annotations to Grafana dashboards ConfigMaps (#637)"
+    - "Add additional ConfigMaps to Helm Charts (#635)"
+    - "Update appVersions for DC apps (#638)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 8.0.3
+    - Confluence: 8.4.0
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.0.3
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.4.0
     - name: fluentd-kubernetes-daemonset
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
     - name: base
       image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+    - name: postgres
+      condition: postgresql.install
+      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:14.8
