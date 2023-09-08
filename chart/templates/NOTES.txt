@@ -38,6 +38,15 @@ Get the {{ title .Chart.Name }} URL by running these commands in the same shell:
     http://localhost:{{ .Values.confluence.ports.http }}
 {{- end }}
 {{- end }}
+
+{{- if .Values.postgresql.install }}
+#################################################################################
+######      P1 WARNING: Embedded Postgres database is being used!!!         #####
+######     This should only be used for evaluation or development purposes  #####
+######          For an external database, use ".Values.database"            #####
+#################################################################################
+{{- end}}
+
 {{- if not ( or .Values.volumes.localHome.persistentVolumeClaim.create .Values.volumes.localHome.customVolume ) }}
 
 #################################################################################

@@ -5,5 +5,15 @@ serviceAccount:
 confluence:
   additionalJvmArgs:
     - "-Dcom.redhat.fips=false"
+
+helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.0.0"
+
+image:
+  imagePullSecrets: private-registry
+
 bbtests:
   enabled: true
+  cypress:
+    artifacts: true
+    envs:
+      cypress_url: 'http://{{ include "common.names.fullname" . }}:{{ .Values.confluence.service.port }}/setup/setuplicense.action'

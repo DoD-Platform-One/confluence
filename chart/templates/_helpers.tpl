@@ -160,7 +160,7 @@ Create default value for ingress path
 {{/*
 The command that should be run by the nfs-fixer init container to correct the permissions of the shared-home root directory.
 */}}
-{{- define "sharedHome.permissionFix.command" -}}
+{{- define "confluence.sharedHome.permissionFix.command" -}}
 {{- $securityContext := .Values.confluence.securityContext }}
 {{- with .Values.volumes.sharedHome.nfsPermissionFixer }}
     {{- if .command }}
@@ -212,6 +212,18 @@ on Tomcat's logs directory. THis ensures that Tomcat+Confluence logs get capture
   {{- if .Values.volumes.sharedHome.subPath }}
   subPath: {{ .Values.volumes.sharedHome.subPath | quote }}
   {{- end }}
+{{- if .Values.confluence.tomcatConfig.generateByHelm }}
+- name: server-xml
+  mountPath: /opt/atlassian/confluence/conf/server.xml
+  subPath: server.xml
+- name: temp
+  mountPath: /opt/atlassian/confluence/temp
+{{- end }}
+{{- if .Values.confluence.seraphConfig.generateByHelm }}
+- name: seraph-config-xml
+  mountPath: /opt/atlassian/confluence/confluence/WEB-INF/classes/seraph-config.xml
+  subPath: seraph-config.xml
+{{- end }}
 {{ end }}
 
 {{/*
@@ -365,6 +377,24 @@ For each additional plugin declared, generate a volume mount that injects that l
 {{- with .Values.volumes.additional }}
 {{- toYaml . | nindent 0 }}
 {{- end }}
+{{- if .Values.confluence.tomcatConfig.generateByHelm }}
+- name: server-xml
+  configMap:
+    name: {{ include "common.names.fullname" . }}-server-config
+    items:
+      - key: server.xml
+        path: server.xml
+- name: temp
+  emptyDir: {}
+{{- end }}
+{{- if .Values.confluence.seraphConfig.generateByHelm }}
+- name: seraph-config-xml
+  configMap:
+    name: {{ include "common.names.fullname" . }}-server-config
+    items:
+      - key: seraph-config.xml
+        path: seraph-config.xml
+{{- end }}
 {{- end }}
 
 {{- define "synchrony.volumes" -}}
@@ -462,6 +492,11 @@ volumeClaimTemplates:
 {{- end }}
 {{- end }}
 
+{{- /* 
+Populates database connection information to Confluence via env vars
+If .Values.database values are defined, then those values are used (user wants external DB)
+Otherwise, default to the embedded Postgres Pod connection information
+*/ -}}
 {{- define "confluence.databaseEnvVars" -}}
 {{- if .Values.confluence.forceConfigUpdate }}
 - name: ATL_FORCE_CFG_UPDATE
@@ -471,10 +506,24 @@ volumeClaimTemplates:
 - name: ATL_DB_TYPE
   value: {{ . | quote }}
 {{ end }}
+
+{{- /* Default to embedded postgres */ -}}
+{{- if .Values.postgresql.install }}
+- name: ATL_DB_TYPE
+  value: "postgresql"
+{{- end }}
+
 {{ with .Values.database.url }}
 - name: ATL_JDBC_URL
   value: {{ . | quote }}
 {{ end }}
+
+{{- /* Default to embedded postgres */ -}}
+{{- if .Values.postgresql.install }}
+- name: ATL_JDBC_URL
+  value: {{ printf "jdbc:postgresql://%s-postgresql.%s:%g/%s" (include "common.names.fullname" .) ($.Release.Namespace) ($.Values.postgresql.primary.service.ports.postgresql) ($.Values.postgresql.auth.database) | quote }}
+{{- end }}
+
 {{ with .Values.database.credentials.secretName }}
 - name: ATL_JDBC_USER
   valueFrom:
@@ -487,6 +536,30 @@ volumeClaimTemplates:
       name: {{ . }}
       key: {{ $.Values.database.credentials.passwordSecretKey }}
 {{ end }}
+
+{{- /* Default to embedded postgres */ -}}
+{{- if .Values.postgresql.install }}
+- name: ATL_JDBC_USER
+  value: {{ .Values.postgresql.auth.username }}
+- name: ATL_JDBC_PASSWORD
+{{- /* Use password directly from values if available */ -}}
+{{- if .Values.postgresql.auth.password }}
+  value: {{ .Values.postgresql.auth.password }}
+{{- /* Use password from existing secret if available */ -}}
+{{- else if .Values.postgresql.auth.existingSecret }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.postgresql.auth.existingSecret }}
+      key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
+{{- /* Use random password as last resort */ -}}
+{{- else }}
+  valueFrom:
+    secretKeyRef:
+      name: confluence-postgresql
+      key: password
+{{- end }}
+{{- end }}
+
 {{ end }}
 
 {{- define "synchrony.databaseEnvVars" -}}
@@ -494,6 +567,13 @@ volumeClaimTemplates:
 - name: SYNCHRONY_DATABASE_URL
   value: {{ . | quote }}
 {{ end }}
+
+{{- /* Default to embedded postgres */ -}}
+{{- if .Values.postgresql.install }}
+- name: SYNCHRONY_DATABASE_URL
+  value: {{ printf "jdbc:postgresql://%s-postgresql.%s:%g/%s" (include "common.names.fullname" .) ($.Release.Namespace) ($.Values.postgresql.primary.service.ports.postgresql) ($.Values.postgresql.auth.database) | quote }}
+{{- end }}
+
 {{ with .Values.database.credentials.secretName }}
 - name: SYNCHRONY_DATABASE_USERNAME
   valueFrom:
@@ -506,6 +586,30 @@ volumeClaimTemplates:
       name: {{ . }}
       key: {{ $.Values.database.credentials.passwordSecretKey }}
 {{ end }}
+
+{{- /* Default to embedded postgres */ -}}
+{{- if .Values.postgresql.install }}
+- name: SYNCHRONY_DATABASE_USERNAME
+  value: {{ .Values.postgresql.auth.username }}
+- name: SYNCHRONY_DATABASE_PASSWORD
+{{- /* Use password directly from values if available */ -}}
+{{- if .Values.postgresql.auth.password }}
+  value: {{ .Values.postgresql.auth.password }}
+{{- /* Use password from existing secret if available */ -}}
+{{- else if .Values.postgresql.auth.existingSecret }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.postgresql.auth.existingSecret }}
+      key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
+{{- /* Use random password as last resort */ -}}
+{{- else }}
+  valueFrom:
+    secretKeyRef:
+      name: confluence-postgresql
+      key: password
+{{- end }}
+{{- end }}
+
 {{ end }}
 
 {{- define "confluence.clusteringEnvVars" -}}

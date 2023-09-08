@@ -1,6 +1,90 @@
 # Change Log
 
 
+## 1.15.0
+
+**Release date:** 2023-8-7
+
+![AppVersion: 7.19.12](https://img.shields.io/static/v1?label=AppVersion&message=7.19.12&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Add PodDisruptionBudget to Atlassian DC Helm Charts (#636)
+* Add annotations to Grafana dashboards ConfigMaps (#637)
+* Add additional ConfigMaps to Helm Charts (#635)
+* Update appVersions for DC apps (#638)
+
+## 1.14.1
+
+**Release date:** 2023-7-26
+
+![AppVersion: 7.19.11](https://img.shields.io/static/v1?label=AppVersion&message=7.19.11&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Disable liveness probes by default, make timeoutSeconds configurable (#630)
+
+## 1.14.0
+
+**Release date:** 2023-7-25
+
+![AppVersion: 7.19.11](https://img.shields.io/static/v1?label=AppVersion&message=7.19.11&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Add liveness probes, make readinessProbes configurable (#626)
+* Support running Jira and Confluence containers as non root (incl running in OpenShift) (#623)
+* make sharedHome.permissionFix.command helper to be per-product (#622)
+* Unset default limits for Confluence (#616)
+* Synchrony missing container limits (#615)
+
+## 1.13.1
+
+**Release date:** 2023-6-28
+
+![AppVersion: 7.19.10](https://img.shields.io/static/v1?label=AppVersion&message=7.19.10&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Run jmx init container as root: get fix from common chart ver 1.2.3 (#608)
+* Swap ingress paths for priority based rules (#602)
+
+## 1.13.0
+
+**Release date:** 2023-6-13
+
+![AppVersion: 7.19.9](https://img.shields.io/static/v1?label=AppVersion&message=7.19.9&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Update appVersions for DC apps (#599)
+* Bamboo dashboard (#588)
+* Make sessionAffinity configurable in service spec (#582)
+* Cleanup dashboards
+* Add Confluence Grafana dashboards (#575)
+* Add optional ServiceMonitors to DC Helm Charts (#573)
+* Expose JMX beans on http endpoint (#562)
+
+## 1.12.0
+
+**Release date:** 2023-4-18
+
+![AppVersion: 7.19.7](https://img.shields.io/static/v1?label=AppVersion&message=7.19.7&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Add priorityClassName to pod spec (#557)
+
+## 1.11.0
+
+**Release date:** 2023-3-22
+
+![AppVersion: 7.19.6](https://img.shields.io/static/v1?label=AppVersion&message=7.19.6&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Update appVersions for DC apps (#531)
+
 ## 1.10.0
 
 **Release date:** 2023-2-20

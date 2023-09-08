@@ -75,10 +75,14 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: SYNCHRONY_SERVICE_URL
+            {{ if .Values.istio.enabled }}
+              value: "https://{{ .Values.hostnamePrefix }}.{{ .Values.hostname }}/synchrony"
+            {{ else }}
             {{ if .Values.ingress.https }}
               value: "https://{{ .Values.ingress.host }}/synchrony"
             {{ else }}
               value: "http://{{ .Values.ingress.host }}/synchrony"
+            {{- end }}
             {{- end }}
             {{- include "synchrony.databaseEnvVars" . | nindent 12 }}
             {{- include "synchrony.clusteringEnvVars" . | nindent 12 }}
@@ -97,6 +101,9 @@ spec:
       {{- with .Values.synchrony.topologySpreadConstraints }}
       topologySpreadConstraints:
       {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       volumes:
         - name: entrypoint-script

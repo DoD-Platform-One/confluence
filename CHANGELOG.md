@@ -3,6 +3,33 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.15.0-bb.1] - 2023-09-08
+### Updated
+- Gluon to 0.4.0
+- common to 1.2.3
+### Fixed
+- Grafana Integration/Dashboards
+- Support for BB monitoring
+- Kpt Integration
+- BB Renovate support
+- Cypress Tests
+### Added
+- Network Policies
+- Optional Cluster-internal Postgres
+- Documents
+- Tests
+
+## [1.15.0-bb.0] - 2023-08-10
+### Updated
+- Confluence chart version to 1.15.0
+- Confluence image to 8.4.0
+
+## [1.11.0-bb.0] - 2023-08-09
+### Fixed
+- Point Kpt file to updated repo
+### Updated
+- Confluence chart version to 1.11.0
+
 ## [1.10.0-bb.3] - 2023-05-08
 ### Fixed
 - Removed footer logo background image
