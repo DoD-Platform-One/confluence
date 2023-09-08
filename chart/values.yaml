@@ -546,11 +546,17 @@ confluence:
     # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Confluence container.
     # However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260
     fsGroup: 2002
+    runAsUser: 2002
+    runAsGroup: 2002
+    runAsNonRoot: true
 
   # -- Standard K8s field that holds security configurations that will be applied to a container.
   # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   #
-  containerSecurityContext: {}
+  containerSecurityContext: 
+    runAsUser: 2002
+    runAsGroup: 2002
+    runAsNonRoot: true
 
   # -- The umask used by the Confluence process when it creates new files.
   # The default is 0022. This gives the new files:
@@ -1428,6 +1434,10 @@ postgresql:
       mountPath: /var/lib/postgresql
     initdb:
       args: "-A scram-sha-256"
+    containerSecurityContext:
+      runAsUser: 1001
+      runAsGroup: 1001
+      runAsNonRoot: true
 
   ## Sets persistence to work with the IB image
   postgresqlDataDir: /var/lib/postgresql/pgdata/data
