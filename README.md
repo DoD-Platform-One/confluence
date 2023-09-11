@@ -11,7 +11,7 @@ A chart for installing Confluence Data Center on Kubernetes
 * <https://bitbucket.org/atlassian-docker/docker-atlassian-confluence-server/>
 
 ## Learn More
-* [Application Overview](docs/overview.md)
+* [Application Overview](docs/README.md)
 * [Other Documentation](docs/)
 
 ## Pre-Requisites
