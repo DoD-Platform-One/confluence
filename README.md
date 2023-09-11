@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.15.0-bb.2](https://img.shields.io/badge/Version-1.15.0--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.19.12](https://img.shields.io/badge/AppVersion-7.19.12-informational?style=flat-square)
+![Version: 1.15.0-bb.3](https://img.shields.io/badge/Version-1.15.0--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.19.12](https://img.shields.io/badge/AppVersion-7.19.12-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -173,7 +173,7 @@ helm install confluence chart/
 | monitoring.enabled | bool | `false` | ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview |
 | monitoring.exposeJmxMetrics | bool | `false` | Expose JMX metrics with jmx_exporter https://github.com/prometheus/jmx_exporter  |
 | monitoring.fetchJmxExporterJar | bool | `true` | Fetch jmx_exporter jar from the image. If set to false make sure to manually copy the jar to shared home and provide an absolute path in jmxExporterCustomJarLocation  |
-| monitoring.jmxExporterImageRepo | string | `"bitnami/jmx-exporter"` | Image repository with jmx_exporter jar  |
+| monitoring.jmxExporterImageRepo | string | `"registry1.dso.mil/ironbank/opensource/prometheus/jmx-exporter"` | Image repository with jmx_exporter jar  |
 | monitoring.jmxExporterImageTag | string | `"0.18.0"` | Image tag to be used to pull jmxExporterImageRepo  |
 | monitoring.jmxExporterPort | int | `9999` | Port number on which metrics will be available  |
 | monitoring.jmxExporterPortType | string | `"ClusterIP"` | JMX exporter port type  |
