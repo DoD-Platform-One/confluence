@@ -977,7 +977,7 @@ monitoring:
 
   # -- Image repository with jmx_exporter jar
   #
-  jmxExporterImageRepo: bitnami/jmx-exporter
+  jmxExporterImageRepo: registry1.dso.mil/ironbank/opensource/prometheus/jmx-exporter
 
   # -- Image tag to be used to pull jmxExporterImageRepo
   #

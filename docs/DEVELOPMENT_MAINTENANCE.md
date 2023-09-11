@@ -35,6 +35,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
 
 ## chart/templates/statefulset.yaml
 - move `include "confluence.volumeClaimTemplates"` line to resolve template rendering issue
+- changed the initcontainer for jmx-exporter-fetch to explicitly set run as non root and arguments necessary after move to ironbank image
 
 ## chart/templates/config-jvm.yaml
 - add `-` indention to `include "confluence.sysprop.s3Config"` line to resolve template rendering issue
