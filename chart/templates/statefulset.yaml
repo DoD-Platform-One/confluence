@@ -13,10 +13,6 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "confluence.podAnnotations" . | nindent 8 }}
-        {{- with .Values.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
         checksum/config-jvm: {{ include (print $.Template.BasePath "/config-jvm.yaml") . | sha256sum }}
         {{- if .Values.additionalConfigMaps }}
         checksum/config-additional: {{ include (print $.Template.BasePath "/configmap-additional-config.yaml") . | sha256sum }}
@@ -24,6 +20,7 @@ spec:
         {{- if .Values.fluentd.enabled }}
         checksum/config-fluentd: {{ include (print $.Template.BasePath "/configmap-fluentd.yaml") . | sha256sum }}
         {{- end }}
+        {{- include "confluence.podAnnotations" . | nindent 8 }}
       labels:
         {{- include "common.labels.selectorLabels" . | nindent 8 }}
     spec:
