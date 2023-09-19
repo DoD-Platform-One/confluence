@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.15.0-bb.4](https://img.shields.io/badge/Version-1.15.0--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.19.12](https://img.shields.io/badge/AppVersion-7.19.12-informational?style=flat-square)
+![Version: 1.15.0-bb.5](https://img.shields.io/badge/Version-1.15.0--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.19.12](https://img.shields.io/badge/AppVersion-7.19.12-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -11,7 +11,7 @@ A chart for installing Confluence Data Center on Kubernetes
 * <https://bitbucket.org/atlassian-docker/docker-atlassian-confluence-server/>
 
 ## Learn More
-* [Application Overview](docs/README.md)
+* [Application Overview](docs/overview.md)
 * [Other Documentation](docs/)
 
 ## Pre-Requisites

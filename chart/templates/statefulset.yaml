@@ -29,12 +29,12 @@ spec:
       securityContext:
         # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Cnfluence container.
         # However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260
-        fsGroup: {{ .Values.confluence.gid }}
+        fsGroup: {{ .Values.confluence.securityContext.fsGroup }}
       hostAliases:
         {{- include "confluence.additionalHosts" . | nindent 8 }}
       initContainers:
-        # We have removed an include to the common jmx initcontainer and replaced it with a dupe and revised snippet
-        # This snippet is modified to remove the run as root and modify the arguments in order to work with ironbank image
+        {{/* We have removed an include to the common jmx initcontainer and replaced it with a dupe and revised snippet
+            This snippet is modified to remove the run as root and modify the arguments in order to work with ironbank image*/}}
         {{- if and .Values.monitoring.exposeJmxMetrics .Values.monitoring.fetchJmxExporterJar }}
         - name: fetch-jmx-exporter
           image: {{ .Values.monitoring.jmxExporterImageRepo}}:{{ .Values.monitoring.jmxExporterImageTag}}
@@ -74,9 +74,6 @@ spec:
         - name: confluence
           image: {{ include "confluence.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          securityContext:
-            runAsUser: {{ .Values.confluence.gid }}
-            runAsGroup: {{ .Values.confluence.gid }}
           ports:
             {{- include "common.jmx.port" . | nindent 12 }}
             {{- include "confluence.additionalPorts" . | nindent 12 }}
@@ -131,7 +128,6 @@ spec:
           {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
-            
             {{- include "confluence.volumeMounts" . | nindent 12 }}
             {{- include "common.jmx.config.volumeMounts" . | nindent 12 }}
             {{- include "confluence.additionalVolumeMounts" . | nindent 12 }}
