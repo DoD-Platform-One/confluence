@@ -27,16 +27,13 @@ spec:
       serviceAccountName: {{ include "confluence.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.synchrony.shutdown.terminationGracePeriodSeconds }}
       securityContext:
-        fsGroup: {{ .Values.confluence.gid }}
+        fsGroup: {{ .Values.synchrony.securityContext.fsGroup }}
       hostAliases:
         {{- include "confluence.additionalHosts" . | nindent 8 }}
       containers:
         - name: synchrony
           image: {{ include "confluence.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          securityContext:
-            runAsUser: {{ .Values.confluence.gid }}
-            runAsGroup: {{ .Values.confluence.gid }}
           command: ["/scripts/start-synchrony.sh"]
           volumeMounts:
             {{- include "synchrony.volumeMounts" . | nindent 12 }}
