@@ -1408,7 +1408,7 @@ postgresql:
     registry: registry1.dso.mil
     debug: true
     repository: ironbank/opensource/postgres/postgresql
-    tag: "14.8"
+    tag: "14.9"
     pullSecrets:
     - private-registry
 
@@ -1438,6 +1438,11 @@ postgresql:
       runAsUser: 1001
       runAsGroup: 1001
       runAsNonRoot: true
+    
+    ## POSTGRES_DB is the var that the IB/official Postgres image expects
+    extraEnvVars:
+      - name: POSTGRES_DB
+        value: "{{ .Values.auth.database }}"
 
   ## Sets persistence to work with the IB image
   postgresqlDataDir: /var/lib/postgresql/pgdata/data
