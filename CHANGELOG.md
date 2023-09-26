@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.15.0-bb.6] - 2023-09-26
+### Updated
+- common to 1.2.4
+- Gluon to 0.4.1
+- postgresql subchart to 12.12.7
+- postgresql image to 14.9
+- cypress to v13
+
 ## [1.15.0-bb.5] - 2023-09-15
 ### Fixed
 - Duplicate securityContext fix

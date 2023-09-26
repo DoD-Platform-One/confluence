@@ -1,12 +1,12 @@
 dependencies:
 - name: common
   repository: https://atlassian.github.io/data-center-helm-charts
-  version: 1.2.3
+  version: 1.2.4
 - name: gluon
   repository: oci://registry1.dso.mil/bigbang
-  version: 0.4.0
+  version: 0.4.1
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 12.5.2
-digest: sha256:213433325e04fd6577a988ac2991b305adda2c4a5c5a3a104135e9a4e979f345
-generated: "2023-08-24T11:20:55.709106-04:00"
+  version: 12.12.7
+digest: sha256:a3d8cdbde5c79550bfe374f623180f7ba5ccf6711162acf1fd609cda78988c87
+generated: "2023-09-25T14:52:00.354354-04:00"

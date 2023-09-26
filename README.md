@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.15.0-bb.5](https://img.shields.io/badge/Version-1.15.0--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.19.12](https://img.shields.io/badge/AppVersion-7.19.12-informational?style=flat-square)
+![Version: 1.15.0-bb.6](https://img.shields.io/badge/Version-1.15.0--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.19.12](https://img.shields.io/badge/AppVersion-7.19.12-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -243,7 +243,7 @@ helm install confluence chart/
 | postgresql.image.registry | string | `"registry1.dso.mil"` |  |
 | postgresql.image.debug | bool | `true` |  |
 | postgresql.image.repository | string | `"ironbank/opensource/postgres/postgresql"` |  |
-| postgresql.image.tag | string | `"14.8"` |  |
+| postgresql.image.tag | string | `"14.9"` |  |
 | postgresql.image.pullSecrets[0] | string | `"private-registry"` |  |
 | postgresql.auth.username | string | `"confuser"` |  |
 | postgresql.auth.password | string | `"bogus-satisfy-upgrade"` |  |
@@ -257,6 +257,8 @@ helm install confluence chart/
 | postgresql.primary.containerSecurityContext.runAsUser | int | `1001` |  |
 | postgresql.primary.containerSecurityContext.runAsGroup | int | `1001` |  |
 | postgresql.primary.containerSecurityContext.runAsNonRoot | bool | `true` |  |
+| postgresql.primary.extraEnvVars[0].name | string | `"POSTGRES_DB"` |  |
+| postgresql.primary.extraEnvVars[0].value | string | `"{{ .Values.auth.database }}"` |  |
 | postgresql.postgresqlDataDir | string | `"/var/lib/postgresql/pgdata/data"` |  |
 | postgresql.volumePermissions.enabled | bool | `false` |  |
 | proxyName | string | `nil` |  |
