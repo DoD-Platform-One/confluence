@@ -37,7 +37,7 @@ image:
   imagePullSecrets: private-registry
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
-  tag: "8.4.0"
+  tag: "8.6.0"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
 # to Pods
@@ -1408,7 +1408,7 @@ postgresql:
     registry: registry1.dso.mil
     debug: true
     repository: ironbank/opensource/postgres/postgresql
-    tag: "14.9"
+    tag: "15.4"
     pullSecrets:
     - private-registry
 

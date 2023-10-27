@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.15.0-bb.6
+version: 1.15.0-bb.7
 appVersion: 7.19.12
 kubeVersion: ">=1.21.x-0"
 keywords:
@@ -25,7 +25,7 @@ dependencies:
     version: "0.4.1"
     repository: "oci://registry1.dso.mil/bigbang"
   - name: postgresql
-    version: 12.12.7
+    version: 13.1.5 
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.install
 annotations:
@@ -38,10 +38,10 @@ annotations:
     - "Add additional ConfigMaps to Helm Charts (#635)"
     - "Update appVersions for DC apps (#638)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 8.4.0
+    - Confluence: 8.6.0
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.4.0
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.6.0
     - name: fluentd-kubernetes-daemonset
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
@@ -49,4 +49,4 @@ annotations:
       image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
     - name: postgres
       condition: postgresql.install
-      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:14.9
+      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:15.4
