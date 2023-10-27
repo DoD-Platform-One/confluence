@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.15.0-bb.7] - 2023-10-13
+### Updated
+- confluence-node to 8.6.0
+- postgresql to 15.4
+- postgresql chart dependency to 13.1.5
+
 ## [1.15.0-bb.6] - 2023-09-26
 ### Updated
 - common to 1.2.4
