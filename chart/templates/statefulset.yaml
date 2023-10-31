@@ -56,6 +56,12 @@ spec:
         - name: nfs-permission-fixer
           image: {{ .Values.volumes.sharedHome.nfsPermissionFixer.imageRepo }}:{{ .Values.volumes.sharedHome.nfsPermissionFixer.imageTag }}
           imagePullPolicy: IfNotPresent
+          {{- if .Values.volumes.sharedHome.nfsPermissionFixer.resources }}
+          resources:
+          {{- with .Values.volumes.sharedHome.nfsPermissionFixer.resources }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
           securityContext:
             runAsUser: 0 # make sure we run as root so we get the ability to change the volume permissions
           volumeMounts:
@@ -66,12 +72,24 @@ spec:
               {{- end }}
           command: ["sh", "-c", {{ include "confluence.sharedHome.permissionFix.command" . | quote }}]
         {{- end }}
+        {{- if .Values.confluence.additionalCertificates.secretName }}
+        - name: import-certs
+          image: {{ include "confluence.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: keystore
+              mountPath: /var/ssl
+            - name: certs
+              mountPath: /tmp/crt
+          command: ["/bin/bash"]
+          args: ["-c", {{ include "confluence.addCrtToKeystoreCmd" . }}]
+        {{- end }}
       imagePullSecrets:
         {{- if .Values.image.imagePullSecrets }}
         - name: {{ .Values.image.imagePullSecrets }}
         {{- end }}
       containers:
-        - name: confluence
+        - name: {{ if .Values.confluence.useHelmReleaseNameAsContainerName}}{{ include "common.names.fullname" . }}{{ else }}{{ .Chart.Name }}{{ end }}
           image: {{ include "confluence.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -105,11 +123,14 @@ spec:
             failureThreshold: {{ .Values.confluence.readinessProbe.failureThreshold }}
             {{- end }}
           {{- end }}
+          {{- if .Values.confluence.startupProbe.enabled }}
           startupProbe:
             tcpSocket:
               port: {{ .Values.confluence.ports.http }}
+            initialDelaySeconds: {{ .Values.confluence.startupProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.confluence.startupProbe.periodSeconds }}
             failureThreshold: {{ .Values.confluence.startupProbe.failureThreshold }}
+          {{- end }}
           {{- if .Values.confluence.livenessProbe.enabled }}
           livenessProbe:
             tcpSocket:
@@ -228,6 +249,9 @@ spec:
         - name: {{ .fileName | replace "_" "-" | replace "." "-" }}
           configMap:
             name: {{ include "common.names.fullname" $ }}-{{ $key.name }}
+            {{- if .defaultMode }}
+            defaultMode: {{ .defaultMode }}
+            {{- end }}
             items:
               - key: {{ .fileName }}
                 path: {{ .fileName }}

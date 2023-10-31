@@ -1,6 +1,114 @@
 # Change Log
 
 
+## 1.16.6
+
+**Release date:** 2023-10-30
+
+![AppVersion: 8.5.2](https://img.shields.io/static/v1?label=AppVersion&message=8.5.2&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* JMX container resources (#707)
+
+## 1.16.5
+
+**Release date:** 2023-10-24
+
+![AppVersion: 8.5.2](https://img.shields.io/static/v1?label=AppVersion&message=8.5.2&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Fix custom jmx config (#699)
+* Copy cacerts first, then import certs (#696)
+* Fix config-jvm template to avoid wrong new line (#694)
+
+## 1.16.4
+
+**Release date:** 2023-10-11
+
+![AppVersion: 8.5.2](https://img.shields.io/static/v1?label=AppVersion&message=8.5.2&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Fix hazelcast svc type (#689)
+
+## 1.16.3
+
+**Release date:** 2023-10-11
+
+![AppVersion: 8.5.2](https://img.shields.io/static/v1?label=AppVersion&message=8.5.2&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Make it possible to create a dedicated hazelcast svc (#686)
+
+## 1.16.2
+
+**Release date:** 2023-10-8
+
+![AppVersion: 8.5.2](https://img.shields.io/static/v1?label=AppVersion&message=8.5.2&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Update appVersions for DC apps (#683)
+* Add quote to podAnnotation templating (#678)
+
+## 1.16.1
+
+**Release date:** 2023-9-20
+
+![AppVersion: 8.5.1](https://img.shields.io/static/v1?label=AppVersion&message=8.5.1&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Update Helm chart version
+
+## 1.16.0
+
+**Release date:** 2023-9-18
+
+![AppVersion: 8.5.1](https://img.shields.io/static/v1?label=AppVersion&message=8.5.1&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Allow templating of pod annotations (#662)
+* Make securityContext configurable for jmx exporter init container (#670)
+* Add user provided certificates to the default Java truststore (#663)
+
+## 1.15.3
+
+**Release date:** 2023-8-28
+
+![AppVersion: 8.5.0](https://img.shields.io/static/v1?label=AppVersion&message=8.5.0&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Decouple server and jmx annotations (#654)
+* Update appVersions for DC apps (#655)
+* Disable startup probes by default (#653)
+
+## 1.15.2
+
+**Release date:** 2023-8-22
+
+![AppVersion: 7.19.12](https://img.shields.io/static/v1?label=AppVersion&message=7.19.12&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Allow small cpu requests for Synchrony container (#650)
+* Add defaultMode to additionalConfigMaps (#647)
+
+## 1.15.1
+
+**Release date:** 2023-8-17
+
+![AppVersion: 7.19.12](https://img.shields.io/static/v1?label=AppVersion&message=7.19.12&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Make startup probes optional (#646)
+
 ## 1.15.0
 
 **Release date:** 2023-8-7
