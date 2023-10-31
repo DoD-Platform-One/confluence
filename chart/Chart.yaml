@@ -2,8 +2,8 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.15.0-bb.7
-appVersion: 7.19.12
+version: 1.16.6-bb.0
+appVersion: 8.6.1
 kubeVersion: ">=1.21.x-0"
 keywords:
 - Confluence
@@ -19,7 +19,7 @@ sources:
 deprecated: false
 dependencies:
   - name: common
-    version: 1.2.4
+    version: 1.2.5
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: gluon
     version: "0.4.1"
@@ -31,17 +31,12 @@ dependencies:
 annotations:
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/changes: |-
-    - "Update appVersions for DC apps (#531)"
-    - "Add Bitbucket Mesh to Bitbucket Helm chart (#501)"
-    - "Add PodDisruptionBudget to Atlassian DC Helm Charts (#636)"
-    - "Add annotations to Grafana dashboards ConfigMaps (#637)"
-    - "Add additional ConfigMaps to Helm Charts (#635)"
-    - "Update appVersions for DC apps (#638)"
+    - "JMX container resources (#707)"
   bigbang.dev/applicationVersions: |
     - Confluence: 8.6.0
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.6.0
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.6.1
     - name: fluentd-kubernetes-daemonset
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2

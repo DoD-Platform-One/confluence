@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.15.0-bb.7](https://img.shields.io/badge/Version-1.15.0--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.19.12](https://img.shields.io/badge/AppVersion-7.19.12-informational?style=flat-square)
+![Version: 1.16.6-bb.0](https://img.shields.io/badge/Version-1.16.6--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.6.1](https://img.shields.io/badge/AppVersion-8.6.1-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -42,7 +42,7 @@ helm install confluence chart/
 | image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node"` |  |
 | image.imagePullSecrets | string | `"private-registry"` | Optional image repository pull secret |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.tag | string | `"8.6.0"` | The docker image tag to be used. Defaults to the Chart appVersion. |
+| image.tag | string | `"8.6.1"` | The docker image tag to be used. Defaults to the Chart appVersion. |
 | serviceAccount.create | bool | `true` | Set to 'true' if a ServiceAccount should be created, or 'false' if it already exists.  |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to be used by the pods. If not specified, but the "serviceAccount.create" flag is set to 'true', then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server  |
 | serviceAccount.imagePullSecrets | list | `[{"name":"private-registry"}]` | For Docker images hosted in private registries, define the list of image pull secrets that should be utilized by the created ServiceAccount https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod  |
@@ -91,6 +91,7 @@ helm install confluence chart/
 | volumes.sharedHome.nfsPermissionFixer.mountPath | string | `"/shared-home"` | The path in the K8s initContainer where the shared-home volume will be mounted  |
 | volumes.sharedHome.nfsPermissionFixer.imageRepo | string | `"alpine"` | Image repository for the permission fixer init container. Defaults to alpine  |
 | volumes.sharedHome.nfsPermissionFixer.imageTag | string | `"latest"` | Image tag for the permission fixer init container. Defaults to latest  |
+| volumes.sharedHome.nfsPermissionFixer.resources | object | `{}` | Resources requests and limits for nfsPermissionFixer init container See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/  |
 | volumes.sharedHome.nfsPermissionFixer.command | string | `nil` | By default, the fixer will change the group ownership of the volume's root directory to match the Confluence container's GID (2002), and then ensures the directory is group-writeable. If this is not the desired behaviour, command used can be specified here.  |
 | volumes.synchronyHome.persistentVolumeClaim.create | bool | `false` | If 'true', then a 'PersistentVolume' and 'PersistentVolumeClaim' will be dynamically created for each pod based on the 'StorageClassName' supplied below.  |
 | volumes.synchronyHome.persistentVolumeClaim.storageClassName | string | `nil` | Specify the name of the 'StorageClass' that should be used for the synchrony-home volume claim.  |
@@ -100,6 +101,7 @@ helm install confluence chart/
 | volumes.additional | list | `[{"configMap":{"defaultMode":484,"name":"server-xml-j2"},"name":"server-xml-j2"},{"configMap":{"defaultMode":484,"name":"server-xml"},"name":"server-xml"},{"configMap":{"defaultMode":484,"name":"footer-content-vm"},"name":"footer-content-vm"}]` | Defines additional volumes that should be applied to all Confluence pods. Note that this will not create any corresponding volume mounts; those needs to be defined in confluence.additionalVolumeMounts  |
 | volumes.additionalSynchrony | list | `[]` | Defines additional volumes that should be applied to all Synchrony pods. Note that this will not create any corresponding volume mounts; those needs to be defined in synchrony.additionalVolumeMounts  |
 | volumes.defaultPermissionsMode | int | `484` | Mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511 Typically overridden in volumes from Secrets and ConfigMaps to make mounted files executable  |
+| confluence.useHelmReleaseNameAsContainerName | bool | `false` | Whether the main container should acquire helm release name. By default the container name is `confluence` which corresponds to the name of the Helm Chart.  |
 | confluence.service.port | int | `80` | The port on which the Confluence K8s Service will listen  |
 | confluence.service.type | string | `"ClusterIP"` | The type of K8s service to use for Confluence  |
 | confluence.service.sessionAffinity | string | `"None"` | Session affinity type. If you want to make sure that connections from a particular client are passed to the same pod each time, set sessionAffinity to ClientIP. See: https://kubernetes.io/docs/reference/networking/virtual-ips/#session-affinity  |
@@ -108,6 +110,10 @@ helm install confluence chart/
 | confluence.service.loadBalancerIP | string | `nil` | Use specific loadBalancerIP. Only applies to service type LoadBalancer.  |
 | confluence.service.contextPath | string | `nil` | The Tomcat context path that Confluence will use. The ATL_TOMCAT_CONTEXTPATH will be set automatically.  |
 | confluence.service.annotations | object | `{}` | Additional annotations to apply to the Service  |
+| confluence.hazelcastService.enabled | bool | `false` | Enable or disable an additional Hazelcast service that Confluence nodes can use to join a cluster. It is recommended to create a separate Hazelcast service if the Confluence service uses a LoadBalancer type (e.g., NLB), ensuring that the Hazelcast port is not exposed at all. |
+| confluence.hazelcastService.port | int | `5701` | The port on which the Confluence K8s Hazelcast Service will listen  |
+| confluence.hazelcastService.type | string | `"ClusterIP"` | The type of the Hazelcast K8s service to use for Confluence  |
+| confluence.hazelcastService.annotations | object | `{}` | Additional annotations to apply to the Hazelcast Service  |
 | confluence.securityContextEnabled | bool | `true` | Whether to apply security context to pod.  |
 | confluence.securityContext.fsGroup | int | `2002` | The GID used by the Confluence docker image GID will default to 2002 if not supplied and securityContextEnabled is set to true. This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Confluence container. However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260 |
 | confluence.securityContext.runAsUser | int | `2002` |  |
@@ -129,6 +135,8 @@ helm install confluence chart/
 | confluence.readinessProbe.timeoutSeconds | int | `1` | Number of seconds after which the probe times out  |
 | confluence.readinessProbe.failureThreshold | int | `6` | The number of consecutive failures of the Confluence container readiness probe before the pod fails readiness checks.  |
 | confluence.readinessProbe.customProbe | object | `{}` | Custom readinessProbe to override the default /status httpGet  |
+| confluence.startupProbe.enabled | bool | `false` | Whether to apply the startupProbe check to pod.  |
+| confluence.startupProbe.initialDelaySeconds | int | `60` | Time to wait before starting the first probe  |
 | confluence.startupProbe.periodSeconds | int | `5` | How often (in seconds) the Confluence container startup probe will run  |
 | confluence.startupProbe.failureThreshold | int | `120` | The number of consecutive failures of the Confluence container startup probe before the pod fails startup checks.  |
 | confluence.livenessProbe.enabled | bool | `false` | Whether to apply the livenessProbe check to pod.  |
@@ -170,15 +178,21 @@ helm install confluence chart/
 | confluence.additionalVolumeClaimTemplates | list | `[]` | Defines additional volumeClaimTemplates that should be applied to the Confluence pod. Note that this will not create any corresponding volume mounts; those needs to be defined in confluence.additionalVolumeMounts  |
 | confluence.topologySpreadConstraints | list | `[]` | Defines topology spread constraints for Confluence pods. See details: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/  |
 | confluence.jvmDebug.enabled | bool | `false` | Set to 'true' for remote debugging. Confluence JVM will be started with debugging port 5005 open. |
+| confluence.additionalCertificates | object | `{"customCmd":null,"secretName":null}` | Certificates to be added to Java truststore. Provide reference to a secret that contains the certificates  |
 | monitoring.enabled | bool | `false` | ref: https://marketplace.atlassian.com/apps/1222775/prometheus-exporter-for-confluence?hosting=server&tab=overview |
 | monitoring.exposeJmxMetrics | bool | `false` | Expose JMX metrics with jmx_exporter https://github.com/prometheus/jmx_exporter  |
+| monitoring.jmxExporterInitContainer | object | `{"customSecurityContext":{},"resources":{},"runAsRoot":true}` | JMX exporter init container configuration  |
+| monitoring.jmxExporterInitContainer.runAsRoot | bool | `true` | Whether to run JMX exporter init container as root to copy JMX exporter binary to shared home volume. Set to false if running containers as root is not allowed in the cluster.  |
+| monitoring.jmxExporterInitContainer.customSecurityContext | object | `{}` | Custom SecurityContext for the jmx exporter init container  |
+| monitoring.jmxExporterInitContainer.resources | object | `{}` | Resources requests and limits for the JMX exporter init container See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/  |
+| monitoring.jmxServiceAnnotations | object | `{}` | Annotations added to the jmx service  |
 | monitoring.fetchJmxExporterJar | bool | `true` | Fetch jmx_exporter jar from the image. If set to false make sure to manually copy the jar to shared home and provide an absolute path in jmxExporterCustomJarLocation  |
 | monitoring.jmxExporterImageRepo | string | `"registry1.dso.mil/ironbank/opensource/prometheus/jmx-exporter"` | Image repository with jmx_exporter jar  |
 | monitoring.jmxExporterImageTag | string | `"0.18.0"` | Image tag to be used to pull jmxExporterImageRepo  |
 | monitoring.jmxExporterPort | int | `9999` | Port number on which metrics will be available  |
 | monitoring.jmxExporterPortType | string | `"ClusterIP"` | JMX exporter port type  |
 | monitoring.jmxExporterCustomJarLocation | string | `nil` | Location of jmx_exporter jar file if mounted from a secret or manually copied to shared home  |
-| monitoring.jmxExporterCustomConfig | object | `{}` | Custom jmx config with the rules. Make sure to keep jmx-config key  |
+| monitoring.jmxExporterCustomConfig | object | `{}` | Custom JMX config with the rules  |
 | monitoring.serviceMonitor.create | bool | `false` | Create ServiceMonitor to start scraping metrics. ServiceMonitor CRD needs to be created in advance.  |
 | monitoring.serviceMonitor.prometheusLabelSelector | object | `{}` | ServiceMonitorSelector of the prometheus instance.  |
 | monitoring.serviceMonitor.scrapeIntervalSeconds | int | `30` | Scrape interval for the JMX service.  |
@@ -208,7 +222,7 @@ helm install confluence chart/
 | synchrony.resources.jvm.minHeap | string | `"1g"` | The maximum amount of heap memory that will be used by the Synchrony JVM  |
 | synchrony.resources.jvm.maxHeap | string | `"2g"` | The minimum amount of heap memory that will be used by the Synchrony JVM  |
 | synchrony.resources.jvm.stackSize | string | `"2048k"` | The memory allocated for the Synchrony stack  |
-| synchrony.resources.container.requests.cpu | string | `"2"` | Initial CPU request by Synchrony pod  |
+| synchrony.resources.container.requests.cpu | string | `"2"` | Initial CPU request by Synchrony pod. Because the container CPU request value is used in -XX:ActiveProcessorCount argument to Synchrony JVM  only integers are allowed, e.g. 1, 2, 3 etc. If you want to have a small CPU claim, set it to 30m, 50m, etc. Any container cpu request value containing `m` character will be converted to -XX:ActiveProcessorCount=1  See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#meaning-of-cpu  |
 | synchrony.resources.container.requests.memory | string | `"2.5G"` | Initial Memory request Synchrony pod  |
 | synchrony.additionalJvmArgs | list | `["-Dcom.redhat.fips=false"]` | Specifies a list of additional arguments that can be passed to the Synchrony JVM, e.g. system properties.  |
 | synchrony.shutdown.terminationGracePeriodSeconds | int | `25` | The termination grace period for pods during shutdown. This should be set to the Synchrony internal grace period (default 20 seconds), plus a small buffer to allow the JVM to fully terminate. |
@@ -216,9 +230,11 @@ helm install confluence chart/
 | synchrony.additionalVolumeMounts | list | `[]` | Defines any additional volumes mounts for the Synchrony container. These can refer to existing volumes, or new volumes can be defined via 'volumes.additionalSynchrony'.  |
 | synchrony.additionalPorts | list | `[]` | Defines any additional ports for the Synchrony container.  |
 | synchrony.topologySpreadConstraints | list | `[]` | Defines topology spread constraints for Synchrony pods. See details: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/  |
+| synchrony.additionalCertificates | object | `{"customCmd":null,"secretName":null}` | Certificates to be added to Java truststore. Provide reference to a secret that contains the certificates  |
 | fluentd.enabled | bool | `false` | Set to 'true' if the Fluentd sidecar (DaemonSet) should be added to each pod  |
 | fluentd.imageRepo | string | `"fluent/fluentd-kubernetes-daemonset"` | The Fluentd sidecar image repository  |
 | fluentd.imageTag | string | `"v1.11.5-debian-elasticsearch7-1.2"` | The Fluentd sidecar image tag  |
+| fluentd.resources | object | `{}` | Resources requests and limits for fluentd sidecar container See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/  |
 | fluentd.command | string | `nil` | The command used to start Fluentd. If not supplied the default command will be used: "fluentd -c /fluentd/etc/fluent.conf -v"  Note: The custom command can be free-form, however pay particular attention to the process that should ultimately be left running in the container. This process should be invoked with 'exec' so that signals are appropriately propagated to it, for instance SIGTERM. An example of how such a command may look is: "<command 1> && <command 2> && exec <primary command>" |
 | fluentd.customConfigFile | bool | `false` | Set to 'true' if a custom config (see 'configmap-fluentd.yaml' for default) should be used for Fluentd. If enabled this config must be supplied via the 'fluentdCustomConfig' property below.  |
 | fluentd.fluentdCustomConfig | object | `{}` | Custom fluent.conf file  |

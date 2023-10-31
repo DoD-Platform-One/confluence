@@ -224,6 +224,10 @@ on Tomcat's logs directory. THis ensures that Tomcat+Confluence logs get capture
   mountPath: /opt/atlassian/confluence/confluence/WEB-INF/classes/seraph-config.xml
   subPath: seraph-config.xml
 {{- end }}
+{{- if .Values.confluence.additionalCertificates.secretName }}
+- name: keystore
+  mountPath: /var/ssl
+{{- end }}
 {{ end }}
 
 {{/*
@@ -232,6 +236,10 @@ Defines the volume mounts used by the Synchrony container.
 {{ define "synchrony.volumeMounts" }}
 - name: synchrony-home
   mountPath: {{ .Values.volumes.synchronyHome.mountPath | quote }}
+{{- if .Values.synchrony.additionalCertificates.secretName }}
+- name: keystore
+  mountPath: /var/ssl
+{{- end }}
 {{ end }}
 
 {{/*
@@ -268,8 +276,8 @@ For each additional Synchrony library declared, generate a volume mount that inj
 Define pod annotations here to allow template overrides when used as a sub chart
 */}}
 {{- define "confluence.podAnnotations" -}}
-{{- with .Values.podAnnotations }}
-{{- toYaml . }}
+{{- range $key, $value := .Values.podAnnotations }}
+{{ $key }}: {{ tpl $value $ | quote }}
 {{- end }}
 {{- end }}
 
@@ -395,6 +403,13 @@ For each additional plugin declared, generate a volume mount that injects that l
       - key: seraph-config.xml
         path: seraph-config.xml
 {{- end }}
+{{- if .Values.confluence.additionalCertificates.secretName }}
+- name: keystore
+  emptyDir: {}
+- name: certs
+  secret:
+    secretName: {{ .Values.confluence.additionalCertificates.secretName }}
+{{- end }}
 {{- end }}
 
 {{- define "synchrony.volumes" -}}
@@ -404,6 +419,13 @@ For each additional plugin declared, generate a volume mount that injects that l
 {{ include "confluence.volumes.sharedHome" . }}
 {{- with .Values.volumes.additionalSynchrony }}
 {{- toYaml . | nindent 0 }}
+{{- end }}
+{{- if .Values.synchrony.additionalCertificates.secretName }}
+- name: keystore
+  emptyDir: {}
+- name: certs
+  secret:
+    secretName: {{ .Values.synchrony.additionalCertificates.secretName }}
 {{- end }}
 {{- end }}
 
@@ -651,3 +673,19 @@ Otherwise, default to the embedded Postgres Pod connection information
     {{- . }}
     {{- end }}
 {{- end}}
+
+{{- define "confluence.addCrtToKeystoreCmd" }}
+{{- if .Values.confluence.additionalCertificates.customCmd}}
+{{ .Values.confluence.additionalCertificates.customCmd}}
+{{- else }}
+set -e; cp $JAVA_HOME/lib/security/cacerts /var/ssl/cacerts; for crt in /tmp/crt/*.*; do echo "Adding $crt to keystore"; keytool -import -keystore /var/ssl/cacerts -storepass changeit -noprompt -alias $(echo $(basename $crt)) -file $crt; done;
+{{- end }}
+{{- end }}
+
+{{- define "synchrony.addCrtToKeystoreCmd" }}
+{{- if .Values.synchrony.additionalCertificates.customCmd}}
+{{ .Values.synchrony.additionalCertificates.customCmd}}
+{{- else }}
+set -e; cp $JAVA_HOME/lib/security/cacerts /var/ssl/cacerts; for crt in /tmp/crt/*.*; do echo "Adding $crt to keystore"; keytool -import -keystore /var/ssl/cacerts -storepass changeit -noprompt -alias $(echo $(basename $crt)) -file $crt; done;
+{{- end }}
+{{- end }}

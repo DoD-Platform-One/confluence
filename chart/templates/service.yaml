@@ -24,21 +24,11 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+  {{- if not .Values.confluence.hazelcastService.enabled }}
     - port: {{ .Values.confluence.ports.hazelcast }}
       targetPort: hazelcast
       protocol: TCP
       name: hazelcast
-    - port: {{ .Values.confluence.ports.intconnector }}
-      targetPort: intconnector
-      protocol: TCP
-      name: intconnector
-    - port: {{ .Values.confluence.ports.intersvc }}
-      targetPort: intersvc
-      protocol: TCP
-      name: intersvc
-    - port: {{ .Values.confluence.ports.synchrony }}
-      targetPort: synchrony
-      protocol: TCP
-      name: synchrony
+  {{- end }}
   selector:
     {{- include "confluence.selectorLabels" . | nindent 4 }}
