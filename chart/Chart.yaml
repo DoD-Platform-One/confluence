@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.16.6-bb.1
+version: 1.16.6-bb.2
 appVersion: 8.6.1
 kubeVersion: ">=1.21.x-0"
 keywords:
@@ -33,7 +33,7 @@ annotations:
   artifacthub.io/changes: |-
     - "JMX container resources (#707)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 8.6.0
+    - Confluence: 8.6.1
   helm.sh/images: |
     - name: confluence-node
       image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.6.1
