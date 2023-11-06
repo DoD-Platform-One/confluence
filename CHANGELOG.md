@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.16.6-bb.3] - 2023-11-6
+### Updated
+- postgres subchart from 13.2.0 to 13.2.1
+
 ## [1.16.6-bb.2] - 2023-11-2
 ### Updated
 - updated annotation reference for 8.6.1
