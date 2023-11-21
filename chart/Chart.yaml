@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.16.6-bb.3
+version: 1.16.6-bb.4
 appVersion: 8.6.1
 kubeVersion: ">=1.21.x-0"
 keywords:
@@ -25,7 +25,7 @@ dependencies:
     version: "0.4.4"
     repository: "oci://registry1.dso.mil/bigbang"
   - name: postgresql
-    version: 13.2.1
+    version: 13.2.2
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.install
 annotations:
@@ -41,7 +41,7 @@ annotations:
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
     - name: base
-      image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+      image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
     - name: postgres
       condition: postgresql.install
-      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:15.4
+      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:15.5

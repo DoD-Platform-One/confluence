@@ -1504,7 +1504,7 @@ postgresql:
     registry: registry1.dso.mil
     debug: true
     repository: ironbank/opensource/postgres/postgresql
-    tag: "15.4"
+    tag: "15.5"
     pullSecrets:
     - private-registry
 
@@ -1572,7 +1572,7 @@ bbtests:
         memory: "1Gi"
 
 # -- Image used for the upstream provided helm tests
-helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.0.0"
+helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.1.0"
 
 hpa:
   enabled: false
