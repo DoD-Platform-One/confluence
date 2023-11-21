@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.16.6-bb.3](https://img.shields.io/badge/Version-1.16.6--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.6.1](https://img.shields.io/badge/AppVersion-8.6.1-informational?style=flat-square)
+![Version: 1.16.6-bb.4](https://img.shields.io/badge/Version-1.16.6--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.6.1](https://img.shields.io/badge/AppVersion-8.6.1-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -289,7 +289,7 @@ helm install confluence chart/
 | bbtests.cypress.resources.requests.memory | string | `"1Gi"` |  |
 | bbtests.cypress.resources.limits.cpu | string | `"1"` |  |
 | bbtests.cypress.resources.limits.memory | string | `"1Gi"` |  |
-| helmTestImage | string | `"registry1.dso.mil/ironbank/big-bang/base:2.0.0"` | Image used for the upstream provided helm tests |
+| helmTestImage | string | `"registry1.dso.mil/ironbank/big-bang/base:2.1.0"` | Image used for the upstream provided helm tests |
 | hpa.enabled | bool | `false` |  |
 | hpa.maxReplicas | int | `4` |  |
 | hpa.cpu | int | `70` |  |
