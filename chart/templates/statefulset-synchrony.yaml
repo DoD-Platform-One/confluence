@@ -26,8 +26,12 @@ spec:
     spec:
       serviceAccountName: {{ include "confluence.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.synchrony.shutdown.terminationGracePeriodSeconds }}
+      {{- if .Values.synchrony.securityContextEnabled }}
+      {{- with .Values.synchrony.securityContext }}
       securityContext:
-        fsGroup: {{ .Values.synchrony.securityContext.fsGroup }}
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
       hostAliases:
         {{- include "confluence.additionalHosts" . | nindent 8 }}
       {{- if .Values.synchrony.additionalCertificates.secretName }}
