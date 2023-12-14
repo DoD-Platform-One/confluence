@@ -7,28 +7,18 @@
 6. Open MR (or check the one that Renovate created for you) and validate that the pipeline is successful. Also follow the testing steps below for some manual confirmations.
 
 # Install Confluence Chart to Big Bang Cluster
-You will want to bring up a big bang cluster before running the following command:
+Reference the `Usage` section in `docs/README.md`.
 
-`helm upgrade -i confluence chart/ -f ../overrides/registry.yaml -n monitoring`
-
-Note: You will need your registry creds in an override.
-TODO: We are using `monitoring` namespace but ultimately we want our own namespace.
-
-NOTE: If you want to enable istio including ingress (confluence.bigbang.dev).  Then you will want to change the confluence values to have the following:
-
-```
-istio:
-  enabled: true
-  gateways:
-  - istio-system/public
-```
 # Testing new Confluence version
-
 1. Ensure that Confluence Pod (ie. confluence-0) is up and running successfully.
-2. Navigate to Confluence (confluencek.bigbang.dev OR port forwarding if you did not enable istio) and validate you are prompted to enter a license.
+2. Navigate to Confluence (confluence.bigbang.dev OR port forwarding if you did not enable istio) and validate you are prompted to enter a license.
 3. You can obtain a trial license quickly here: https://my.atlassian.com/license/evaluation?_ga=2.40938405.644877387.1570464610-1349982554.1568648451
 4. Validate that you can create and edit a post.
 
+# automountServiceAccountToken
+The mutating Kyverno policy named `update-automountserviceaccounttokens` is leveraged to harden all ServiceAccounts in this package with `automountServiceAccountToken: false`. This policy is configured by namespace in the Big Bang umbrella chart repository at [chart/templates/kyverno-policies/values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/chart/templates/kyverno-policies/values.yaml?ref_type=heads).
+
+This policy revokes access to the K8s API for Pods utilizing said ServiceAccounts. If a Pod truly requires access to the K8s API (for app functionality), the Pod is added to the `pods:` array of the same mutating policy. This grants the Pod access to the API, and creates a Kyverno PolicyException to prevent an alert.
 
 # Modifications made to upstream chart
 This is a high-level list of modifications that Big Bang has made to the upstream helm chart. You can use this as as cross-check to make sure that no modifications were lost during the upgrade process.
