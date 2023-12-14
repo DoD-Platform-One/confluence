@@ -37,7 +37,7 @@ image:
   imagePullSecrets: private-registry
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
-  tag: "8.6.1"
+  tag: "8.7.1"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
 # to Pods
@@ -698,32 +698,6 @@ confluence:
     #
     failureThreshold: 120
 
-  # Ensure that the server responds with a LivenessProbe
-  # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-tcp-liveness-probe
-  #
-  livenessProbe:
-
-    # -- Whether to apply the livenessProbe check to pod.
-    #
-    enabled: false
-
-    # -- Time to wait before starting the first probe
-    #
-    initialDelaySeconds: 60
-
-    # -- How often (in seconds) the Confluence container liveness probe will run
-    #
-    periodSeconds: 5
-
-    # -- Number of seconds after which the probe times out
-    #
-    timeoutSeconds: 1
-
-    # -- The number of consecutive failures of the Confluence container liveness probe
-    # before the pod fails liveness checks.
-    #
-    failureThreshold: 12
-
   # Confluence log configuration
   #
   accessLog:
@@ -751,6 +725,8 @@ confluence:
     initialDelaySeconds: 300
     # -- How often (in seconds) the Confluence container liveness probe will run
     periodSeconds: 5
+    # -- Number of seconds after which the probe times out
+    timeoutSeconds: 1
     # -- The number of consecutive failures of the Confluence container liveness probe
     failureThreshold: 12
 
@@ -1566,10 +1542,10 @@ bbtests:
     resources:
       requests:
         cpu: "1"
-        memory: "1Gi"
+        memory: "2Gi"
       limits:
         cpu: "1"
-        memory: "1Gi"
+        memory: "2Gi"
 
 # -- Image used for the upstream provided helm tests
 helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.1.0"
@@ -1619,3 +1595,32 @@ additionalConfigMaps: []
 #        content: |
 #          <xml>
 #          </xml>
+
+atlassianAnalyticsAndSupport:
+
+  analytics:
+
+    # -- Mount ConfigMap with selected Helm chart values as a JSON
+    # which DC products will read and send analytics events to Atlassian data pipelines
+    #
+    enabled: true
+
+  helmValues:
+
+    # -- Mount ConfigMap with selected Helm chart values as a YAML file
+    # which can be optionally including to support.zip
+    #
+    enabled: true
+
+# -- Metadata and pod spec for pods started in Helm tests
+#
+testPods:
+  labels: {}
+  annotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  schedulerName:
+  image:
+    permissionsTestContainer: debian:stable-slim
+    statusTestContainer: alpine:latest
