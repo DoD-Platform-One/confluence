@@ -37,7 +37,7 @@ image:
   imagePullSecrets: private-registry
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
-  tag: "8.7.1"
+  tag: "8.7.2"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
 # to Pods
@@ -299,6 +299,24 @@ volumes:
         requests:
           storage: 1Gi
 
+    # This field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.
+    # Only configure the below two attributes when your Kubernetes version is 1.27+, and
+    # feature gate StatefulSetAutoDeletePVC is enabled.
+    #
+    # For each policy that you can configure, you can set the value to either Delete or Retain.
+    #
+    # https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#persistentvolumeclaim-retention
+    #
+    persistentVolumeClaimRetentionPolicy:
+
+      # -- Configures the volume retention behavior that applies when the StatefulSet is deleted.
+      #
+      whenDeleted:
+
+      # -- Configures the volume retention behavior that applies when the replica count of the StatefulSet is reduced.
+      #
+      whenScaled:
+
     # -- Static provisioning of local-home using K8s PVs and PVCs
     #
     # NOTE: Due to the ephemeral nature of pods this approach to provisioning volumes for
@@ -444,6 +462,24 @@ volumes:
       resources:
         requests:
           storage:
+
+    # This field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.
+    # Only configure the below two attributes when your Kubernetes version is 1.27+, and
+    # feature gate StatefulSetAutoDeletePVC is enabled.
+    #
+    # For each policy that you can configure, you can set the value to either Delete or Retain.
+    #
+    # https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#persistentvolumeclaim-retention
+    #
+    persistentVolumeClaimRetentionPolicy:
+
+      # -- Configures the volume retention behavior that applies when the StatefulSet is deleted.
+      #
+      whenDeleted:
+
+      # -- Configures the volume retention behavior that applies when the replica count of the StatefulSet is reduced.
+      #
+      whenScaled:
 
     # -- Static provisioning of synchrony-home using K8s PVs and PVCs
     #
@@ -826,6 +862,13 @@ confluence:
     # for details.
     #
     command: "/shutdown-wait.sh"
+
+  # -- PostStart is executed immediately after a container is created.
+  # However, there is no guarantee that the hook will execute before the container ENTRYPOINT.
+  # See: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+  #
+  postStart:
+    command:
 
   # -- The Docker entrypoint.py generates application configuration on
   # first start; not all of these files are regenerated on subsequent starts.
