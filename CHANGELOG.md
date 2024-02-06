@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.17.2-bb.1] - 2024-02-02
+### Changed
+- gluon updated from 0.4.7 to 0.4.8
+
 ## [1.17.2-bb.0] - 2024-01-19
 ### Changed
 - gluon updated from 0.4.5 to 0.4.7
