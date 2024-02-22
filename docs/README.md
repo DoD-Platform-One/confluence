@@ -32,33 +32,19 @@ To install confluence as a community package in a Bigbang install, save the foll
 packages:
   # This will be used as the namespace for the install, as well as the name of the helm release. If this is changed, the destination service (below) needs to also be changed.
   confluence:
-    dependsOn:
-      - name: authservice
-        namespace: bigbang
     enabled: true
-    # Disabling this will bypass creating the istio VirtualService and NetworkPolicies.
-    wrapper:
-      enabled: true
     git:
       repo: https://repo1.dso.mil/big-bang/product/community/confluence
       # It is recommended to update this to the latest bb tag
-      tag: 1.10.0-bb.3
+      tag: 1.17.2-bb.1
       path: chart
     # This section is ignored if wrapper.enabled, above, is false. In this case, creation of an ingress for web access is left as an exercise for the reader.
-    istio:
-      enabled: true
-      hosts:
-        - names:
-            # Sub-URL for reaching the web UI; it will be reachable with this, plus your bigbang domain, eg, confluence.bigbang.dev.
-            - confluence
-          gateways:
-            - public
-          destination:
-            # The second portion of this URL is the namespace; if it was changed above, it needs to be changed here as well.
-            service: confluence.confluence.svc.cluster.local
-            port: 80
-    # Anything in this section is passed to the confluence chart directly; this allows all of your bigbang configuration to be in a single place.
     values:
+      istio:
+        enabled: true
+        confluence:
+          gateways:
+            - istio-system/public
       # See the database section of this README, below, for more.
       postgresql:
         install: true
