@@ -1047,7 +1047,7 @@ monitoring:
     runAsRoot: true
 
     # -- Custom SecurityContext for the jmx exporter init container
-    #
+    # If this is empty, .Values.confluence.containerSecurityContext will be used
     customSecurityContext: {}
 
     # -- Resources requests and limits for the JMX exporter init container

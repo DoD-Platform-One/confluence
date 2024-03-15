@@ -40,10 +40,17 @@ spec:
           image: {{ .Values.monitoring.jmxExporterImageRepo}}:{{ .Values.monitoring.jmxExporterImageTag}}
           command: ["cp"]
           args: ["/opt/jmx_exporter/jmx_prometheus_javaagent-0.18.0.jar", "{{ .Values.volumes.sharedHome.mountPath }}/jmx_prometheus_javaagent.jar"]
+          {{- if .Values.monitoring.jmxExporterInitContainer.customSecurityContext }}
           securityContext:
-            runAsUser: 1001
-            runAsGroup: 1001
-            runAsNonRoot: true
+          {{- with .Values.monitoring.jmxExporterInitContainer.customSecurityContext }}
+          {{- toYaml .  | nindent 12 }}
+          {{- end }}
+          {{- else }}
+          securityContext:
+          {{- with .Values.confluence.containerSecurityContext}}
+          {{- toYaml . | nindent 12}}
+          {{- end}}
+          {{- end }}
           volumeMounts:
             - mountPath: {{ .Values.volumes.sharedHome.mountPath | quote }}
               name: shared-home
