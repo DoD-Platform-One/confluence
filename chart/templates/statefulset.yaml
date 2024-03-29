@@ -5,6 +5,10 @@ metadata:
   labels:
     {{- include "common.labels.commonLabels" . | nindent 4 }}
 spec:
+  {{ if .Values.ordinals.enabled }}
+  ordinals:
+    start: {{ .Values.ordinals.start }}
+  {{ end }}
   replicas: {{ .Values.replicaCount }}
   serviceName: {{ include "common.names.fullname" . }}
   selector:
@@ -25,11 +29,26 @@ spec:
         {{- include "common.labels.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "confluence.serviceAccountName" . }}
-      terminationGracePeriodSeconds: 1
+      terminationGracePeriodSeconds: {{ .Values.confluence.shutdown.terminationGracePeriodSeconds }}
+      {{- if .Values.openshift.runWithRestrictedSCC }}
+      {{- else }}
+      {{- if .Values.confluence.securityContextEnabled }}
+      {{- with .Values.confluence.securityContext }}
       securityContext:
+        {{/* this condition will be removed in v2.0.0 */}}
+        {{- if and .enabled .gid }}
+        fsGroup: {{ .gid }}
+        {{- else }}
+        {{ toYaml . | nindent 8 }}
+        {{- if not .fsGroup }}
         # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Cnfluence container.
         # However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260
-        fsGroup: {{ .Values.confluence.securityContext.fsGroup }}
+        fsGroup: {{ .Values.confluence.securityContext.fsGroup }} 
+        {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
       hostAliases:
         {{- include "confluence.additionalHosts" . | nindent 8 }}
       initContainers:
@@ -59,7 +78,7 @@ spec:
               {{- end }}
         {{- end }}
         {{- include "confluence.additionalInitContainers" . | nindent 8 }}
-        {{- if .Values.volumes.sharedHome.nfsPermissionFixer.enabled }}
+        {{- if and .Values.volumes.sharedHome.nfsPermissionFixer.enabled (not .Values.openshift.runWithRestrictedSCC) }}
         - name: nfs-permission-fixer
           image: {{ .Values.volumes.sharedHome.nfsPermissionFixer.imageRepo }}:{{ .Values.volumes.sharedHome.nfsPermissionFixer.imageTag }}
           imagePullPolicy: IfNotPresent
