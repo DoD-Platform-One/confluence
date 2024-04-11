@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.18.1-bb.1] - 2024-04-04
+### Added 
+- Added custom network policies
+
 ## [1.18.1-bb.0] - 2024-03-28
 ### Changed
 - ironbank/atlassian/confluence-data-center/confluence-node updated from 8.8.0 to 8.8.1
