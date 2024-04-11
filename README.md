@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.18.1-bb.0](https://img.shields.io/badge/Version-1.18.1--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.7](https://img.shields.io/badge/AppVersion-8.5.7-informational?style=flat-square)
+![Version: 1.18.1-bb.1](https://img.shields.io/badge/Version-1.18.1--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.7](https://img.shields.io/badge/AppVersion-8.5.7-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -307,6 +307,7 @@ helm install confluence chart/
 | networkPolicies.ingressLabels.app | string | `"public-ingressgateway"` |  |
 | networkPolicies.ingressLabels.istio | string | `"ingressgateway"` |  |
 | networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` |  |
+| networkPolicies.additionalPolicies | list | `[]` |  |
 | additionalConfigMaps | list | `[]` | Create additional ConfigMaps with given names, keys and content. Ther Helm release name will be used as a prefix for a ConfigMap name, fileName is used as subPath  |
 | atlassianAnalyticsAndSupport.analytics.enabled | bool | `true` | Mount ConfigMap with selected Helm chart values as a JSON which DC products will read and send analytics events to Atlassian data pipelines  |
 | atlassianAnalyticsAndSupport.helmValues.enabled | bool | `true` | Mount ConfigMap with selected Helm chart values as a YAML file which can be optionally including to support.zip  |

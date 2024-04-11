@@ -1643,6 +1643,8 @@ networkPolicies:
     istio: ingressgateway
 
   controlPlaneCidr: "0.0.0.0/0"
+  additionalPolicies: []
+
 
 # -- Create additional ConfigMaps with given names, keys and content. Ther Helm release name will be used as a prefix
 # for a ConfigMap name, fileName is used as subPath
