@@ -11,7 +11,7 @@ Reference the `Usage` section in `docs/README.md`.
 
 # Testing new Confluence version
 1. Ensure that Confluence Pod (ie. confluence-0) is up and running successfully.
-2. Navigate to Confluence (confluence.bigbang.dev OR port forwarding if you did not enable istio) and validate you are prompted to enter a license.
+2. Navigate to Confluence (if istio enabled and /etc/hosts edited, confluence.dev.bigbang.mil -- else, use Kubernetes port forwarding) and validate you are prompted to enter a license.
 3. You can obtain a trial license quickly here: https://my.atlassian.com/license/evaluation?_ga=2.40938405.644877387.1570464610-1349982554.1568648451
 4. Validate that you can create and edit a post.
 

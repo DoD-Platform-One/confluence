@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.18.1-bb.3](https://img.shields.io/badge/Version-1.18.1--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.7](https://img.shields.io/badge/AppVersion-8.5.7-informational?style=flat-square)
+![Version: 1.18.1-bb.4](https://img.shields.io/badge/Version-1.18.1--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.7](https://img.shields.io/badge/AppVersion-8.5.7-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -285,9 +285,12 @@ helm install confluence chart/
 | postgresql.volumePermissions.enabled | bool | `false` |  |
 | proxyName | string | `nil` |  |
 | hostnamePrefix | string | `"confluence"` |  |
-| hostname | string | `"bigbang.dev"` |  |
+| hostname | string | `"dev.bigbang.mil"` |  |
 | istio.enabled | bool | `false` |  |
 | istio.gateways[0] | string | `"istio-system/public"` |  |
+| istio.hardened.enabled | bool | `false` |  |
+| istio.hardened.outboundTrafficPolicyMode | string | `"REGISTRY_ONLY"` |  |
+| istio.hardened.customServiceEntries | list | `[]` |  |
 | bbtests.enabled | bool | `false` |  |
 | bbtests.cypress.artifacts | bool | `true` |  |
 | bbtests.cypress.envs.cypress_url | string | `"http://{{ include \"common.names.fullname\" . }}:{{ .Values.confluence.service.port }}/setup/setuplicense.action"` |  |

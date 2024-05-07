@@ -1,4 +1,4 @@
-# PlatformOne uses MniOrange sso pulgins for Atlassian products
+# PlatformOne uses MiniOrange sso pulgins for Atlassian products
 
 MiniOrange Plugin:
 https://plugins.miniorange.com/oauth-openid-single-sign-on-sso-confluence-using-keycloak

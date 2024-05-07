@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.18.1-bb.3
+version: 1.18.1-bb.4
 appVersion: 8.5.7
 kubeVersion: ">=1.21.x-0"
 keywords:
