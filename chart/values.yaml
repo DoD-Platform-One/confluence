@@ -19,7 +19,6 @@
 #
 ##
 
-
 # -- The initial number of Confluence pods that should be started at deployment time.
 # Note that Confluence requires manual configuration via the browser post deployment
 # after the first pod is deployed. This configuration must be completed before
@@ -1592,11 +1591,27 @@ proxyName:
 ## hostnamePrefix added to allow custom configuration of entire hostname
 hostnamePrefix: confluence
 ## This is domain name as per chat from bigbang
-hostname: bigbang.dev
+hostname: dev.bigbang.mil
 istio:
-  enabled: false 
+  enabled: false
   gateways:
   - istio-system/public
+  hardened:
+    enabled: false
+    outboundTrafficPolicyMode: "REGISTRY_ONLY"
+    customServiceEntries: []
+  # customServiceEntries:
+      # - name: "allow-google"
+      #   enabled: true
+      #   spec:
+      #     hosts:
+      #       - google.com
+      #     location: MESH_EXTERNAL
+      #     ports:
+      #       - number: 443
+      #         protocol: TLS
+      #         name: https
+      #     resolution: DNS
 
 # Values for bigbang helm tests
 bbtests:
