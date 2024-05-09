@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.18.1-bb.4](https://img.shields.io/badge/Version-1.18.1--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.7](https://img.shields.io/badge/AppVersion-8.5.7-informational?style=flat-square)
+![Version: 1.19.0-bb.0](https://img.shields.io/badge/Version-1.19.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.8](https://img.shields.io/badge/AppVersion-8.5.8-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -42,10 +42,10 @@ helm install confluence chart/
 | ordinals | object | `{"enabled":false,"start":0}` | Set a custom start ordinal number for the K8s stateful set. Note that this depends on the StatefulSetStartOrdinal K8s feature gate, which has entered beta state with K8s version 1.27.  |
 | ordinals.enabled | bool | `false` | Enable only if StatefulSetStartOrdinal K8s feature gate is available.  |
 | ordinals.start | int | `0` | Set start ordinal to a positive integer, defaulting to 0.  |
-| image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node"` |  |
+| image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts"` |  |
 | image.imagePullSecrets | string | `"private-registry"` | Optional image repository pull secret |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.tag | string | `"8.8.1"` | The docker image tag to be used. Defaults to the Chart appVersion. |
+| image.tag | string | `"8.5.8"` | The docker image tag to be used. Defaults to the Chart appVersion. |
 | serviceAccount.create | bool | `true` | Set to 'true' if a ServiceAccount should be created, or 'false' if it already exists.  |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to be used by the pods. If not specified, but the "serviceAccount.create" flag is set to 'true', then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server  |
 | serviceAccount.imagePullSecrets | list | `[{"name":"private-registry"}]` | For Docker images hosted in private registries, define the list of image pull secrets that should be utilized by the created ServiceAccount https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod  |
@@ -265,7 +265,7 @@ helm install confluence chart/
 | postgresql.image.registry | string | `"registry1.dso.mil"` |  |
 | postgresql.image.debug | bool | `true` |  |
 | postgresql.image.repository | string | `"ironbank/opensource/postgres/postgresql"` |  |
-| postgresql.image.tag | string | `"15.6"` |  |
+| postgresql.image.tag | string | `"16.2"` |  |
 | postgresql.image.pullSecrets[0] | string | `"private-registry"` |  |
 | postgresql.auth.username | string | `"confuser"` |  |
 | postgresql.auth.password | string | `"bogus-satisfy-upgrade"` |  |
@@ -316,6 +316,16 @@ helm install confluence chart/
 | atlassianAnalyticsAndSupport.helmValues.enabled | bool | `true` | Mount ConfigMap with selected Helm chart values as a YAML file which can be optionally including to support.zip  |
 | testPods | object | `{"affinity":{},"annotations":{},"image":{"permissionsTestContainer":"debian:stable-slim","statusTestContainer":"alpine:latest"},"labels":{},"nodeSelector":{},"resources":{},"schedulerName":null,"tolerations":[]}` | Metadata and pod spec for pods started in Helm tests  |
 | openshift.runWithRestrictedSCC | bool | `false` | When set to true, the containers will run with a restricted Security Context Constraint (SCC). See: https://docs.openshift.com/container-platform/4.14/authentication/managing-security-context-constraints.html This configuration property unsets pod's SecurityContext, nfs-fixer init container (which runs as root), and mounts server configuration files as ConfigMaps.  |
+| opensearch.enabled | bool | `false` | Deploy OpenSearch Helm chart and Configure Confluence to use it as a search platform  |
+| opensearch.credentials.createSecret | bool | `true` | Let the Helm chart create a secret with an auto generated initial admin password  |
+| opensearch.credentials.existingSecretRef | object | `{"name":null}` | Use an existing secret with the key OPENSEARCH_INITIAL_ADMIN_PASSWORD holding the initial admin password  |
+| opensearch.singleNode | bool | `true` | OpenSearch helm specific values, see: https://github.com/opensearch-project/helm-charts/blob/main/charts/opensearch/values.yaml  |
+| opensearch.resources.requests.cpu | int | `1` |  |
+| opensearch.resources.requests.memory | string | `"1Gi"` |  |
+| opensearch.persistence.size | string | `"10Gi"` |  |
+| opensearch.extraEnvs[0].name | string | `"plugins.security.ssl.http.enabled"` |  |
+| opensearch.extraEnvs[0].value | string | `"false"` |  |
+| opensearch.envFrom[0].secretRef.name | string | `"opensearch-initial-password"` | If using a pre-created secret, make sure to change secret name to match opensearch.credentials.existingSecretRef.name  |
 
 ## Contributing
 

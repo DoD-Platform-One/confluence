@@ -45,12 +45,12 @@ ordinals:
 #
 image:
   # repository: atlassian/confluence-server
-  repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node
+  repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts
   # -- Optional image repository pull secret
   imagePullSecrets: private-registry
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
-  tag: "8.8.1"
+  tag: "8.5.8"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
 # to Pods
@@ -1545,7 +1545,7 @@ postgresql:
     registry: registry1.dso.mil
     debug: true
     repository: ironbank/opensource/postgres/postgresql
-    tag: "15.6"
+    tag: "16.2"
     pullSecrets:
     - private-registry
 
@@ -1717,3 +1717,39 @@ openshift:
   # configuration files as ConfigMaps.
   #
   runWithRestrictedSCC: false
+
+
+opensearch:
+
+  # -- Deploy OpenSearch Helm chart and Configure Confluence to use it as a search platform
+  #
+  enabled: false
+
+  credentials:
+    # -- Let the Helm chart create a secret with an auto generated initial admin password
+    #
+    createSecret: true
+
+    # -- Use an existing secret with the key OPENSEARCH_INITIAL_ADMIN_PASSWORD holding the initial admin password
+    #
+    existingSecretRef:
+      name:
+
+  # -- OpenSearch helm specific values, see: https://github.com/opensearch-project/helm-charts/blob/main/charts/opensearch/values.yaml
+  #
+  singleNode: true
+  resources:
+    requests:
+      cpu: 1
+      memory: 1Gi
+  persistence:
+    size: 10Gi
+  extraEnvs:
+    - name: plugins.security.ssl.http.enabled
+      value: "false"
+  envFrom:
+    - secretRef:
+         # -- If using a pre-created secret, make sure to change secret name to match opensearch.credentials.existingSecretRef.name
+         #
+         name: opensearch-initial-password
+

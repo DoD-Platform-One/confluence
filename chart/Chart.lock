@@ -4,9 +4,12 @@ dependencies:
   version: 1.2.6
 - name: gluon
   repository: oci://registry1.dso.mil/bigbang
-  version: 0.4.8
+  version: 0.5.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 13.2.2
-digest: sha256:c4175d9f7ad105279a3f09aa4b808048f9bc2f8923213f2157082f97ddbb2965
-generated: "2024-02-02T14:09:23.665734-05:00"
+- name: opensearch
+  repository: https://opensearch-project.github.io/helm-charts
+  version: 2.19.0
+digest: sha256:cbc6ea76bff2bfa0c3fcc92b657286dbfb4532aa069d0f25313475dddf894e3e
+generated: "2024-05-08T14:25:23.473953491-07:00"

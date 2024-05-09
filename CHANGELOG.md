@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [8.9.0-bb.0] - 2024-05-08
+### Changed
+- gluon updated from 0.4.8 to 0.5.0
+- ironbank/atlassian/confluence-data-center/confluence-node-lts updated from 8.5.7 to 8.5.8
+- ironbank/opensource/postgres/postgresql updated from 15.6 to 16.2
+- cypress from 13.2.0 to 13.8.1
+
 ## [1.18.1-bb.4] - 2024-04-30
 ### Changed
 - Added k8s templates to support Istio Egress destination allow list
