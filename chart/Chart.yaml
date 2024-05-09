@@ -2,8 +2,8 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.18.1-bb.4
-appVersion: 8.5.7
+version: 1.19.0-bb.0
+appVersion: 8.5.8
 kubeVersion: ">=1.21.x-0"
 keywords:
 - Confluence
@@ -22,12 +22,16 @@ dependencies:
     version: 1.2.6
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: gluon
-    version: "0.4.8"
+    version: "0.5.0"
     repository: "oci://registry1.dso.mil/bigbang"
   - name: postgresql
     version: 13.2.2
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.install
+  - name: opensearch
+    version: 2.19.0
+    repository: https://opensearch-project.github.io/helm-charts
+    condition: opensearch.enabled
 annotations:
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/changes: |-
@@ -42,11 +46,13 @@ annotations:
     - "Added pvc retention policy to Bitbucket Mesh StatefulSet (#755)"
     - "Include shared home for synchrony when additional libs are defined (#779)"
     - "Get rid of server repo references (#777)"
+    - "Make cacerts writable for user and group (#790)"
+    - "Optionally deploy OpenSearch Helm Chart With Confluence (#788)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 8.8.1
+    - Confluence: 8.5.8
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.8.1
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts:8.5.8
     - name: fluentd-kubernetes-daemonset
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
@@ -54,5 +60,4 @@ annotations:
       image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
     - name: postgres
       condition: postgresql.install
-      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:15.6
-
+      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:16.2

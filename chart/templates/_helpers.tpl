@@ -756,7 +756,7 @@ Otherwise, default to the embedded Postgres Pod connection information
 {{- if .Values.confluence.additionalCertificates.customCmd}}
 {{ .Values.confluence.additionalCertificates.customCmd}}
 {{- else }}
-set -e; cp $JAVA_HOME/lib/security/cacerts /var/ssl/cacerts; for crt in /tmp/crt/*.*; do echo "Adding $crt to keystore"; keytool -import -keystore /var/ssl/cacerts -storepass changeit -noprompt -alias $(echo $(basename $crt)) -file $crt; done;
+set -e; cp $JAVA_HOME/lib/security/cacerts /var/ssl/cacerts; chmod 664 /var/ssl/cacerts; for crt in /tmp/crt/*.*; do echo "Adding $crt to keystore"; keytool -import -keystore /var/ssl/cacerts -storepass changeit -noprompt -alias $(echo $(basename $crt)) -file $crt; done;
 {{- end }}
 {{- end }}
 
@@ -764,6 +764,29 @@ set -e; cp $JAVA_HOME/lib/security/cacerts /var/ssl/cacerts; for crt in /tmp/crt
 {{- if .Values.synchrony.additionalCertificates.customCmd}}
 {{ .Values.synchrony.additionalCertificates.customCmd}}
 {{- else }}
-set -e; cp $JAVA_HOME/lib/security/cacerts /var/ssl/cacerts; for crt in /tmp/crt/*.*; do echo "Adding $crt to keystore"; keytool -import -keystore /var/ssl/cacerts -storepass changeit -noprompt -alias $(echo $(basename $crt)) -file $crt; done;
+set -e; cp $JAVA_HOME/lib/security/cacerts /var/ssl/cacerts; chmod 664 /var/ssl/cacerts; for crt in /tmp/crt/*.*; do echo "Adding $crt to keystore"; keytool -import -keystore /var/ssl/cacerts -storepass changeit -noprompt -alias $(echo $(basename $crt)) -file $crt; done;
+{{- end }}
+{{- end }}
+
+
+{{- define "generate_static_password_b64enc" -}}
+{{- if not (index .Release "temp_vars") -}}
+{{-   $_ := set .Release "temp_vars" dict -}}
+{{- end -}}
+{{- $key := printf "%s_%s" .Release.Name "password" -}}
+{{- if not (index .Release.temp_vars $key) -}}
+{{-   $_ := set .Release.temp_vars $key (randAlphaNum 40 | b64enc ) -}}
+{{- end -}}
+{{- index .Release.temp_vars $key -}}
+{{- end -}}
+
+{{- define "opensearch.initial.admin.password" }}
+{{- $defaultSecretName := "opensearch-initial-password" }}
+{{- $secretName := default $defaultSecretName .Values.opensearch.credentials.existingSecretRef.name }}
+{{- $secretData := (lookup "v1" "Secret" .Release.Namespace $secretName) }}
+{{- if $secretData.data }}
+{{- index $secretData.data "OPENSEARCH_INITIAL_ADMIN_PASSWORD" }}
+{{- else }}
+{{ include "generate_static_password_b64enc" . }}
 {{- end }}
 {{- end }}
