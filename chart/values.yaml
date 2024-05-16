@@ -50,7 +50,7 @@ image:
   imagePullSecrets: private-registry
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
-  tag: "8.5.8"
+  tag: "8.5.9"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
 # to Pods
@@ -1398,7 +1398,8 @@ fluentd:
 
   # -- Set to 'true' if a custom config (see 'configmap-fluentd.yaml' for default)
   # should be used for Fluentd. If enabled this config must be supplied via the
-  # 'fluentdCustomConfig' property below.
+  # 'fluentdCustomConfig' property below. If your custom config forces fluentd to run in a server mode,
+  # add `-Datlassian.logging.cloud.enabled=true` to `confluence.AdditionalJvmArgs` stanza in values file
   #
   customConfigFile: false
 

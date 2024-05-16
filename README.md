@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.19.0-bb.1](https://img.shields.io/badge/Version-1.19.0--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.8](https://img.shields.io/badge/AppVersion-8.5.8-informational?style=flat-square)
+![Version: 1.20.0-bb.0](https://img.shields.io/badge/Version-1.20.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.9](https://img.shields.io/badge/AppVersion-8.5.9-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -45,7 +45,7 @@ helm install confluence chart/
 | image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts"` |  |
 | image.imagePullSecrets | string | `"private-registry"` | Optional image repository pull secret |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.tag | string | `"8.5.8"` | The docker image tag to be used. Defaults to the Chart appVersion. |
+| image.tag | string | `"8.5.9"` | The docker image tag to be used. Defaults to the Chart appVersion. |
 | serviceAccount.create | bool | `true` | Set to 'true' if a ServiceAccount should be created, or 'false' if it already exists.  |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to be used by the pods. If not specified, but the "serviceAccount.create" flag is set to 'true', then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server  |
 | serviceAccount.imagePullSecrets | list | `[{"name":"private-registry"}]` | For Docker images hosted in private registries, define the list of image pull secrets that should be utilized by the created ServiceAccount https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod  |
@@ -242,7 +242,7 @@ helm install confluence chart/
 | fluentd.imageTag | string | `"v1.11.5-debian-elasticsearch7-1.2"` | The Fluentd sidecar image tag  |
 | fluentd.resources | object | `{}` | Resources requests and limits for fluentd sidecar container See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/  |
 | fluentd.command | string | `nil` | The command used to start Fluentd. If not supplied the default command will be used: "fluentd -c /fluentd/etc/fluent.conf -v"  Note: The custom command can be free-form, however pay particular attention to the process that should ultimately be left running in the container. This process should be invoked with 'exec' so that signals are appropriately propagated to it, for instance SIGTERM. An example of how such a command may look is: "<command 1> && <command 2> && exec <primary command>" |
-| fluentd.customConfigFile | bool | `false` | Set to 'true' if a custom config (see 'configmap-fluentd.yaml' for default) should be used for Fluentd. If enabled this config must be supplied via the 'fluentdCustomConfig' property below.  |
+| fluentd.customConfigFile | bool | `false` | Set to 'true' if a custom config (see 'configmap-fluentd.yaml' for default) should be used for Fluentd. If enabled this config must be supplied via the 'fluentdCustomConfig' property below. If your custom config forces fluentd to run in a server mode, add `-Datlassian.logging.cloud.enabled=true` to `confluence.AdditionalJvmArgs` stanza in values file  |
 | fluentd.fluentdCustomConfig | object | `{}` | Custom fluent.conf file  |
 | fluentd.httpPort | int | `9880` | The port on which the Fluentd sidecar will listen  |
 | fluentd.elasticsearch.enabled | bool | `true` | Set to 'true' if Fluentd should send all log events to an Elasticsearch service.  |
