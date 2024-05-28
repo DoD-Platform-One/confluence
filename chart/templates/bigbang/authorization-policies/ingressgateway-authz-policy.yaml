@@ -1,0 +1,31 @@
+{{- if and .Values.istio.enabled .Values.istio.hardened.enabled -}}
+{{- $releaseNamespace := .Release.Namespace -}}
+{{- $context := . -}}
+{{- range .Values.istio.gateways -}}
+{{- $namespace := "istio-system" -}}
+{{- $name := . -}}
+{{- if contains "/" $name -}}
+{{- $gatewayParts := split "/" $name }}
+{{- $namespace = $gatewayParts._0 -}}
+{{- $name = $gatewayParts._1 -}}
+{{- end -}}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ printf "%s-ingressgateway-authz-policy" $name }}
+  namespace: {{ $releaseNamespace }}
+spec:
+  selector:
+    matchLabels:
+      {{ include "confluence.selectorLabels" $context | nindent 6 }}
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces:
+        - {{ $namespace }}
+        principals:
+        - "cluster.local/ns/{{ $namespace }}/sa/{{ $name }}-ingressgateway-service-account"
+---
+{{ end -}}
+{{- end }}

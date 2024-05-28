@@ -1599,6 +1599,10 @@ istio:
   - istio-system/public
   hardened:
     enabled: false
+    customAuthorizationPolicies: []
+      # - name: "allow-nothing"
+      #   enabled: true
+      #   spec: {}
     outboundTrafficPolicyMode: "REGISTRY_ONLY"
     customServiceEntries: []
   # customServiceEntries:
