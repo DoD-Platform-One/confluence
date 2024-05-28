@@ -42,6 +42,8 @@ packages:
     values:
       istio:
         enabled: true
+        hardened:
+          enabled: true
         confluence:
           gateways:
             - istio-system/public
