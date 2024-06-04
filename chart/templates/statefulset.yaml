@@ -33,20 +33,10 @@ spec:
       {{- if .Values.openshift.runWithRestrictedSCC }}
       {{- else }}
       {{- if .Values.confluence.securityContextEnabled }}
-      {{- with .Values.confluence.securityContext }}
       securityContext:
-        {{/* this condition will be removed in v2.0.0 */}}
-        {{- if and .enabled .gid }}
-        fsGroup: {{ .gid }}
-        {{- else }}
-        {{ toYaml . | nindent 8 }}
-        {{- if not .fsGroup }}
         # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Cnfluence container.
         # However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260
         fsGroup: {{ .Values.confluence.securityContext.fsGroup }} 
-        {{- end }}
-        {{- end }}
-      {{- end }}
       {{- end }}
       {{- end }}
       hostAliases:
