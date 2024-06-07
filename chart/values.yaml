@@ -45,12 +45,12 @@ ordinals:
 #
 image:
   # repository: atlassian/confluence-server
-  repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts
+  repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node
   # -- Optional image repository pull secret
   imagePullSecrets: private-registry
   pullPolicy: IfNotPresent
   # -- The docker image tag to be used. Defaults to the Chart appVersion.
-  tag: "8.5.9"
+  tag: "8.8.1"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
 # to Pods
