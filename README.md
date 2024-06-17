@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.20.0-bb.6](https://img.shields.io/badge/Version-1.20.0--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.8.1](https://img.shields.io/badge/AppVersion-8.8.1-informational?style=flat-square)
+![Version: 1.20.0-bb.7](https://img.shields.io/badge/Version-1.20.0--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.9.2](https://img.shields.io/badge/AppVersion-8.9.2-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -45,7 +45,7 @@ helm install confluence chart/
 | image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node"` |  |
 | image.imagePullSecrets | string | `"private-registry"` | Optional image repository pull secret |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.tag | string | `"8.8.1"` | The docker image tag to be used. Defaults to the Chart appVersion. |
+| image.tag | string | `"8.9.2"` | The docker image tag to be used. Defaults to the Chart appVersion. |
 | serviceAccount.create | bool | `true` | Set to 'true' if a ServiceAccount should be created, or 'false' if it already exists.  |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to be used by the pods. If not specified, but the "serviceAccount.create" flag is set to 'true', then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server  |
 | serviceAccount.imagePullSecrets | list | `[{"name":"private-registry"}]` | For Docker images hosted in private registries, define the list of image pull secrets that should be utilized by the created ServiceAccount https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod  |
