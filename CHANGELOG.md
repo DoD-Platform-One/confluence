@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.20.0-bb.8] - 2024-06-17
+### Changed
+- Update dependency cypress to v13.11.0
+
 ## [1.20.0-bb.7] - 2024-06-08
 ### Changed
 - ironbank/atlassian/confluence-data-center/confluence-node updated from 8.8.1 to 8.9.2

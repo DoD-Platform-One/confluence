@@ -19,6 +19,7 @@
 #
 ##
 
+
 # -- The initial number of Confluence pods that should be started at deployment time.
 # Note that Confluence requires manual configuration via the browser post deployment
 # after the first pod is deployed. This configuration must be completed before
@@ -44,12 +45,21 @@ ordinals:
 # Image configuration
 #
 image:
-  # repository: atlassian/confluence-server
+
+  # -- The Confluence Docker image to use
+  # https://hub.docker.com/r/atlassian/confluence
+  #
   repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node
+
+  # -- Image pull policy
+  #
+  pullPolicy: IfNotPresent
+
   # -- Optional image repository pull secret
   imagePullSecrets: private-registry
-  pullPolicy: IfNotPresent
-  # -- The docker image tag to be used. Defaults to the Chart appVersion.
+
+  # -- The docker image tag to be used - defaults to the Chart appVersion
+  #
   tag: "8.9.2"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
@@ -191,103 +201,14 @@ database:
     #
     passwordSecretKey: password
 
-# Ingress configuration
+# REQUIRED - Volume configuration
 #
-# To make the Atlassian product available from outside the K8s cluster an Ingress
-# Controller should be pre-provisioned. With this in place the configuration below
-# can be used to configure an appropriate Ingress Resource.
-# https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#ingress
+# By default, the charts will configure the local-home, synchrony-home and shared-home as ephemeral
+# volumes i.e. 'emptyDir: {}'. This is fine for evaluation purposes but for production
+# deployments this is not ideal and so local-home, synchrony-home and shared-home should all be configured
+# appropriately.
+# https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#volumes
 #
-ingress:
-
-  # -- Set to 'true' if an Ingress Resource should be created. This depends on a
-  # pre-provisioned Ingress Controller being available.
-  #
-  create: false
-
-  # -- Set to true if you want to create an OpenShift Route instead of an Ingress
-  #
-  openShiftRoute: false
-
-  # -- routeHttpHeaders defines policy for HTTP headers. Applicable to OpenShift Routes only
-  #
-  routeHttpHeaders: {}
-
-  # -- The class name used by the ingress controller if it's being used.
-  #
-  # Please follow documentation of your ingress controller. If the cluster
-  # contains multiple ingress controllers, this setting allows you to control
-  # which of them is used for Atlassian application traffic.
-  #
-  className: "nginx"
-
-  # -- Set to 'true' if the Ingress Resource is to use the K8s 'ingress-nginx'
-  # controller.
-  # https://kubernetes.github.io/ingress-nginx/
-  #
-  # This will populate the Ingress Resource with annotations that are specific to
-  # the K8s ingress-nginx controller. Set to 'false' if a different controller is
-  # to be used, in which case the appropriate annotations for that controller must
-  # be specified below under 'ingress.annotations'.
-  #
-  nginx: true
-
-  # -- The max body size to allow. Requests exceeding this size will result
-  # in an HTTP 413 error being returned to the client.
-  #
-  maxBodySize: 250m
-
-  # -- Defines a timeout for establishing a connection with a proxied server. It should
-  # be noted that this timeout cannot usually exceed 75 seconds.
-  #
-  proxyConnectTimeout: 60
-
-  # -- Defines a timeout for reading a response from the proxied server. The timeout is
-  # set only between two successive read operations, not for the transmission of the
-  # whole response. If the proxied server does not transmit anything within this time,
-  # the connection is closed.
-  #
-  proxyReadTimeout: 60
-
-  # -- Sets a timeout for transmitting a request to the proxied server. The timeout is set
-  # only between two successive write operations, not for the transmission of the whole
-  # request. If the proxied server does not receive anything within this time, the
-  # connection is closed.
-  #
-  proxySendTimeout: 60
-
-  # -- The fully-qualified hostname (FQDN) of the Ingress Resource. Traffic coming in on
-  # this hostname will be routed by the Ingress Resource to the appropriate backend
-  # Service.
-  #
-  host:
-
-  # -- The base path for the Ingress Resource. For example '/confluence'. Based on a
-  # 'ingress.host' value of 'company.k8s.com' this would result in a URL of
-  # 'company.k8s.com/confluence'. Default value is 'confluence.service.contextPath'
-  path:
-
-  # -- The custom annotations that should be applied to the Ingress Resource
-  # when NOT using the K8s ingress-nginx controller.
-  #
-  annotations: {}
-
-  # -- Set to 'true' if browser communication with the application should be TLS
-  # (HTTPS) enforced.
-  #
-  https: true
-
-  # -- The name of the K8s Secret that contains the TLS private key and corresponding
-  # certificate. When utilised, TLS termination occurs at the ingress point where
-  # traffic to the Service, and it's Pods is in plaintext.
-  #
-  # Usage is optional and depends on your use case. The Ingress Controller itself
-  # can also be configured with a TLS secret for all Ingress Resources.
-  # https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets
-  # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
-  #
-  tlsSecretName:
-
 volumes:
 
   # Each pod requires its own volume for 'local-home'. This is needed for key data
@@ -552,6 +473,105 @@ volumes:
   #
   defaultPermissionsMode: 484
 
+# Ingress configuration
+#
+# To make the Atlassian product available from outside the K8s cluster an Ingress
+# Controller should be pre-provisioned. With this in place the configuration below
+# can be used to configure an appropriate Ingress Resource.
+# https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#ingress
+#
+ingress:
+
+  # -- Set to 'true' if an Ingress Resource should be created. This depends on a
+  # pre-provisioned Ingress Controller being available.
+  #
+  create: false
+
+  # -- Set to true if you want to create an OpenShift Route instead of an Ingress
+  #
+  openShiftRoute: false
+
+  # -- routeHttpHeaders defines policy for HTTP headers. Applicable to OpenShift Routes only
+  #
+  routeHttpHeaders: {}
+
+  # -- The class name used by the ingress controller if it's being used.
+  #
+  # Please follow documentation of your ingress controller. If the cluster
+  # contains multiple ingress controllers, this setting allows you to control
+  # which of them is used for Atlassian application traffic.
+  #
+  className: "nginx"
+
+  # -- Set to 'true' if the Ingress Resource is to use the K8s 'ingress-nginx'
+  # controller.
+  # https://kubernetes.github.io/ingress-nginx/
+  #
+  # This will populate the Ingress Resource with annotations that are specific to
+  # the K8s ingress-nginx controller. Set to 'false' if a different controller is
+  # to be used, in which case the appropriate annotations for that controller must
+  # be specified below under 'ingress.annotations'.
+  #
+  nginx: true
+
+  # -- The max body size to allow. Requests exceeding this size will result
+  # in an HTTP 413 error being returned to the client.
+  #
+  maxBodySize: 250m
+
+  # -- Defines a timeout for establishing a connection with a proxied server. It should
+  # be noted that this timeout cannot usually exceed 75 seconds.
+  #
+  proxyConnectTimeout: 60
+
+  # -- Defines a timeout for reading a response from the proxied server. The timeout is
+  # set only between two successive read operations, not for the transmission of the
+  # whole response. If the proxied server does not transmit anything within this time,
+  # the connection is closed.
+  #
+  proxyReadTimeout: 60
+
+  # -- Sets a timeout for transmitting a request to the proxied server. The timeout is set
+  # only between two successive write operations, not for the transmission of the whole
+  # request. If the proxied server does not receive anything within this time, the
+  # connection is closed.
+  #
+  proxySendTimeout: 60
+
+  # -- The fully-qualified hostname (FQDN) of the Ingress Resource. Traffic coming in on
+  # this hostname will be routed by the Ingress Resource to the appropriate backend
+  # Service.
+  #
+  host:
+
+  # -- The base path for the Ingress Resource. For example '/confluence'. Based on a
+  # 'ingress.host' value of 'company.k8s.com' this would result in a URL of
+  # 'company.k8s.com/confluence'. Default value is 'confluence.service.contextPath'
+  path:
+
+  # -- The custom annotations that should be applied to the Ingress Resource.
+  # If using an ingress-nginx controller be sure that the annotations you add
+  # here are compatible with those already defined in the 'ingess.yaml' template
+  #
+  annotations: {}
+
+  # -- Set to 'true' if browser communication with the application should be TLS
+  # (HTTPS) enforced.
+  #
+  https: true
+
+  # -- The name of the K8s Secret that contains the TLS private key and corresponding
+  # certificate. When utilised, TLS termination occurs at the ingress point where
+  # traffic to the Service, and it's Pods is in plaintext.
+  #
+  # Usage is optional and depends on your use case. The Ingress Controller itself
+  # can also be configured with a TLS secret for all Ingress Resources.
+  # https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets
+  # https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+  #
+  tlsSecretName:
+
+
 # Confluence configuration
 #
 confluence:
@@ -672,10 +692,10 @@ confluence:
     # -- The port on which the Confluence container listens for Hazelcast traffic
     #
     hazelcast: 5701
-    # -- The port used for Confluence Inernal Connecitons between multiple Confluence nodes
-    intconnector: 8888
+
     # --  The port used for Confluence internal services
     intersvc: 8081
+
     # -- The port on which Synchrony is used for collaborative editing
     # It is easier to manage Synchrony on the container itself rather than deploying a separate stateful set and services
     synchrony: 8091
@@ -755,6 +775,36 @@ confluence:
     #
     failureThreshold: 120
 
+  # Ensure that the server responds with a LivenessProbe
+  # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-tcp-liveness-probe
+  #
+  livenessProbe:
+
+    # -- Whether to apply the livenessProbe check to pod.
+    #
+    enabled: false
+
+    # -- Time to wait before starting the first probe
+    #
+    initialDelaySeconds: 60
+
+    # -- How often (in seconds) the Confluence container liveness probe will run
+    #
+    periodSeconds: 5
+
+    # -- Number of seconds after which the probe times out
+    #
+    timeoutSeconds: 1
+
+    # -- The number of consecutive failures of the Confluence container liveness probe
+    # before the pod fails liveness checks.
+    #
+    failureThreshold: 12
+
+    # -- Custom livenessProbe to override the default tcpSocket probe
+    #
+    customProbe: {}
+
   # Confluence log configuration
   #
   accessLog:
@@ -773,20 +823,8 @@ confluence:
     #
     localHomeSubPath: "logs"
 
-  # Confirm that Confluence is up and running with a Liveness
-  # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command
+  # Data Center clustering
   #
-  livenessProbe:
-    enabled: false
-    # -- The initial delay (in seconds) for the Confluence container liveness probe,
-    initialDelaySeconds: 300
-    # -- How often (in seconds) the Confluence container liveness probe will run
-    periodSeconds: 5
-    # -- Number of seconds after which the probe times out
-    timeoutSeconds: 1
-    # -- The number of consecutive failures of the Confluence container liveness probe
-    failureThreshold: 12
-
   clustering:
 
     # -- Set to 'true' if Data Center clustering should be enabled
@@ -1069,7 +1107,7 @@ monitoring:
     runAsRoot: true
 
     # -- Custom SecurityContext for the jmx exporter init container
-    # If this is empty, .Values.confluence.containerSecurityContext will be used
+    #
     customSecurityContext: {}
 
     # -- Resources requests and limits for the JMX exporter init container
@@ -1190,7 +1228,7 @@ synchrony:
   securityContextEnabled: true
 
   securityContext:
-    
+
     # -- The GID used by the Confluence docker image
     # GID will default to 2002 if not supplied and securityContextEnabled is set to true.
     # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Confluence container.
@@ -1492,11 +1530,15 @@ additionalContainers: []
 #    image: <image>:<tag>
 
 # -- Additional initContainer definitions that will be added to all Confluence pods
+#
 additionalInitContainers: []
-
+#  - name: <name>
+#    image: <image>:<tag>
 
 # -- Additional labels that should be applied to all resources
+#
 additionalLabels: {}
+#  name: <value>
 
 # -- Additional existing ConfigMaps and Secrets not managed by Helm that should be
 # mounted into service container. Configuration details below (camelCase is important!):
@@ -1645,17 +1687,6 @@ hpa:
     enabled: false
     time: 300
 
-# -- PodDisruptionBudget: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-# You can specify only one of maxUnavailable and minAvailable in a single PodDisruptionBudget. When both minAvailable and maxUnavailable are set, maxUnavailable takes precedence.
-#
-podDisruptionBudget:
-  enabled: false
-  labels: {}
-  annotations: {}
-  minAvailable:
-  maxUnavailable:
-
-
 networkPolicies:
   enabled: false
   ingressLabels:
@@ -1665,6 +1696,15 @@ networkPolicies:
   controlPlaneCidr: "0.0.0.0/0"
   additionalPolicies: []
 
+# -- PodDisruptionBudget: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+# You can specify only one of maxUnavailable and minAvailable in a single PodDisruptionBudget. When both minAvailable and maxUnavailable are set, maxUnavailable takes precedence.
+#
+podDisruptionBudget:
+  enabled: false
+  labels: {}
+  annotations: {}
+  minAvailable:
+  maxUnavailable:
 
 # -- Create additional ConfigMaps with given names, keys and content. Ther Helm release name will be used as a prefix
 # for a ConfigMap name, fileName is used as subPath
