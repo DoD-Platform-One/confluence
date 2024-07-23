@@ -10,6 +10,10 @@ A chart for installing Confluence Data Center on Kubernetes
 * <https://github.com/atlassian/data-center-helm-charts>
 * <https://bitbucket.org/atlassian-docker/docker-atlassian-confluence-server/>
 
+### Upstream Release Notes
+
+The [upstream Confluence helm chart changelog](https://github.com/atlassian/data-center-helm-charts/blob/main/src/main/charts/confluence/Changelog.md) may help when reviewing this package.
+
 ## Learn More
 * [Application Overview](docs/overview.md)
 * [Other Documentation](docs/)
