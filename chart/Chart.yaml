@@ -2,8 +2,8 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.20.1-bb.3
-appVersion: 8.9.3
+version: 1.20.1-bb.4
+appVersion: 8.9.4
 kubeVersion: ">=1.21.x-0"
 keywords:
 - Confluence
@@ -22,7 +22,7 @@ dependencies:
     version: 1.2.6
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: gluon
-    version: "0.5.0"
+    version: "0.5.2"
     repository: "oci://registry1.dso.mil/bigbang"
   - name: postgresql
     version: 13.2.2
@@ -51,10 +51,10 @@ annotations:
     - "Update appVersions for DC apps (#803)"
     - "Set atlassian.logging.cloud.enabled system property to false if a custom FluentD config is used (#796)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 8.9.2
+    - Confluence: 8.9.4
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.9.3
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:8.9.4
     - name: fluentd-kubernetes-daemonset
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
