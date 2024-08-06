@@ -27,6 +27,7 @@ spec:
         {{- include "confluence.podAnnotations" . | nindent 8 }}
       labels:
         {{- include "common.labels.selectorLabels" . | nindent 8 }}
+        {{- include "bigbang.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "confluence.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.confluence.shutdown.terminationGracePeriodSeconds }}

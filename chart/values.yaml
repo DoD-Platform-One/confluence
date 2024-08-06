@@ -1610,6 +1610,9 @@ postgresql:
 
   primary:
     ## Sets persistence to work with the IB image
+    podLabels:
+      version: "{{ .Chart.AppVersion }}"
+      app: "confluence-{{ .Chart.Name }}-primary"
     persistence:
       mountPath: /var/lib/postgresql
     initdb:

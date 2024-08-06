@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 1.20.1-bb.4](https://img.shields.io/badge/Version-1.20.1--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.9.4](https://img.shields.io/badge/AppVersion-8.9.4-informational?style=flat-square)
+![Version: 1.20.1-bb.5](https://img.shields.io/badge/Version-1.20.1--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.9.4](https://img.shields.io/badge/AppVersion-8.9.4-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -286,6 +286,8 @@ helm install confluence chart/
 | postgresql.auth.existingSecret | string | `nil` |  |
 | postgresql.auth.secretKeys.adminPasswordKey | string | `nil` |  |
 | postgresql.auth.secretKeys.userPasswordKey | string | `nil` |  |
+| postgresql.primary.podLabels.version | string | `"{{ .Chart.AppVersion }}"` |  |
+| postgresql.primary.podLabels.app | string | `"confluence-{{ .Chart.Name }}-primary"` |  |
 | postgresql.primary.persistence.mountPath | string | `"/var/lib/postgresql"` |  |
 | postgresql.primary.initdb.args | string | `"-A scram-sha-256"` |  |
 | postgresql.primary.containerSecurityContext.runAsUser | int | `1001` |  |

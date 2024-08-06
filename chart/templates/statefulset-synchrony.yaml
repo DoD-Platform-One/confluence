@@ -26,6 +26,8 @@ spec:
         {{- end }}
       labels:
         {{- include "synchrony.selectorLabels" . | nindent 8 }}
+        app: {{ template "synchrony.name" . }}
+        version: {{ .Chart.AppVersion | quote }}
         {{- include "confluence.podLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "confluence.serviceAccountName" . }}
