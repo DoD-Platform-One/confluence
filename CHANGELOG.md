@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+
+## [9.0.1-bb.0] - 2024-08-09
+
+### Changed
+
+- gluon updated from 0.5.2 to 0.5.3
+- ironbank/atlassian/confluence-data-center/confluence-node updated from 8.9.4 to 9.0.1
+
 ## [1.20.1-bb.5] - 2024-08-05
 
 ### Changed
@@ -22,7 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- Added bigbang test integration in DEVELOPMENT_MAINTENANCE.md 
+- Added bigbang test integration in DEVELOPMENT_MAINTENANCE.md
 
 ## [1.20.1-bb.2] - 2024-07-16
 
@@ -34,7 +42,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
--  opensearch-project.github.io/helm-charts from 2.20.0 to 2.21.0
+- opensearch-project.github.io/helm-charts from 2.20.0 to 2.21.0
 
 ## [1.20.1-bb.0] - 2024-06-25
 
