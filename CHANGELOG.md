@@ -4,6 +4,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [9.0.2-bb.0] - 2024-08-15
+
+### Changed
+
+- ironbank/atlassian/confluence-data-center/confluence-node updated from 9.0.1 to 9.0.2
+- opensearch updated to version 2.22.1
+
 ## [9.0.1-bb.0] - 2024-08-09
 
 ### Changed
