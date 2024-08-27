@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [9.0.2-bb.1] - 2024-08-22
+
+### Changed
+
+- Moved additionalInitContainers found under initContainers to run before the JMX initcontainer
+
 ## [9.0.2-bb.0] - 2024-08-15
 
 ### Changed
