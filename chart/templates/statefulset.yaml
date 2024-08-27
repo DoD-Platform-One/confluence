@@ -43,6 +43,7 @@ spec:
       hostAliases:
         {{- include "confluence.additionalHosts" . | nindent 8 }}
       initContainers:
+        {{- include "confluence.additionalInitContainers" . | nindent 8 }}
         {{/* We have removed an include to the common jmx initcontainer and replaced it with a dupe and revised snippet
             This snippet is modified to remove the run as root and modify the arguments in order to work with ironbank image*/}}
         {{- if and .Values.monitoring.exposeJmxMetrics .Values.monitoring.fetchJmxExporterJar }}
@@ -87,7 +88,6 @@ spec:
             echo "OpenSearch did not become ready in ${timeout} seconds. Exiting"
             exit 1
         {{- end }}
-        {{- include "confluence.additionalInitContainers" . | nindent 8 }}
         {{- if and .Values.volumes.sharedHome.nfsPermissionFixer.enabled (not .Values.openshift.runWithRestrictedSCC) }}
         - name: nfs-permission-fixer
           image: {{ .Values.volumes.sharedHome.nfsPermissionFixer.imageRepo }}:{{ .Values.volumes.sharedHome.nfsPermissionFixer.imageTag }}

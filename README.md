@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 9.0.2-bb.0](https://img.shields.io/badge/Version-9.0.2--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.0.2](https://img.shields.io/badge/AppVersion-9.0.2-informational?style=flat-square)
+![Version: 9.0.2-bb.1](https://img.shields.io/badge/Version-9.0.2--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.0.2](https://img.shields.io/badge/AppVersion-9.0.2-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
