@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.21.2-bb.1] - 2024-08-28
+
+### Changed
+
+- opensearch updated to version 2.23.0
+
 ## [1.21.2-bb.0] - 2024-08-26
 
 ### Changed
