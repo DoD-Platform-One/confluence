@@ -5,7 +5,17 @@ metadata:
   name: {{ include "synchrony.fullname" . }}
   labels:
     {{- include "synchrony.labels" . | nindent 4 }}
+  annotations:
+    {{- with .Values.synchrony.additionalAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
+  {{- if .Values.updateStrategy }}
+  {{- with .Values.updateStrategy }}
+  updateStrategy:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end }}
   {{ if .Values.ordinals.enabled }}
   ordinals:
     start: {{ .Values.ordinals.start }}
@@ -43,7 +53,7 @@ spec:
       {{- end }}
       hostAliases:
         {{- include "confluence.additionalHosts" . | nindent 8 }}
-      {{- if .Values.synchrony.additionalCertificates.secretName }}
+      {{- if or .Values.synchrony.additionalCertificates.secretName .Values.synchrony.additionalCertificates.secretList }}
       initContainers:
       - name: import-certs
         image: {{ include "confluence.image" . | quote }}
@@ -51,10 +61,25 @@ spec:
         volumeMounts:
           - name: keystore
             mountPath: /var/ssl
+        {{- if.Values.synchrony.additionalCertificates.secretName }}
           - name: certs
             mountPath: /tmp/crt
+        {{- else }}
+        {{- range .Values.synchrony.additionalCertificates.secretList }}
+          {{- $secretName := .name }}
+          {{- range .keys }}
+          - name: {{ $secretName }}
+            mountPath: /tmp/crt/{{$secretName}}-{{ . }}
+            subPath: {{ . }}
+          {{- end }}
+        {{- end }}
+        {{- end }}
         command: ["/bin/bash"]
         args: ["-c", {{ include "synchrony.addCrtToKeystoreCmd" . }}]
+        resources:
+        {{- with .Values.synchrony.additionalCertificates.initContainer.resources }}
+        {{- toYaml . | nindent 12 }}
+        {{- end }}
       {{- end }}
       containers:
         - name: synchrony
