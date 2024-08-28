@@ -1,6 +1,6 @@
 # How to upgrade the Confluence Package chart
 1. Checkout the branch that renovate created. This branch will have the image tag updates and typically some other necessary version changes that you will want. You can either work off of this branch or branch off of it.
-2. Update the chart via `kpt`. You should be able to run `kpt pkg update chart@confluence-$version --strategy alpha-git-patch` (ex: `kpt pkg update chart@confluence-8.6.0 --strategy alpha-git-patch`).
+2. Update the chart via `kpt`. You should be able to run `kpt pkg update chart@confluence-$version --strategy alpha-git-patch` (ex: `kpt pkg update chart@confluence-8.6.0 --strategy alpha-git-patch`). When resolving conflict with the appVersion in Chart.yaml, refer to the latest version under [confluence-node](https://registry1.dso.mil/harbor/projects/3/repositories/atlassian%2Fconfluence-data-center%2Fconfluence-node/artifacts-tab).
 3. Update version references for the Chart. `version` should be `<version>-bb.0` (ex: `1.14.3-bb.0`) and `appVersion` should be `<version>` (ex: `1.14.3`). Also validate that the BB annotation for confluence is updated.
 4. Add a changelog entry for the update. At minimum mention updating the image versions.
 5. Update the readme following the [steps in Gluon](https://repo1.dso.mil/platform-one/big-bang/apps/library-charts/gluon/-/blob/master/docs/bb-package-readme.md).

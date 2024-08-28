@@ -464,12 +464,20 @@ For each additional plugin declared, generate a volume mount that injects that l
       - key: seraph-config.xml
         path: seraph-config.xml
 {{- end }}
-{{- if .Values.confluence.additionalCertificates.secretName }}
+{{- if or .Values.confluence.additionalCertificates.secretName .Values.confluence.additionalCertificates.secretList }}
 - name: keystore
   emptyDir: {}
+{{- if .Values.confluence.additionalCertificates.secretName }}
 - name: certs
   secret:
     secretName: {{ .Values.confluence.additionalCertificates.secretName }}
+{{- else }}
+{{- range .Values.confluence.additionalCertificates.secretList }}
+- name: {{ .name }}
+  secret:
+    secretName: {{ .name }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- if or .Values.atlassianAnalyticsAndSupport.analytics.enabled .Values.atlassianAnalyticsAndSupport.helmValues.enabled }}
 - name: helm-values
@@ -488,12 +496,20 @@ For each additional plugin declared, generate a volume mount that injects that l
 {{- with .Values.volumes.additionalSynchrony }}
 {{- toYaml . | nindent 0 }}
 {{- end }}
-{{- if .Values.synchrony.additionalCertificates.secretName }}
+{{- if or .Values.synchrony.additionalCertificates.secretName .Values.synchrony.additionalCertificates.secretList }}
 - name: keystore
   emptyDir: {}
+{{- if .Values.synchrony.additionalCertificates.secretName }}
 - name: certs
   secret:
     secretName: {{ .Values.synchrony.additionalCertificates.secretName }}
+{{- else }}
+{{- range .Values.synchrony.additionalCertificates.secretList }}
+- name: {{ .name }}
+  secret:
+    secretName: {{ .name }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 
@@ -615,7 +631,7 @@ Otherwise, default to the embedded Postgres Pod connection information
 
 {{ with .Values.database.url }}
 - name: ATL_JDBC_URL
-  value: {{ . | quote }}
+  value: {{ if contains "&amp;" . }}{{ . | quote }}{{ else }}{{ . | replace "&" "&amp;" | quote }}{{ end }}
 {{ end }}
 
 {{- /* Default to embedded postgres */ -}}
@@ -665,7 +681,7 @@ Otherwise, default to the embedded Postgres Pod connection information
 {{- define "synchrony.databaseEnvVars" -}}
 {{ with .Values.database.url }}
 - name: SYNCHRONY_DATABASE_URL
-  value: {{ . | quote }}
+  value: {{ . | replace "&amp;" "&" | quote }}
 {{ end }}
 
 {{- /* Default to embedded postgres */ -}}

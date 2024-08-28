@@ -42,6 +42,12 @@ ordinals:
   #
   start: 0
 
+# -- StatefulSet update strategy. When unset defaults to Rolling update.
+# See: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#updating-statefulsets
+#
+updateStrategy: {}
+  # type: OnDelete
+
 # Image configuration
 #
 image:
@@ -296,6 +302,14 @@ volumes:
       # created for shared-home based on the 'StorageClassName' supplied below.
       #
       create: false
+
+      # -- Specify the access modes that should be used for the 'shared-home' volume claim.
+      # Note: 'ReadWriteOnce' (RWO) is suitable only for single-node installations.
+      # Be aware that changing the access mode of an existing PVC might be impossible, as the PVC spec is immutable.
+      # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+      #
+      accessModes:
+        - ReadWriteMany
 
       # -- Specify the name of the 'StorageClass' that should be used for the 'shared-home'
       # volume claim.
@@ -961,7 +975,7 @@ confluence:
     enableLookups: "false"
     protocol: "org.apache.coyote.http11.Http11NioProtocol"
     redirectPort: "8443"
-    acceptCount: "10"
+    acceptCount: "100"
     debug: "0"
     uriEncoding: "UTF-8"
     # secure is retrieved from ingress.https value
@@ -1061,6 +1075,10 @@ confluence:
   #      requests:
   #        storage: 1Gi
 
+  # -- Defines additional annotations to the Confluence StateFulSet. This might be required when deploying using a GitOps approach
+  additionalAnnotations: {}
+  #  argocd.argoproj.io/sync-wave: "10"
+
   # -- Defines topology spread constraints for Confluence pods. See details:
   # https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
   #
@@ -1083,8 +1101,24 @@ confluence:
   # -- Certificates to be added to Java truststore. Provide reference to a secret that contains the certificates
   #
   additionalCertificates:
+    # -- Name of the Kubernetes secret with certificates in its data. All secret keys in the secret data
+    # will be treated as certificates to be added to Java truststore. If defined, this takes precedence over secretList.
+    #
     secretName:
+    # -- A list of secrets with their respective keys holding certificates to be added to the Java truststore.
+    # It is mandatory to specify which keys from secret data need to be mounted as files to the init container.
+    #
+    secretList: []
+    #- name: self-signed-ca
+    #  keys:
+    #    - ca.crt
+    #    - intermediate.crt
+    #- name: stg-intermediate
+    #  keys:
+    #    - stg.crt
     customCmd:
+    initContainer:
+      resources: {}
 
 # Monitoring
 #
@@ -1100,6 +1134,11 @@ monitoring:
   # --  JMX exporter init container configuration
   #
   jmxExporterInitContainer:
+
+    # -- The location of the JMX exporter jarfile in the JMX exporter image
+    # Leave blank for default bitnami image
+    #
+    jmxJarLocation:
 
     # -- Whether to run JMX exporter init container as root to copy JMX exporter binary to shared home volume.
     # Set to false if running containers as root is not allowed in the cluster.
@@ -1369,6 +1408,10 @@ synchrony:
   #
   additionalVolumeMounts: []
 
+  # -- Defines additional annotations to the Synchrony StateFulSet. This might be required when deploying using a GitOps approach
+  additionalAnnotations: 
+  #  argocd.argoproj.io/sync-wave: "10"
+
   # -- Defines any additional ports for the Synchrony container.
   #
   additionalPorts: []
@@ -1390,8 +1433,24 @@ synchrony:
   # -- Certificates to be added to Java truststore. Provide reference to a secret that contains the certificates
   #
   additionalCertificates:
+    # -- Name of the Kubernetes secret with certificates in its data. All secret keys in the secret data
+    # will be treated as certificates to be added to Java truststore. If defined, this takes precedence over secretList.
+    #
     secretName:
+    # -- A list of secrets with their respective keys holding certificates to be added to the Java truststore.
+    # It is mandatory to specify which keys from secret data need to be mounted as files to the init container.
+    #
+    secretList: []
+    #- name: self-signed-ca
+    #  keys:
+    #    - ca.crt
+    #    - intermediate.crt
+    #- name: stg-intermediate
+    #  keys:
+    #    - stg.crt
     customCmd:
+    initContainer:
+      resources: {}
 
 # Fluentd configuration
 #
@@ -1800,4 +1859,3 @@ opensearch:
          # -- If using a pre-created secret, make sure to change secret name to match opensearch.credentials.existingSecretRef.name
          #
          name: opensearch-initial-password
-
