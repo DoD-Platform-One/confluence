@@ -1,11 +1,13 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 1.21.2-bb.3](https://img.shields.io/badge/Version-1.21.2--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.0.2](https://img.shields.io/badge/AppVersion-9.0.2-informational?style=flat-square)
+![Version: 1.21.3-bb.0](https://img.shields.io/badge/Version-1.21.3--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.0.3](https://img.shields.io/badge/AppVersion-9.0.3-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
 ## Upstream References
+
+* <https://atlassian.github.io/data-center-helm-charts/>
 
 * <https://github.com/atlassian/data-center-helm-charts>
 * <https://bitbucket.org/atlassian-docker/docker-atlassian-confluence-server/>
@@ -14,7 +16,6 @@ A chart for installing Confluence Data Center on Kubernetes
 
 This package has no upstream release note links on file. Please add some to [chart/Chart.yaml](chart/Chart.yaml) under `annotations.bigbang.dev/upstreamReleaseNotesMarkdown`.
 Example:
-
 ```yaml
 annotations:
   bigbang.dev/upstreamReleaseNotesMarkdown: |
@@ -43,7 +44,6 @@ Install Helm
 
 * Clone down the repository
 * cd into directory
-
 ```bash
 helm install confluence chart/
 ```
@@ -60,7 +60,7 @@ helm install confluence chart/
 | image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node"` | The Confluence Docker image to use <https://hub.docker.com/r/atlassian/confluence>  |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy  |
 | image.imagePullSecrets | string | `"private-registry"` | Optional image repository pull secret |
-| image.tag | string | `"9.0.2"` | The docker image tag to be used - defaults to the Chart appVersion  |
+| image.tag | string | `"9.0.3"` | The docker image tag to be used - defaults to the Chart appVersion  |
 | serviceAccount.create | bool | `true` | Set to 'true' if a ServiceAccount should be created, or 'false' if it already exists.  |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to be used by the pods. If not specified, but the "serviceAccount.create" flag is set to 'true', then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. <https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server>  |
 | serviceAccount.imagePullSecrets | list | `[{"name":"private-registry"}]` | For Docker images hosted in private registries, define the list of image pull secrets that should be utilized by the created ServiceAccount <https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod>  |
@@ -359,3 +359,4 @@ Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in 
 ---
 
 _This file is programatically generated using `helm-docs` and some BigBang-specific templates. The `gluon` repository has [instructions for regenerating package READMEs](https://repo1.dso.mil/big-bang/product/packages/gluon/-/blob/master/docs/bb-package-readme.md)._
+
