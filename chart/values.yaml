@@ -678,7 +678,7 @@ confluence:
   # -- Standard K8s field that holds security configurations that will be applied to a container.
   # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   #
-  containerSecurityContext: 
+  containerSecurityContext:
     runAsUser: 2002
     runAsGroup: 2002
     runAsNonRoot: true
@@ -1218,7 +1218,7 @@ monitoring:
 
     # -- Label selector for Grafana dashboard importer sidecar
     #
-    dashboardLabels: 
+    dashboardLabels:
       grafana_dashboard: "1"
 
     # -- Annotations added to Grafana dashboards ConfigMaps. See: https://github.com/kiwigrid/k8s-sidecar#usage
@@ -1242,6 +1242,11 @@ synchrony:
   # -- Custom annotations that will be applied to all Synchrony pods.
   # When undefined, default to '.Values.podAnnotations' which are Confluence pod annotations (if defined)
   podAnnotations: {}
+  #  name: <value>
+
+  # -- Custom labels that will be applied to all Synchrony pods.
+  # When undefined, default to '.Values.podLabels' which are Confluence pod labels (if defined)
+  podLabels: {}
   #  name: <value>
 
   # K8s Synchrony Service configuration
@@ -1280,7 +1285,7 @@ synchrony:
   # -- Standard K8s field that holds security configurations that will be applied to a container.
   # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   #
-  containerSecurityContext: 
+  containerSecurityContext:
     runAsUser: 2002
     runAsGroup: 2002
     runAsNonRoot: true
@@ -1409,7 +1414,7 @@ synchrony:
   additionalVolumeMounts: []
 
   # -- Defines additional annotations to the Synchrony StateFulSet. This might be required when deploying using a GitOps approach
-  additionalAnnotations: 
+  additionalAnnotations:
   #  argocd.argoproj.io/sync-wave: "10"
 
   # -- Defines any additional ports for the Synchrony container.
@@ -1637,7 +1642,7 @@ additionalHosts: []
 ## ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/README.md
 
 ## Note:
-# If external DB values in {{ .Values.database }} are set, 
+# If external DB values in {{ .Values.database }} are set,
 # that config will be injected into the Confluence pod (even if postgresql.install is true)
 postgresql:
   # Enable to deploy the cluster-internal PostgreSQL pod
@@ -1659,7 +1664,7 @@ postgresql:
     postgresPassword: bogus-satisfy-upgrade
     ##
     database: confluence
-    
+
     # Example secret:
     # kubectl create secret generic <secretname> -n <namespace> --from-literal=<userpasswordkey>=<password> --from-literal=<adminpasswordkey>=<password>
     existingSecret:
@@ -1668,10 +1673,12 @@ postgresql:
       userPasswordKey:
 
   primary:
+    # # Adding the following podLabels will properly label the package to be connected in Kiali (if Kiali is enabled)
+    # # Other labels can be added with or without templating
+    # podLabels:
+    #   app: "confluence-{{ .Chart.Name }}-primary"
+    #   version: "{{ .Chart.AppVersion }}"
     ## Sets persistence to work with the IB image
-    podLabels:
-      version: "{{ .Chart.AppVersion }}"
-      app: "confluence-{{ .Chart.Name }}-primary"
     persistence:
       mountPath: /var/lib/postgresql
     initdb:
@@ -1680,7 +1687,7 @@ postgresql:
       runAsUser: 1001
       runAsGroup: 1001
       runAsNonRoot: true
-    
+
     ## POSTGRES_DB is the var that the IB/official Postgres image expects
     extraEnvVars:
       - name: POSTGRES_DB

@@ -5,6 +5,7 @@ metadata:
   name: {{ include "synchrony.fullname" . }}
   labels:
     {{- include "synchrony.labels" . | nindent 4 }}
+    {{- include "synchrony.podLabels" . | nindent 4 }}
   annotations:
     {{- with .Values.synchrony.additionalAnnotations }}
     {{- toYaml . | nindent 4 }}
@@ -36,9 +37,7 @@ spec:
         {{- end }}
       labels:
         {{- include "synchrony.selectorLabels" . | nindent 8 }}
-        app: {{ template "synchrony.name" . }}
-        version: {{ .Chart.AppVersion | quote }}
-        {{- include "confluence.podLabels" . | nindent 8 }}
+        {{- include "synchrony.podLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "confluence.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.synchrony.shutdown.terminationGracePeriodSeconds }}

@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.21.2-bb.2
+version: 1.21.2-bb.3
 appVersion: 9.0.2
 kubeVersion: ">=1.21.x-0"
 keywords:
@@ -47,7 +47,7 @@ annotations:
     - "Include shared home for synchrony when additional libs are defined (#779)"
     - "Get rid of server repo references (#777)"
     - "Make cacerts writable for user and group (#790)"
-    - "Optionally deploy OpenSearch Helm Chart With Confluence (#788)"    
+    - "Optionally deploy OpenSearch Helm Chart With Confluence (#788)"
     - "Update appVersions for DC apps (#803)"
     - "Set atlassian.logging.cloud.enabled system property to false if a custom FluentD config is used (#796)"
     - "Update appVersions for DC apps (#869)"
