@@ -294,7 +294,7 @@ on Tomcat's logs directory. THis ensures that Tomcat+Confluence logs get capture
   mountPath: /opt/atlassian/confluence/confluence/WEB-INF/classes/seraph-config.xml
   subPath: seraph-config.xml
 {{- end }}
-{{- if .Values.confluence.additionalCertificates.secretName }}
+{{- if or .Values.confluence.additionalCertificates.secretName .Values.confluence.additionalCertificates.secretList }}
 - name: keystore
   mountPath: /var/ssl
 {{- end }}
@@ -310,7 +310,7 @@ Defines the volume mounts used by the Synchrony container.
 {{ define "synchrony.volumeMounts" }}
 - name: synchrony-home
   mountPath: {{ .Values.volumes.synchronyHome.mountPath | quote }}
-{{- if .Values.synchrony.additionalCertificates.secretName }}
+{{- if or .Values.synchrony.additionalCertificates.secretName .Values.synchrony.additionalCertificates.secretList }}
 - name: keystore
   mountPath: /var/ssl
 {{- end }}

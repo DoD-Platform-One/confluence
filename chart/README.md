@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.21.2](https://img.shields.io/badge/Version-1.21.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.14](https://img.shields.io/badge/AppVersion-8.5.14-informational?style=flat-square)
+![Version: 1.21.3](https://img.shields.io/badge/Version-1.21.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.15](https://img.shields.io/badge/AppVersion-8.5.15-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -17,7 +17,7 @@ Kubernetes: `>=1.21.x-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://atlassian.github.io/data-center-helm-charts | common | 1.2.6 |
+| https://atlassian.github.io/data-center-helm-charts | common | 1.2.7 |
 | https://opensearch-project.github.io/helm-charts | opensearch | 2.19.0 |
 
 ## Values
