@@ -17,7 +17,7 @@ Reference the `Usage` section in `docs/README.md`.
 
 ### Big Bang Integration Testing
 
-As part of your MR that modifies bigbang packages, you should modify the bigbang  [bigbang/tests/test-values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/tests/test-values.yaml?ref_type=heads) against your branch for the CI/CD MR testing by enabling your packages. 
+As part of your MR that modifies bigbang packages, you should modify the bigbang  [bigbang/tests/test-values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/tests/test-values.yaml?ref_type=heads) against your branch for the CI/CD MR testing by enabling your packages.
 
     - To do this, at a minimum, you will need to follow the instructions at [bigbang/docs/developer/test-package-against-bb.md](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/developer/test-package-against-bb.md?ref_type=heads) with changes for Confluence enabled (the below is a reference, actual changes could be more depending on what changes where made to Confluence in the package MR).
 
@@ -33,7 +33,18 @@ As part of your MR that modifies bigbang packages, you should modify the bigbang
           istio:
             hardened:
               enabled: true
-      ### Additional compononents of Confluence should be changed to reflect testing changes introduced in the package MR
+          # Adding the following podLabels will label confluence portions the package to be connected in Kiali (if Kiali is enabled)
+          # Other labels can be added with or without templating
+          podLabels:
+            app: "{{ \"{{ .Chart.Name }}\" }}"
+            version: "{{ \"{{ .Chart.AppVersion }}\" }}"
+          # Adding the following podLabels will label synchrony portions of the package to be connected in Kiali (if Kiali is enabled)
+          # Other labels can be added with or without templating
+          synchrony:
+            podLabels:
+              app: "{{ \"{{ template `synchrony.name` . }}\" }}"
+              version: "{{ \"{{ .Chart.AppVersion }}\" }}"
+      ### Additional components of Confluence should be changed to reflect testing changes introduced in the package MR
     ```
 
 # Files that need integration testing
@@ -67,14 +78,16 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
 ## chart/templates/statefulset.yaml
 - move `include "confluence.volumeClaimTemplates"` line to resolve template rendering issue
 - changed the initcontainer for jmx-exporter-fetch to explicitly set run as non root and arguments necessary after move to ironbank image
-- add call to bigbang labels to add Kiali required labels
+- add calls to podLabels named template
 
 ## chart/templates/config-jvm.yaml
 - add `-` indention to `include "confluence.sysprop.s3Config"` line to resolve template rendering issue
 
 ## chart/templates/statefulset-synchrony.yaml
 - add conditional check for `SYNCHRONY_SERVICE_URL` variable injection: use Istio URL if enabled, then default to .Values.ingress
+- add calls to podLabels named template
 
 ## chart/templates/_helpers.tpl
 - add conditional checks for `ATL_DB_TYPE`, `ATL_JDBC_URL`, `ATL_JDBC_USER`, and `ATL_JDBC_PASSWORD` variable injection: use cluster-internal Postgres values if enabled
 - add conditional checks for `SYNCHRONY_DATABASE_URL`, `SYNCHRONY_DATABASE_USERNAME`, and `SYNCHRONY_DATABASE_PASSWORD` variable injection: use cluster-internal Postgres values if enabled
+- Adds podLabels named templates for confluence and synchrony to allow for templated input for labels

@@ -4,6 +4,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.21.2-bb.3] - 2024-09-09
+
+### Added
+
+- Added `podLabels` input value
+- Added `synchrony.podLabels` input value
+- Added template evaluation of `podLabels` in `chart/templates/_helpers.tpl`
+- Added template evaluation of `synchrony.podLabels` in `chart/templates/_helpers.tpl`
+- Added example usage of the labels in `docs/DEVELOPMENT_MAINTENANCE.md`
+
+### Removed
+
+- Removed `bigbang.labels` usage and `_helpers.tpl` file in `chart/templates/bigbang`
+
 ## [1.21.2-bb.2] - 2024-08-29
 
 ### Changed

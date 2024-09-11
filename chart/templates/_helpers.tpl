@@ -162,8 +162,19 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Pod labels
 */}}
 {{- define "confluence.podLabels" -}}
-{{ with .Values.podLabels }}
-{{- toYaml . }}
+{{ if .Values.podLabels }}
+{{- tpl (toYaml .Values.podLabels) $ }}
+{{- end }}
+{{- end }}
+
+{{/*
+Synchrony Pod labels
+*/}}
+{{- define "synchrony.podLabels" -}}
+{{ if .Values.synchrony.podLabels }}
+  {{- tpl (toYaml .Values.synchrony.podLabels) $ }}
+{{- else }}
+  {{ include "confluence.podLabels" . }}
 {{- end }}
 {{- end }}
 
@@ -608,7 +619,7 @@ volumeClaimTemplates:
 {{- end }}
 {{- end }}
 
-{{- /* 
+{{- /*
 Populates database connection information to Confluence via env vars
 If .Values.database values are defined, then those values are used (user wants external DB)
 Otherwise, default to the embedded Postgres Pod connection information
