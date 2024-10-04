@@ -8,6 +8,10 @@
 {{- end }}
 {{- end }}
 
+{{- define "minio.labels" -}}
+app: minio
+{{- end }}
+
 {{/* Define a sanitized list of additionalJvmArgs */}}
 {{- define "confluence.sanitizedAdditionalJvmArgs" -}}
 {{- range .Values.confluence.additionalJvmArgs }}
