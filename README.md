@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 1.21.3-bb.3](https://img.shields.io/badge/Version-1.21.3--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.12.12](https://img.shields.io/badge/AppVersion-9.12.12-informational?style=flat-square)
+![Version: 1.21.4-bb.0](https://img.shields.io/badge/Version-1.21.4--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.12.12](https://img.shields.io/badge/AppVersion-9.12.12-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -58,7 +58,7 @@ helm install confluence chart/
 | image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node"` | The Confluence Docker image to use https://hub.docker.com/r/atlassian/confluence  |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy  |
 | image.imagePullSecrets | string | `"private-registry"` | Optional image repository pull secret |
-| image.tag | string | `"9.0.3"` | The docker image tag to be used - defaults to the Chart appVersion  |
+| image.tag | string | `"9.1.0"` | The docker image tag to be used - defaults to the Chart appVersion  |
 | serviceAccount.create | bool | `true` | Set to 'true' if a ServiceAccount should be created, or 'false' if it already exists.  |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to be used by the pods. If not specified, but the "serviceAccount.create" flag is set to 'true', then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server  |
 | serviceAccount.imagePullSecrets | list | `[{"name":"private-registry"}]` | For Docker images hosted in private registries, define the list of image pull secrets that should be utilized by the created ServiceAccount https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod  |
@@ -231,6 +231,10 @@ helm install confluence chart/
 | synchrony.service.type | string | `"ClusterIP"` | The type of K8s service to use for Synchrony  |
 | synchrony.service.loadBalancerIP | string | `nil` | Use specific loadBalancerIP. Only applies to service type LoadBalancer.  |
 | synchrony.service.annotations | object | `{}` | Annotations to apply to Synchrony Service  |
+| synchrony.ingress | object | `{"annotations":null,"path":null,"pathType":null}` | If 'synchrony.ingress.path' is defined, a dedicated Synchrony ingress object is created. This is useful if you need to deploy multiple instances of Confluence with Synchrony enabled using the same Ingress hostname and different synchrony paths  |
+| synchrony.ingress.path | string | `nil` | Ingress path applied to Synchrony ingress  |
+| synchrony.ingress.pathType | string | `nil` | Defaults to Prefix, but can be ImplementationSpecific if rewrite target is applied  |
+| synchrony.ingress.annotations | string | `nil` | Custom annotations applied to Synchrony ingress  |
 | synchrony.securityContextEnabled | bool | `true` |  |
 | synchrony.securityContext.runAsUser | int | `2002` | The GID used by the Confluence docker image GID will default to 2002 if not supplied and securityContextEnabled is set to true. This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Confluence container. However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260 |
 | synchrony.securityContext.runAsGroup | int | `2002` |  |

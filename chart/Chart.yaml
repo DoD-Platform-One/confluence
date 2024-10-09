@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.21.3-bb.3
+version: 1.21.4-bb.0
 appVersion: 9.12.12
 kubeVersion: ">=1.21.x-0"
 keywords:
@@ -53,10 +53,10 @@ annotations:
     - "Update appVersions for DC apps (#869)"
     - "Update common dependency version (#878)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 9.0.3
+    - Confluence: 9.1.0
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:9.0.3
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:9.1.0
     - name: fluentd-kubernetes-daemonset
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
@@ -65,3 +65,4 @@ annotations:
     - name: postgres
       condition: postgresql.install
       image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:16.2
+    - "Create a dedicated Synchrony ingress (#883)"
