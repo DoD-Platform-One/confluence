@@ -4,6 +4,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.21.4-bb.0] - 2024-10-05
+
+### Changed
+
+- Updated upstream chart from 1.21.3 to 1.21.4; creates dedicated Synchrony ingress
+- ironbank/atlassian/confluence-data-center/confluence-node updated from 9.0.3 to 9.1.0
+
 ## [1.21.3-bb.3] - 2024-10-03
 
 ### Changed
