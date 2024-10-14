@@ -1,11 +1,13 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 1.21.4-bb.0](https://img.shields.io/badge/Version-1.21.4--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.12.12](https://img.shields.io/badge/AppVersion-9.12.12-informational?style=flat-square)
+![Version: 1.21.4-bb.1](https://img.shields.io/badge/Version-1.21.4--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.12.12](https://img.shields.io/badge/AppVersion-9.12.12-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
 ## Upstream References
+* <https://atlassian.github.io/data-center-helm-charts/>
+
 * <https://atlassian.github.io/data-center-helm-charts/>
 
 * <https://github.com/atlassian/data-center-helm-charts>
