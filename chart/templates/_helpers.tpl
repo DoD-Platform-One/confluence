@@ -166,19 +166,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Pod labels
 */}}
 {{- define "confluence.podLabels" -}}
-{{ if .Values.podLabels }}
-{{- tpl (toYaml .Values.podLabels) $ }}
-{{- end }}
-{{- end }}
-
-{{/*
-Synchrony Pod labels
-*/}}
-{{- define "synchrony.podLabels" -}}
-{{ if .Values.synchrony.podLabels }}
-  {{- tpl (toYaml .Values.synchrony.podLabels) $ }}
-{{- else }}
-  {{ include "confluence.podLabels" . }}
+{{ with .Values.podLabels }}
+{{- toYaml . }}
 {{- end }}
 {{- end }}
 
