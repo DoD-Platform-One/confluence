@@ -33,17 +33,6 @@ As part of your MR that modifies bigbang packages, you should modify the bigbang
           istio:
             hardened:
               enabled: true
-          # Adding the following podLabels will label confluence portions the package to be connected in Kiali (if Kiali is enabled)
-          # Other labels can be added with or without templating
-          podLabels:
-            app: "{{ \"{{ .Chart.Name }}\" }}"
-            version: "{{ \"{{ .Chart.AppVersion }}\" }}"
-          # Adding the following podLabels will label synchrony portions of the package to be connected in Kiali (if Kiali is enabled)
-          # Other labels can be added with or without templating
-          synchrony:
-            podLabels:
-              app: "{{ \"{{ template `synchrony.name` . }}\" }}"
-              version: "{{ \"{{ .Chart.AppVersion }}\" }}"
       ### Additional components of Confluence should be changed to reflect testing changes introduced in the package MR
     ```
 
@@ -78,16 +67,13 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
 ## chart/templates/statefulset.yaml
 - move `include "confluence.volumeClaimTemplates"` line to resolve template rendering issue
 - changed the initcontainer for jmx-exporter-fetch to explicitly set run as non root and arguments necessary after move to ironbank image
-- add calls to podLabels named template
 
 ## chart/templates/config-jvm.yaml
 - add `-` indention to `include "confluence.sysprop.s3Config"` line to resolve template rendering issue
 
 ## chart/templates/statefulset-synchrony.yaml
 - add conditional check for `SYNCHRONY_SERVICE_URL` variable injection: use Istio URL if enabled, then default to .Values.ingress
-- add calls to podLabels named template
 
 ## chart/templates/_helpers.tpl
 - add conditional checks for `ATL_DB_TYPE`, `ATL_JDBC_URL`, `ATL_JDBC_USER`, and `ATL_JDBC_PASSWORD` variable injection: use cluster-internal Postgres values if enabled
 - add conditional checks for `SYNCHRONY_DATABASE_URL`, `SYNCHRONY_DATABASE_USERNAME`, and `SYNCHRONY_DATABASE_PASSWORD` variable injection: use cluster-internal Postgres values if enabled
-- Adds podLabels named templates for confluence and synchrony to allow for templated input for labels
