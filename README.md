@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 1.21.4-bb.4](https://img.shields.io/badge/Version-1.21.4--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.16](https://img.shields.io/badge/AppVersion-8.5.16-informational?style=flat-square)
+![Version: 1.21.4-bb.5](https://img.shields.io/badge/Version-1.21.4--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 8.5.16](https://img.shields.io/badge/AppVersion-8.5.16-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -144,8 +144,9 @@ helm install confluence chart/
 | confluence.securityContext.runAsUser | int | `2002` |  |
 | confluence.securityContext.runAsGroup | int | `2002` |  |
 | confluence.securityContext.runAsNonRoot | bool | `true` |  |
-| confluence.containerSecurityContext | object | `{"runAsGroup":2002,"runAsNonRoot":true,"runAsUser":2002}` | Standard K8s field that holds security configurations that will be applied to a container. https://kubernetes.io/docs/tasks/configure-pod-container/security-context/  |
-| confluence.umask | string | `"0022"` | The umask used by the Confluence process when it creates new files. The default is 0022. This gives the new files:  - read/write permissions for the Confluence user  - read permissions for everyone else.  |
+| confluence.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| confluence.containerSecurityContext | object | `{"capabilities":{"drop":["ALL"]},"runAsGroup":2002,"runAsNonRoot":true,"runAsUser":2002}` | Standard K8s field that holds security configurations that will be applied to a container. https://kubernetes.io/docs/tasks/configure-pod-container/security-context/  |
+| confluence.umask | string | `"0022"` |  |
 | confluence.setPermissions | bool | `true` | Boolean to define whether to set local home directory permissions on startup of Confluence container. Set to 'false' to disable this behaviour.  |
 | confluence.ports.http | int | `8090` | The port on which the Confluence container listens for HTTP traffic  |
 | confluence.ports.hazelcast | int | `5701` | The port on which the Confluence container listens for Hazelcast traffic  |

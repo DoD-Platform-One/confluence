@@ -665,7 +665,6 @@ confluence:
   securityContextEnabled: true
 
   securityContext:
-
     # -- The GID used by the Confluence docker image
     # GID will default to 2002 if not supplied and securityContextEnabled is set to true.
     # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Confluence container.
@@ -674,6 +673,9 @@ confluence:
     runAsUser: 2002
     runAsGroup: 2002
     runAsNonRoot: true
+    capabilities:
+      drop:
+        - ALL
 
   # -- Standard K8s field that holds security configurations that will be applied to a container.
   # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -682,6 +684,9 @@ confluence:
     runAsUser: 2002
     runAsGroup: 2002
     runAsNonRoot: true
+    capabilities:
+      drop:
+        - ALL
 
   # -- The umask used by the Confluence process when it creates new files.
   # The default is 0022. This gives the new files:
