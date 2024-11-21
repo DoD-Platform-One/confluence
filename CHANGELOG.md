@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+
+## [1.21.4-bb.5] - 2024-11-21
+
+### Changed
+
+- Ensure security contexts are being correctly applied across all containers for Kyverno compliance
+
 ## [1.21.4-bb.4] - 2024-11-08
 ### Changed
 - Synced from upstream chart to ensure proper labels are now added to workloads

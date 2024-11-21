@@ -27,6 +27,10 @@ spec:
     - name: test
       image: {{ .Values.helmTestImage }}
       imagePullPolicy: IfNotPresent 
+      {{- if .Values.confluence.securityContextEnabled }}
+      securityContext:
+        {{ toYaml .Values.confluence.securityContext | nindent 8 }}
+      {{- end }}
       env:
         - name: STATUS_URL
           value: "http://{{ include "common.names.fullname" . }}:{{ .Values.confluence.service.port }}/status"

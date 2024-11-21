@@ -27,20 +27,10 @@ spec:
     - name: test
       image: {{ .Values.helmTestImage }}
       imagePullPolicy: IfNotPresent
+      {{- if .Values.confluence.securityContextEnabled }}
       securityContext:
-        # We assume that the UID and GID used by the product images are the same, which in practice they are
-        {{- with .Values.confluence.securityContext }}
-        {{- if and .enabled .gid }}
-        runAsUser: {{ .gid }}
-        runAsGroup: {{ .gid }}
-        {{- else if .fsGroup }}
-        runAsUser: {{ .fsGroup }}
-        runAsGroup: {{ .fsGroup }}
-        {{- else }}
-        runAsUser: {{ 2003 }}
-        runAsGroup: {{ 2003 }}
-        {{- end }}
-        {{- end }}
+        {{ toYaml .Values.confluence.securityContext | nindent 8 }}
+      {{- end }}
       volumeMounts:
         - name: shared-home
           mountPath: /shared-home

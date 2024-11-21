@@ -48,7 +48,7 @@ spec:
       securityContext:
         # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Cnfluence container.
         # However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260
-        fsGroup: {{ .Values.confluence.securityContext.fsGroup }}
+        {{ toYaml .Values.confluence.securityContext | nindent 8 }}
       {{- end }}
       {{- end }}
       hostAliases:
@@ -84,6 +84,10 @@ spec:
         - name: opensearch-check
           image: {{ include "confluence.image" . | quote }}
           command: ['sh', '-c']
+          securityContext:
+          {{- with .Values.confluence.containerSecurityContext}}
+          {{- toYaml . | nindent 12}}
+          {{- end}}
           args:
           - |
             timeout=300
@@ -112,6 +116,9 @@ spec:
           securityContext:
             runAsNonRoot: false # root is required to change file permissions
             runAsUser: 0 # make sure we run as root so we get the ability to change the volume permissions
+          {{- with .Values.confluence.containerSecurityContext}}
+          {{- toYaml omit . "runAsNonRoot" "runAsUser" | nindent 12}}
+          {{- end}}
           volumeMounts:
             - name: shared-home
               mountPath: {{ .Values.volumes.sharedHome.nfsPermissionFixer.mountPath | quote }}
@@ -143,6 +150,10 @@ spec:
           {{- end }}
           command: ["/bin/bash"]
           args: ["-c", {{ include "confluence.addCrtToKeystoreCmd" . }}]
+          securityContext:
+          {{- with .Values.confluence.containerSecurityContext}}
+          {{- toYaml . | nindent 12}}
+          {{- end}}
           resources:
           {{- with .Values.confluence.additionalCertificates.initContainer.resources }}
           {{- toYaml . | nindent 12 }}
