@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.22.0-bb.0] - 2024-11-21
+
+### Changed
+
+- Updated upstream chart from 1.21.4 to 1.22.0 
+- gluon updated from 0.5.9 to 0.5.10
+- ironbank/atlassian/confluence-data-center/confluence-node updated from 8.5.16 to 9.1.1
 
 ## [1.21.4-bb.5] - 2024-11-21
 
