@@ -33,6 +33,7 @@ dependencies:
     repository: https://opensearch-project.github.io/helm-charts
     condition: opensearch.enabled
 annotations:
+  bigbang.dev/maintenanceTrack: bb_maintained
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/changes: |-
     - "StatefulSet PVC auto deletion (#736)"
