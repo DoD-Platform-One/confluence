@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [1.22.0-bb.1] - 2024-11-26
+### Changed
+- gluon updated from 0.5.10 to 0.5.12
+- opensearch updated from 2.27.0 to 2.27.1
+
 ## [1.22.0-bb.0] - 2024-11-21
 
 ### Changed
