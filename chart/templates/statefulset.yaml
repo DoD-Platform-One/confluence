@@ -117,7 +117,7 @@ spec:
             runAsNonRoot: false # root is required to change file permissions
             runAsUser: 0 # make sure we run as root so we get the ability to change the volume permissions
           {{- with .Values.confluence.containerSecurityContext}}
-          {{- toYaml omit . "runAsNonRoot" "runAsUser" | nindent 12}}
+          {{- omit . "runAsNonRoot" "runAsUser"| toYaml | nindent 12}}
           {{- end}}
           volumeMounts:
             - name: shared-home
