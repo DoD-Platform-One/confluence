@@ -1,14 +1,12 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 1.22.1-bb.1](https://img.shields.io/badge/Version-1.22.1--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.2.0](https://img.shields.io/badge/AppVersion-9.2.0-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
+![Version: 1.22.1-bb.2](https://img.shields.io/badge/Version-1.22.1--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.2.0](https://img.shields.io/badge/AppVersion-9.2.0-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
 ## Upstream References
 - <https://atlassian.github.io/data-center-helm-charts/>
-
-* <https://atlassian.github.io/data-center-helm-charts/>
 
 * <https://github.com/atlassian/data-center-helm-charts>
 * <https://bitbucket.org/atlassian-docker/docker-atlassian-confluence-server/>
@@ -190,7 +188,7 @@ helm install confluence chart/
 | confluence.postStart | object | `{"command":null}` | PostStart is executed immediately after a container is created. However, there is no guarantee that the hook will execute before the container ENTRYPOINT. See: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks  |
 | confluence.forceConfigUpdate | bool | `false` | The Docker entrypoint.py generates application configuration on first start; not all of these files are regenerated on subsequent starts. By default, confluence.cfg.xml is generated only once. Set `forceConfigUpdate` to true to change this behavior.  |
 | confluence.additionalJvmArgs | list | `["-Dcom.redhat.fips=false"]` | Specifies a list of additional arguments that can be passed to the Confluence JVM, e.g. system properties.  |
-| confluence.tomcatConfig | object | `{"acceptCount":"100","connectionTimeout":"20000","customServerXml":"","debug":"0","enableLookups":"false","generateByHelm":false,"maxHttpHeaderSize":"8192","maxThreads":"100","mgmtPort":"8000","minSpareThreads":"10","port":"8090","protocol":"org.apache.coyote.http11.Http11NioProtocol","proxyInternalIps":null,"proxyName":null,"proxyPort":null,"redirectPort":"8443","scheme":null,"secure":null,"trustedProxies":null,"uriEncoding":"UTF-8"}` | By default Tomcat's server.xml is generated in the container entrypoint from a template shipped with an official Confluence image. However, server.xml generation may fail if container is not run as root, which is a common case if Confluence is deployed to OpenShift.  |
+| confluence.tomcatConfig | object | `{"acceptCount":"100","connectionTimeout":"20000","customServerXml":"","debug":"0","enableLookups":"false","generateByHelm":false,"maxHttpHeaderSize":"8192","maxThreads":"100","mgmtPort":"8000","minSpareThreads":"10","port":"8090","protocol":"org.apache.coyote.http11.Http11NioProtocol","proxyInternalIps":null,"proxyName":null,"proxyPort":null,"redirectPort":"8443","scheme":null,"secure":null,"stuckThreadDetectionValveThreshold":"60","trustedProxies":null,"uriEncoding":"UTF-8"}` | By default Tomcat's server.xml is generated in the container entrypoint from a template shipped with an official Confluence image. However, server.xml generation may fail if container is not run as root, which is a common case if Confluence is deployed to OpenShift.  |
 | confluence.tomcatConfig.generateByHelm | bool | `false` | Mount server.xml as a ConfigMap. Override configuration elements if necessary  |
 | confluence.tomcatConfig.customServerXml | string | `""` | Custom server.xml to be mounted into /opt/atlassian/confluence/conf  |
 | confluence.seraphConfig | object | `{"autoLoginCookieAge":"1209600","generateByHelm":false}` | By default seraph-config.xml is generated in the container entrypoint from a template shipped with an official Confluence image. However, seraph-config.xml generation may fail if container is not run as root, which is a common case if Confluence is deployed to OpenShift.  |
@@ -296,7 +294,7 @@ helm install confluence chart/
 | postgresql.image.registry | string | `"registry1.dso.mil"` |  |
 | postgresql.image.debug | bool | `true` |  |
 | postgresql.image.repository | string | `"ironbank/opensource/postgres/postgresql"` |  |
-| postgresql.image.tag | string | `"16.2"` |  |
+| postgresql.image.tag | string | `"16.6"` |  |
 | postgresql.image.pullSecrets[0] | string | `"private-registry"` |  |
 | postgresql.auth.username | string | `"confuser"` |  |
 | postgresql.auth.password | string | `"bogus-satisfy-upgrade"` |  |
