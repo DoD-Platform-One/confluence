@@ -1678,7 +1678,7 @@ postgresql:
     registry: registry1.dso.mil
     debug: true
     repository: ironbank/opensource/postgres/postgresql
-    tag: "16.6"
+    tag: "17.2"
     pullSecrets:
     - private-registry
 
