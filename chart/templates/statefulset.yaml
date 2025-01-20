@@ -158,6 +158,10 @@ spec:
           {{- with .Values.confluence.additionalCertificates.initContainer.resources }}
           {{- toYaml . | nindent 12 }}
           {{- end }}
+          securityContext:
+          {{- with .Values.confluence.additionalCertificates.initContainer.securityContext }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
         {{- end }}
       imagePullSecrets:
         {{- if .Values.image.imagePullSecrets }}

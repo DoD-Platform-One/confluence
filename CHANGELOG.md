@@ -4,30 +4,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [1.22.1-bb.3] - 2025-01-11
+## [1.22.3-bb.0] - 2025-01-17
+
 ### Changed
+
+- Updated opensearch (source) patch 2.30.0 -> 2.30.1
+- Updated upstream chart from 1.22.1 -> 1.22.3
+
+## [1.22.1-bb.3] - 2025-01-11
+
+### Changed
+
 - ironbank/opensource/postgres/postgresql updated from 16.6 to 17.2
 
 ## [1.22.1-bb.2] - 2025-01-08
+
 ### Changed
+
 - ironbank/opensource/postgres/postgresql updated from 16.2 to 16.6
 - Updated opensearch from 2.28.0 to 2.30.0
 
 ## [1.22.1-bb.1] - 2024-12-19
+
 ### Changed
 
 - Updated opensearch 2.27.1 -> 2.28.0
 
 ## [1.22.1-bb.0] - 2024-12-11
+
 ### Changed
+
 - ironbank/atlassian/confluence-data-center/confluence-node updated from 9.1.1 to 9.2.0
 
 ## [1.22.0-bb.2] - 2024-12-10
+
 ### Changed
+
 - Fixed issues enabling nfsPermissionFixer
 
 ## [1.22.0-bb.1] - 2024-11-26
+
 ### Changed
+
 - gluon updated from 0.5.10 to 0.5.12
 - opensearch updated from 2.27.0 to 2.27.1
 
@@ -35,7 +53,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- Updated upstream chart from 1.21.4 to 1.22.0 
+- Updated upstream chart from 1.21.4 to 1.22.0
 - gluon updated from 0.5.9 to 0.5.10
 - ironbank/atlassian/confluence-data-center/confluence-node updated from 8.5.16 to 9.1.1
 - Added the maintenance track annotation and badge
@@ -47,13 +65,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Ensure security contexts are being correctly applied across all containers for Kyverno compliance
 
 ## [1.21.4-bb.4] - 2024-11-08
+
 ### Changed
+
 - Synced from upstream chart to ensure proper labels are now added to workloads
 - Removed previous updates made to update labels for Kiali
 - Updated documentation as additional labels are no longer necessary for it to show up properly in Kiali
 
 ## [1.21.4-bb.3] - 2024-11-06
+
 ### Changed
+
 - gluon updated from 0.5.8 to 0.5.9
 - ironbank/atlassian/confluence-data-center/confluence-node updated from 9.1.0 to 9.1.1
 - opensearch updated from 2.26.1 to 2.27.0
@@ -131,19 +153,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - opensearch updated to version 2.23.0
 
-## [1.21.2-bb.0] - 2024-08-26
-
-### Changed
-
-- Confluence chart version to 1.21.2
-
-## [1.20.1-bb.8] - 2024-08-22
-
-### Changed
-
-- Moved additionalInitContainers found under initContainers to run before the JMX initcontainer
-
-## [1.20.1-bb.7] - 2024-08-15
+## [9.0.2-bb.0] - 2024-08-15
 
 ### Changed
 
