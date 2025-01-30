@@ -127,7 +127,6 @@ spec:
               {{- end }}
           command: ["sh", "-c", {{ include "confluence.sharedHome.permissionFix.command" . | quote }}]
         {{- end }}
-        {{- include "common.jmx.initContainer" . | nindent 8 }}
         {{- if or .Values.confluence.additionalCertificates.secretName .Values.confluence.additionalCertificates.secretList }}
         - name: import-certs
           image: {{ include "confluence.image" . | quote }}
