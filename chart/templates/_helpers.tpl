@@ -81,7 +81,7 @@ TODO: This will break if the common.names.name exceeds 63 characters, need to fi
 
 {{/*
 The full-qualfied name of the synchrony app within the chart.
-TODO: This will break if the common.names.fullname exceeds 63 characters, need to find a more rebust way to do this
+TODO: This will break if the confluence.fullname exceeds 63 characters, need to find a more rebust way to do this
 */}}
 {{- define "synchrony.fullname" -}}
 {{ include "common.names.fullname" . }}-synchrony

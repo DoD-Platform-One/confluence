@@ -4,11 +4,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [1.22.3-bb.5] - 2025-02-13
+## [1.22.4-bb.0] - 2025-02-06
 
 ### Changed
 
 - Added basic cypress test
+- Updated opensearch (source) 2.30.1 -> 2.31.0
+- Updated cypress (source) 14.0.1 -> 14.0.3
+- Updated confluence-1.22.4
+- Updated cypress (source) 14.0.1 -> 14.0.2
+- ironbank/atlassian/confluence-data-center/confluence-node updated from 9.2.0 to 9.3.1
 
 ## [1.22.3-bb.4] - 2025-02-03
 
