@@ -5,7 +5,7 @@ metadata:
 upstream:
   type: git
   git:
-    commit: 5257e0addd6635e7a9196769942d8c89e506e771
+    commit: 6703eb4ffb29ac7b19f162253ac7cbb8c2c7c4df
     repo: https://github.com/atlassian/data-center-helm-charts
     directory: src/main/charts/confluence
-    ref: confluence-1.22.3
+    ref: confluence-1.22.4

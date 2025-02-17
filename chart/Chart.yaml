@@ -2,9 +2,9 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.22.3-bb.5
-appVersion: 9.2.0
-kubeVersion: ">=1.21.x-0"
+version: 1.22.4-bb.0
+appVersion: 9.3.1
+kubeVersion: ">=1.22.x-0"
 keywords:
   - Confluence
   - Confluence Server
@@ -29,7 +29,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.install
   - name: opensearch
-    version: 2.30.1
+    version: 2.31.0
     repository: https://opensearch-project.github.io/helm-charts
     condition: opensearch.enabled
 annotations:
@@ -59,10 +59,10 @@ annotations:
     - "Fix shutdown with jmx javaagent enabled (#899)"
     - "Unset IDs for all the Grafana dashboards (#889)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 9.2.0
+    - Confluence: 9.3.1
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:9.2.0
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:9.3.1
     - name: fluentd-kubernetes-daemonset
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
