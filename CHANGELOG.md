@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.22.5-bb.0] - 2025-02-18
+### Changed
+- ironbank/opensource/postgres/postgresql updated from 17.2 to 17.3
+- Updated upstream chart to 1.22.5
+
 ## [1.22.4-bb.0] - 2025-02-06
 
 ### Changed
