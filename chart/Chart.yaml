@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.22.4-bb.0
+version: 1.22.5-bb.0
 appVersion: 9.3.1
 kubeVersion: ">=1.22.x-0"
 keywords:
@@ -70,4 +70,4 @@ annotations:
       image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
     - name: postgres
       condition: postgresql.install
-      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:17.2
+      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:17.3

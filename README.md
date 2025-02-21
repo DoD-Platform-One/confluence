@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 1.22.4-bb.0](https://img.shields.io/badge/Version-1.22.4--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.3.1](https://img.shields.io/badge/AppVersion-9.3.1-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
+![Version: 1.22.5-bb.0](https://img.shields.io/badge/Version-1.22.5--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.3.1](https://img.shields.io/badge/AppVersion-9.3.1-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -33,7 +33,7 @@ annotations:
 - Kubernetes config installed in `~/.kube/config`
 - Helm installed
 
-Kubernetes: `>=1.21.x-0`
+Kubernetes: `>=1.22.x-0`
 
 Install Helm
 
@@ -307,7 +307,7 @@ helm install confluence chart/
 | postgresql.image.registry | string | `"registry1.dso.mil"` |  |
 | postgresql.image.debug | bool | `true` |  |
 | postgresql.image.repository | string | `"ironbank/opensource/postgres/postgresql"` |  |
-| postgresql.image.tag | string | `"17.2"` |  |
+| postgresql.image.tag | string | `"17.3"` |  |
 | postgresql.image.pullSecrets[0] | string | `"private-registry"` |  |
 | postgresql.auth.username | string | `"confuser"` |  |
 | postgresql.auth.password | string | `"bogus-satisfy-upgrade"` |  |
