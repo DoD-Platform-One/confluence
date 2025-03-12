@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.22.5-bb.2] 2025-03-05
+### Changed
+- ironbank/atlassian/confluence-data-center/confluence-node updated from 9.2.0 to 9.3.1
+
 ## [1.22.5-bb.1] - 2025-02-25
 ### Changed
 - ironbank/opensource/postgres/postgresql updated from 17.3 to 17.4
