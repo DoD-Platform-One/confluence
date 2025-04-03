@@ -4,11 +4,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [1.22.5-bb.2] 2025-03-05
+## [1.22.5-bb.4] - 2025-04-01
+### Changed
+- gluon updated from 0.5.14 to 0.5.15
+
+## [1.22.5-bb.3] - 2025-03-05
 ### Changed
 - Added dynamic network policy
 
-## [1.22.5-bb.2] 2025-03-05
+## [1.22.5-bb.2] - 2025-03-05
 ### Changed
 - ironbank/atlassian/confluence-data-center/confluence-node updated from 9.2.0 to 9.3.1
 
