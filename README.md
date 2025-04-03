@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 1.22.5-bb.3](https://img.shields.io/badge/Version-1.22.5--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.3.2](https://img.shields.io/badge/AppVersion-9.3.2-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
+![Version: 1.22.5-bb.4](https://img.shields.io/badge/Version-1.22.5--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.3.2](https://img.shields.io/badge/AppVersion-9.3.2-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -72,10 +72,10 @@ helm install confluence chart/
 | serviceAccount.clusterRoleBinding.create | bool | `false` | Set to 'true' if a ClusterRoleBinding should be created, or 'false' if it already exists.  |
 | serviceAccount.clusterRoleBinding.name | string | `nil` | The name of the ClusterRoleBinding to be created. If not specified, but the "serviceAccount.clusterRoleBinding.create" flag is set to 'true', then the ClusterRoleBinding name will be auto-generated.  |
 | serviceAccount.eksIrsa.roleArn | string | `nil` |  |
-| database.type | string | `nil` | The database type that should be used. If not specified, then it will need to be provided via the browser during manual configuration post deployment. Valid values include: 'postgresql' 'mysql' 'oracle' 'mssql' https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#databasetype  |
+| database.type | string | `nil` | The database type that should be used. If not specified, then it will need to be provided via the browser during manual configuration post deployment. Valid values include:*'postgresql','mysql','oracle','mssql' https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#databasetype  |
 | database.user | string | `nil` |  |
 | database.password | string | `"userpassword"` |  |
-| database.url | string | `nil` | The jdbc URL of the database. If not specified, then it will need to be provided via the browser during manual configuration post deployment. Example URLs include: 'jdbc:postgresql://`dbhost`:5432/`dbname`' 'jdbc:mysql://`dbhost`/`dbname`' 'jdbc:sqlserver://`dbhost`:1433;databaseName=`dbname`' 'jdbc:oracle:thin:@`dbhost`:1521:`SID`' https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#databaseurl  |
+| database.url | string | `nil` | The jdbc URL of the database. If not specified, then it will need to be provided via the browser during manual configuration post deployment. Example URLs include:'jdbc:postgresql://`dbhost`:5432/`dbname`','jdbc:mysql://`dbhost`/`dbname`','jdbc:sqlserver://`dbhost`:1433;databaseName=`dbname`','jdbc:oracle:thin:@`dbhost`:1521:`SID`' https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#databaseurl  |
 | database.credentials.secretName | string | `nil` | from-literal=password=`password`' https://kubernetes.io/docs/concepts/configuration/secret/#opaque-secrets  |
 | database.credentials.usernameSecretKey | string | `"username"` | The key ('username') in the Secret used to store the database login username  |
 | database.credentials.passwordSecretKey | string | `"password"` | The key ('password') in the Secret used to store the database login password  |
