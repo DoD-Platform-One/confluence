@@ -1254,7 +1254,8 @@ synchrony:
 
   # -- Set to 'true' if Synchrony (i.e. collaborative editing) should be enabled.
   # This will result in a separate StatefulSet and Service to be created for Synchrony.
-  # If disabled, then collaborative editing will be disabled in Confluence.
+  # If disabled, then the StatefulSet and Service will not be created, but Synchrony
+  # will still need to be disabled via web UI or API calls once deployed.
   enabled: false
 
   # -- Number of Synchrony pods
