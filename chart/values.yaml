@@ -66,7 +66,7 @@ image:
 
   # -- The docker image tag to be used - defaults to the Chart appVersion
   #
-  tag: "9.3.2"
+  tag: "9.4.0"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
 # to Pods
@@ -1295,6 +1295,9 @@ synchrony:
     # -- Annotations to apply to Synchrony Service
     #
     annotations: {}
+
+    # -- Complete URL of Synchrony Service (i.e. https://public.mydomain.com/synchrony). If left empty, it is calculated from ingress.https and ingress.host
+    url:
 
   # -- If 'synchrony.ingress.path' is defined, a dedicated Synchrony ingress object is created.
   # This is useful if you need to deploy multiple instances of Confluence with Synchrony enabled

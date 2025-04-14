@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.22.7-bb.0] - 2025-04-04
+### Changed
+- ironbank/atlassian/confluence-data-center/confluence-node updated from 9.3.2 to 9.4.0
+- Updated upstream chart to 1.22.7
+
 ## [1.22.5-bb.4] - 2025-04-01
 ### Changed
 - gluon updated from 0.5.14 to 0.5.15
