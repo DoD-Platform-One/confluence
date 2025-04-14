@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 1.22.5](https://img.shields.io/badge/Version-1.22.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.3.1](https://img.shields.io/badge/AppVersion-9.3.1-informational?style=flat-square)
+![Version: 1.22.7](https://img.shields.io/badge/Version-1.22.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.4.0](https://img.shields.io/badge/AppVersion-9.4.0-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -237,6 +237,7 @@ Kubernetes: `>=1.21.x-0`
 | synchrony.service.nodePort | string | `nil` | Only applicable if service.type is NodePort. NodePort for Synchrony service  |
 | synchrony.service.port | int | `80` | The port on which the Synchrony K8s Service will listen  |
 | synchrony.service.type | string | `"ClusterIP"` | The type of K8s service to use for Synchrony  |
+| synchrony.service.url | string | `nil` | Complete URL of Synchrony Service (i.e. https://public.mydomain.com/synchrony). If left empty, it is calculated from ingress.https and ingress.host |
 | synchrony.setPermissions | bool | `true` | Boolean to define whether to set synchrony home directory permissions on startup of Synchrony container. Set to 'false' to disable this behaviour.  |
 | synchrony.shutdown.terminationGracePeriodSeconds | int | `25` | The termination grace period for pods during shutdown. This should be set to the Synchrony internal grace period (default 20 seconds), plus a small buffer to allow the JVM to fully terminate. |
 | synchrony.tolerations | list | `[]` | Standard K8s tolerations that will be applied to all Synchrony pods  |
