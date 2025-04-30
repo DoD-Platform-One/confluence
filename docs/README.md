@@ -36,20 +36,27 @@ packages:
     git:
       repo: https://repo1.dso.mil/big-bang/product/community/confluence
       # It is recommended to update this to the latest bb tag
-      tag: 1.17.2-bb.1
+      tag: 1.22.7-bb.0
       path: chart
-    # This section is ignored if wrapper.enabled, above, is false. In this case, creation of an ingress for web access is left as an exercise for the reader.
-    values:
-      istio:
-        enabled: true
-        hardened:
-          enabled: true
-        confluence:
+    # Disabling this will bypass creating the istio VirtualService and NetworkPolicies.  
+    wrapper:
+      enabled: true
+    # This section is ignored if `wrapper.enabled`, above, is false. 
+    istio:
+      enabled: true
+      hosts:
+        - names:
+            - "confluence"
           gateways:
-            - istio-system/public
-      # See the database section of this README, below, for more.
+            - "public" #<-- Set to "public-ingressgateway" when  big bang values .istioGateway.enabled=true
+          destination:
+            port: 8090  
+    values:
+      confluence:
+        service:
+          port: 8090
       postgresql:
-        install: true
+        install: false
 ```
 
 Then install/update bigbang via the standard `helm upgrade` command, adding `-f <YAML file location>` to the end. This will install Confluence into the named namespace. 
