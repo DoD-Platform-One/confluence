@@ -1153,6 +1153,10 @@ monitoring:
   #
   exposeJmxMetrics: false
 
+  # -- Disables the creation of CATALINA_OPTS env variable
+  #
+  disableCatalinaOpts: false
+
   # --  JMX exporter init container configuration
   #
   jmxExporterInitContainer:
