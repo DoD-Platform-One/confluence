@@ -24,15 +24,37 @@ As part of your MR that modifies bigbang packages, you should modify the bigbang
 ### [test-values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/tests/test-values.yaml?ref_type=heads)
     ```yaml
     packages:
+      # This will be used as the namespace for the install, as well as the name of the helm release. If this is changed, the destination service (below) needs to also be changed.
       confluence:
         enabled: true
         git:
+          repo: https://repo1.dso.mil/big-bang/product/community/confluence
+          # It is recommended to update this to the latest bb tag
+          path: chart
           tag: null
-          branch: <my-package-branch-that-needs-testing>
+          branch: <test-branch>
+        # Disabling this will bypass creating the istio VirtualService and NetworkPolicies.  
+        namespace: bigbang
+        wrapper:
+          enabled: true
+        # This section is ignored if `wrapper.enabled`, above, is false. 
+        istio:
+          enabled: true
+          hosts:
+            - names:
+                - "confluence"
+              gateways:
+                - "public" #<-- Set to "public-ingressgateway" when  big bang values .istioGateway.enabled=true
+              destination:
+                port: 8090  
+        dependsOn:
+        - name: istio #<-- Set to "istiod" when  big bang values .istioGateway.enabled=true        
         values:
-          istio:
-            hardened:
-              enabled: true
+          confluence:
+            service:
+              port: 8090
+          postgresql:
+            install: false
       ### Additional components of Confluence should be changed to reflect testing changes introduced in the package MR
     ```
 
