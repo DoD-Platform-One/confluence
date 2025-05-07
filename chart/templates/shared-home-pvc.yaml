@@ -1,4 +1,4 @@
-{{- if .Values.volumes.sharedHome.persistentVolumeClaim.create }}
+{{- if .Values.volumes.sharedHome.efs.persistentVolumeClaim.create }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -6,15 +6,38 @@ metadata:
   labels:
   {{- include "common.labels.commonLabels" . | nindent 4 }}
 spec:
+  volumeName: {{ include "common.names.fullname" . }}-shared-home-pv
   accessModes:
-    {{ range .Values.volumes.sharedHome.persistentVolumeClaim.accessModes }}
+  {{ range .Values.volumes.sharedHome.efs.persistentVolumeClaim.accessModes }}
     - {{ . }}
-    {{ end }}
-  {{- if .Values.volumes.sharedHome.persistentVolumeClaim.storageClassName }}
-  storageClassName: {{ .Values.volumes.sharedHome.persistentVolumeClaim.storageClassName | quote }}
   {{- end }}
-  {{- with .Values.volumes.sharedHome.persistentVolumeClaim.resources }}
+  {{- if .Values.volumes.sharedHome.efs.persistentVolumeClaim.storageClassName }}
+  storageClassName: {{ .Values.volumes.sharedHome.efs.persistentVolumeClaim.storageClassName | quote }}
+  {{- end }}
+  {{- with .Values.volumes.sharedHome.efs.persistentVolumeClaim.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
+{{- else }}
+  {{- if .Values.volumes.sharedHome.nfs.persistentVolumeClaim.create }}
+  apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: {{ include "common.names.fullname" . }}-shared-home
+    labels:
+    {{- include "common.labels.commonLabels" . | nindent 4 }}
+  spec:
+    volumeName: {{ include "common.names.fullname" . }}-shared-home-pv
+    accessModes:
+    {{ range .Values.volumes.sharedHome.nfs.persistentVolumeClaim.accessModes }}
+      - {{ . }}
+    {{- end }}
+    {{- if .Values.volumes.sharedHome.nfs.persistentVolumeClaim.storageClassName }}
+    storageClassName: {{ .Values.volumes.sharedHome.nfs.persistentVolumeClaim.storageClassName | quote }}
+    {{- end }}
+    {{- with .Values.volumes.sharedHome.nfs.persistentVolumeClaim.resources }}
+    resources:
+      {{- toYaml . | nindent 4 }}   
+    {{- end }}
   {{- end }}
-{{ end }}
+{{- end }}  
+{{- end }}
