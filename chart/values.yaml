@@ -291,6 +291,59 @@ volumes:
   # https://confluence.atlassian.com/doc/set-up-a-confluence-data-center-cluster-982322030.html#SetupaConfluenceDataCentercluster-Setupandconfigureyourcluster
   #
   sharedHome:
+    efs:
+      enabled: false
+      # -- The EFS CSI driver used for mounting. For AWS EFS use 'efs.csi.aws.com'.
+      #
+      driver: 
+
+      # -- The File System ID of the EFS volume to mount 
+      #
+      efsid: 
+
+      persistentVolumeClaim:
+        create: false
+        accessModes:
+        - ReadWriteMany
+
+        # -- Specify the name of the 'StorageClass' that should be used for the 'shared-home'
+        #volume claim.
+        #        
+        storageClassName:
+
+        # -- Specifies the standard K8s resource requests and/or limits for the shared-home
+        # volume claims.
+        #        
+        resources:
+          requests:
+            storage: 1Gi
+        
+
+    nfs:
+      enabled: false
+      # -- NFS server IP or hostname to mount from.
+      #
+      server: IP
+
+      # -- NFS path to mount on the server.
+      #
+      path: /
+
+      persistentVolumeClaim:
+        create: false
+        accessModes:
+        - ReadWriteMany
+
+      # -- The name of the StorageClass to use with the NFS volume.
+      # 
+        storageClassName:
+
+      # -- Specifies the standard K8s resource requests and/or limits for the shared-home
+      # volume claims.
+      #
+        resources:
+          requests:
+            storage: 1Gi
 
     # Dynamic provisioning of shared-home using the K8s Storage Class
     #
@@ -323,9 +376,9 @@ volumes:
         requests:
           storage: 1Gi
     # -- If AWS efs is utilized, please make efs true and put id of efs volume to create pv
-    efs:
-    efsid:
-    driver: efs.csi.aws.com
+    #efs:
+    #efsid:
+    #driver: efs.csi.aws.com
 
     # -- Static provisioning of shared-home using K8s PVs and PVCs
     #
