@@ -638,6 +638,14 @@ ingress:
   #
   tlsSecretName:
 
+  # -- Additional paths to be added to the Ingress resource to point to different backend services
+  #
+  additionalPaths: []
+    #- path: /static-content
+    #  pathType: Prefix
+    #  service: static-content-svc
+    #  portNumber: 80
+
 
 # Confluence configuration
 #
@@ -733,6 +741,12 @@ confluence:
     capabilities:
       drop:
         - ALL
+
+    # -- fsGroupChangePolicy defines behavior for changing ownership and permission of the volume before being exposed inside a Pod.
+    # This field only applies to volume types that support fsGroup controlled ownership and permissions.
+    # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#configure-volume-permission-and-ownership-change-policy-for-pods
+    #
+    fsGroupChangePolicy: "OnRootMismatch"
 
   # -- Standard K8s field that holds security configurations that will be applied to a container.
   # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
@@ -899,6 +913,16 @@ confluence:
     #
     localHomeSubPath: "logs"
 
+  session:
+
+    # -- User session timeout. Set to 30 minutes in web.xml
+    #
+    timeout:
+
+    # -- The maximum time a user can remain logged-in with 'Remember Me'. Defaults to 1209600; two weeks, in seconds
+    #
+    autologinCookieAge:
+
   # Data Center clustering
   #
   clustering:
@@ -1053,7 +1077,9 @@ confluence:
     trustedProxies:
     stuckThreadDetectionValveThreshold: "60"
     accessLogMaxDays: "-1"
+    accessLogPattern: "%h %{X-AUSERNAME}o %t &quot;%r&quot; %s %b %D %U %I &quot;%{User-Agent}i&quot;"
     requestAttributesEnabled: "false"
+    
 
     # -- Custom server.xml to be mounted into /opt/atlassian/confluence/conf
     #
@@ -1194,7 +1220,22 @@ confluence:
       # -- Custom SecurityContext for the import-certs init container
       #
       securityContext: {}
-
+      
+  # -- Configure additional Tomcat connector to set up tunnel. Define the connector port and optional additional attributes.
+  # When 'tunnel.additionalConnector.port' is defined, an additional connector is added to server.xml
+  # and '-Dsecure.tunnel.upstream.port=<port_number>' is added to JVM args
+  #
+  tunnel:
+    additionalConnector:
+      port:
+      connectionTimeout: "20000"
+      maxThreads: "50"
+      minSpareThreads: "10"
+      enableLookups: "false"
+      acceptCount: "10"
+      URIEncoding: "UTF-8"
+      secure: false
+        
 # Monitoring
 #
 monitoring:
@@ -1568,6 +1609,10 @@ synchrony:
   # For details see https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
   #
   priorityClassName:
+  
+  # -- Share host namespaces which may include hostNetwork, hostIPC, and hostPID
+  #
+  hostNamespaces: {}
 
   # -- Certificates to be added to Java truststore. Provide reference to a secret that contains the certificates
   #
@@ -1730,6 +1775,10 @@ schedulerName:
 # For details see https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
 #
 priorityClassName:
+
+# -- Share host namespaces which may include hostNetwork, hostIPC, and hostPID
+#
+hostNamespaces: {}
 
 # -- Additional container definitions that will be added to all Confluence pods
 #

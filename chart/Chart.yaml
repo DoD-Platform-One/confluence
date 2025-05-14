@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 1.22.7-bb.2
+version: 2.0.0-bb.0
 appVersion: 9.4.0
 kubeVersion: ">=1.22.x-0"
 keywords:
@@ -22,14 +22,14 @@ dependencies:
     version: 1.2.7
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: gluon
-    version: 0.5.15
+    version: 0.5.19
     repository: oci://registry1.dso.mil/bigbang
   - name: postgresql
     version: 13.2.2
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.install
   - name: opensearch
-    version: 2.32.0
+    version: 3.0.0
     repository: https://opensearch-project.github.io/helm-charts
     condition: opensearch.enabled
 annotations:

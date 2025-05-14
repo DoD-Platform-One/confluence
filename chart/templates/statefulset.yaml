@@ -46,9 +46,10 @@ spec:
       {{- else }}
       {{- if .Values.confluence.securityContextEnabled }}
       securityContext:
-        # This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Cnfluence container.
-        # However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260
-        {{ toYaml .Values.confluence.securityContext | nindent 8 }}
+        {{ toYaml . | nindent 8 }}
+        {{- if not .fsGroup }}
+        fsGroup: 2002
+        {{- end }}
       {{- end }}
       {{- end }}
       hostAliases:
@@ -251,6 +252,8 @@ spec:
             {{ end }}
             {{- end }}
           env:
+            {{- include "confluence.sessionVars" . | nindent 12 }}
+            {{- include "confluence.tunnelVars" . | nindent 12 }}
             {{ if .Values.ingress.https }}
             - name: ATL_TOMCAT_SCHEME
               value: "https"
@@ -292,6 +295,7 @@ spec:
             - name: CATALINA_OPTS
               value: {{ include "common.jmx.javaagent" . | replace "\n" "" | quote }}
             {{- end }}
+            {{- include "opensearch.env.vars" . | nindent 12 }}
             {{- include "confluence.additionalEnvironmentVariables" . | nindent 12 }}
           lifecycle:
           {{- if .Values.confluence.postStart.command }}
