@@ -212,7 +212,7 @@ Pod labels
     {{- else -}}
         {{- if .Values.ingress.https -}}-Dsynchrony.service.url=https://{{ .Values.ingress.host }}/{{ $synchronyIngressPath }}/v1
         {{- else }}-Dsynchrony.service.url=http://{{ .Values.ingress.host }}/{{ $synchronyIngressPath }}/v1
-        {{- end }}    
+        {{- end }}
     {{- end }}
 {{- else -}}
 -Dsynchrony.btf.disabled=false
@@ -620,11 +620,54 @@ volumeClaimTemplates:
 {{- end }}
 {{- end }}
 
-{{- /*
-Populates database connection information to Confluence via env vars
-If .Values.database values are defined, then those values are used (user wants external DB)
-Otherwise, default to the embedded Postgres Pod connection information
-*/ -}}
+{{- define "confluence.sessionVars"}}
+{{- if .Values.confluence.session.timeout }}
+- name: ATL_CONFLUENCE_SESSION_TIMEOUT
+  value: {{ .Values.confluence.session.timeout | quote }}
+{{- end }}
+{{- if .Values.confluence.session.autologinCookieAge }}
+- name: ATL_AUTOLOGIN_COOKIE_AGE
+  value: {{ .Values.confluence.session.autologinCookieAge | quote }}
+{{- end }}
+{{- end }}
+
+{{- define "confluence.tunnelVars"}}
+{{- if .Values.confluence.tunnel.additionalConnector.port }}
+{{- with .Values.confluence.tunnel.additionalConnector.port }}
+- name: ATL_TOMCAT_ADDITIONAL_CONNECTOR_PORT
+  value: {{ . | quote }}
+{{- end }}
+{{- with .Values.confluence.tunnel.additionalConnector.connectionTimeout }}
+- name: ATL_TOMCAT_ADDITIONAL_CONNECTOR_CONNECTION_TIMEOUT
+  value: {{ . | quote }}
+{{- end }}
+{{- with .Values.confluence.tunnel.additionalConnector.maxThreads }}
+- name: ATL_TOMCAT_ADDITIONAL_CONNECTOR_MAX_THREADS
+  value: {{ . | quote }}
+{{- end }}
+{{- with .Values.confluence.tunnel.additionalConnector.minSpareThreads }}
+- name: ATL_TOMCAT_ADDITIONAL_CONNECTOR_MIN_SPARE_THREADS
+  value: {{ . | quote }}
+{{- end }}
+{{- with .Values.confluence.tunnel.additionalConnector.enableLookups }}
+- name: ATL_TOMCAT_ADDITIONAL_CONNECTOR_ENABLE_LOOKUPS
+  value: {{ . | quote }}
+{{- end }}
+{{- with .Values.confluence.tunnel.additionalConnector.acceptCount }}
+- name: ATL_TOMCAT_ADDITIONAL_CONNECTOR_ACCEPT_COUNT
+  value: {{ . | quote }}
+{{- end }}
+{{- with .Values.confluence.tunnel.additionalConnector.secure }}
+- name: ATL_TOMCAT_ADDITIONAL_CONNECTOR_SECURE
+  value: {{ . | quote }}
+{{- end }}
+{{- with .Values.confluence.tunnel.additionalConnector.URIEncoding }}
+- name: ATL_TOMCAT_ADDITIONAL_CONNECTOR_URI_ENCODING
+  value: {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{- define "confluence.databaseEnvVars" -}}
 {{- if .Values.confluence.forceConfigUpdate }}
 - name: ATL_FORCE_CFG_UPDATE
@@ -816,5 +859,21 @@ set -e; cp $JAVA_HOME/lib/security/cacerts /var/ssl/cacerts; chmod 664 /var/ssl/
 {{- index $secretData.data "OPENSEARCH_INITIAL_ADMIN_PASSWORD" }}
 {{- else }}
 {{ include "generate_static_password_b64enc" . }}
+{{- end }}
+{{- end }}
+
+{{- define "opensearch.env.vars" }}
+{{- if .Values.opensearch.enabled }}
+- name: ATL_SEARCH_PLATFORM
+  value: opensearch
+- name: ATL_OPENSEARCH_HTTP_URL
+  value: http://opensearch-cluster-master:9200
+- name: ATL_OPENSEARCH_USERNAME
+  value: admin
+- name: ATL_OPENSEARCH_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.opensearch.credentials.existingSecretRef.name | default "opensearch-initial-password" }}
+      key: OPENSEARCH_INITIAL_ADMIN_PASSWORD
 {{- end }}
 {{- end }}

@@ -1,21 +1,40 @@
 # Change Log
 
+## 2.0.0
 
-## 1.18
+This release includes breaking changes. See [Breaking Changes](https://github.com/atlassian/data-center-helm-charts/blob/main/BREAKING_CHANGES.md)
 
-**Release date:** 2024-2-27
+**Release date:** 2025-4-29
 
-![AppVersion: 8.5.6](https://img.shields.io/static/v1?label=AppVersion&message=8.5.6&color=success&logo=)
+![AppVersion: 9.2.3](https://img.shields.io/static/v1?label=AppVersion&message=9.2.3&color=success&logo=)
 ![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
 ![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
 
-* Add Openshift analytics (#763)
-* Update appVersions for DC apps (#765)
-* Removed unused Confluence shared home volume from Synchrony volume. (#764)
-* OpenShift Support (#752)
-* Use testPods values for test images and container resources (#761)
-* Relabel instance name on jmx service monitor (#757)
-* Added pvc retention policy to Bitbucket Mesh StatefulSet (#755)
+* Pass OpenSearch details as env vars (#999)
+* Remove condition to support legacy securityContext format (#1000)
+
+## 1.22.9
+
+**Release date:** 2025-4-22
+
+![AppVersion: 9.2.3](https://img.shields.io/static/v1?label=AppVersion&message=9.2.3&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Make session and autologin configurable for Jira and Confluence (#992)
+* Make it possible to declare additional ingress paths (#991)
+* Bring changelog in order (#990)
+
+## 1.22.8
+
+**Release date:** 2025-4-17
+
+![AppVersion: 9.2.3](https://img.shields.io/static/v1?label=AppVersion&message=9.2.3&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Set fsGroupChangePolicy to OnRootMismatch in securityContext by default (#986)
+* Update appVersions for DC apps (#981)
 
 ## 1.22.7
 
@@ -210,6 +229,22 @@
 
 * Include shared home for synchrony when additional libs are defined (#779)
 * Get rid of server repo references (#777)
+
+## 1.18.0
+
+**Release date:** 2024-2-27
+
+![AppVersion: 8.5.6](https://img.shields.io/static/v1?label=AppVersion&message=8.5.6&color=success&logo=)
+![Kubernetes: >=1.21.x-0](https://img.shields.io/static/v1?label=Kubernetes&message=>=1.21.x-0&color=informational&logo=kubernetes)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+* Add Openshift analytics (#763)
+* Update appVersions for DC apps (#765)
+* Removed unused Confluence shared home volume from Synchrony volume. (#764)
+* OpenShift Support (#752)
+* Use testPods values for test images and container resources (#761)
+* Relabel instance name on jmx service monitor (#757)
+* Added pvc retention policy to Bitbucket Mesh StatefulSet (#755)
 
 ## 1.17.2
 
