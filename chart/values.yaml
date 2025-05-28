@@ -66,7 +66,7 @@ image:
 
   # -- The docker image tag to be used - defaults to the Chart appVersion
   #
-  tag: "9.4.0"
+  tag: "9.4.1"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
 # to Pods
@@ -285,6 +285,11 @@ volumes:
     # mounted.
     #
     mountPath: "/var/atlassian/application-data/confluence"
+    
+    # -- Specifies the sub-directory of the local-home volume that will be mounted in to the
+    # Confluence container.
+    #
+    subPath:  
 
   # A volume for 'shared-home' is required by Confluence to effectively operate in multi-node
   # environment
@@ -727,7 +732,7 @@ confluence:
 
   # -- Whether to apply security context to pod.
   #
-  securityContextEnabled: true
+  # securityContextEnabled: true
 
   securityContext:
     # -- The GID used by the Confluence docker image
@@ -1845,7 +1850,7 @@ postgresql:
     registry: registry1.dso.mil
     debug: true
     repository: ironbank/opensource/postgres/postgresql
-    tag: "17.4"
+    tag: "17.5"
     pullSecrets:
     - private-registry
 

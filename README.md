@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 2.0.0-bb.0](https://img.shields.io/badge/Version-2.0.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.4.0](https://img.shields.io/badge/AppVersion-9.4.0-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
+![Version: 9.4.1-bb.0](https://img.shields.io/badge/Version-9.4.1--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.4.1](https://img.shields.io/badge/AppVersion-9.4.1-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -33,7 +33,7 @@ annotations:
 - Kubernetes config installed in `~/.kube/config`
 - Helm installed
 
-Kubernetes: `>=1.22.x-0`
+Kubernetes: `>=1.21.x-0`
 
 Install Helm
 
@@ -60,7 +60,7 @@ helm install confluence chart/
 | image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node"` | The Confluence Docker image to use https://hub.docker.com/r/atlassian/confluence  |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy  |
 | image.imagePullSecrets | string | `"private-registry"` | Optional image repository pull secret |
-| image.tag | string | `"9.4.0"` | The docker image tag to be used - defaults to the Chart appVersion  |
+| image.tag | string | `"9.4.1"` | The docker image tag to be used - defaults to the Chart appVersion  |
 | serviceAccount.create | bool | `true` | Set to 'true' if a ServiceAccount should be created, or 'false' if it already exists.  |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to be used by the pods. If not specified, but the "serviceAccount.create" flag is set to 'true', then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server  |
 | serviceAccount.imagePullSecrets | list | `[{"name":"private-registry"}]` | For Docker images hosted in private registries, define the list of image pull secrets that should be utilized by the created ServiceAccount https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod  |
@@ -86,6 +86,7 @@ helm install confluence chart/
 | volumes.localHome.persistentVolumeClaimRetentionPolicy.whenScaled | string | `nil` | Configures the volume retention behavior that applies when the replica count of the StatefulSet is reduced.  |
 | volumes.localHome.customVolume | object | `{}` | Static provisioning of local-home using K8s PVs and PVCs  NOTE: Due to the ephemeral nature of pods this approach to provisioning volumes for pods is not recommended. Dynamic provisioning described above is the prescribed approach.  When 'persistentVolumeClaim.create' is 'false', then this value can be used to define a standard K8s volume that will be used for the local-home volume(s). If not defined, then an 'emptyDir' volume is utilised. Having provisioned a 'PersistentVolume', specify the bound 'persistentVolumeClaim.claimName' for the 'customVolume' object. https://kubernetes.io/docs/concepts/storage/persistent-volumes/#static  |
 | volumes.localHome.mountPath | string | `"/var/atlassian/application-data/confluence"` | Specifies the path in the Confluence container to which the local-home volume will be mounted.  |
+| volumes.localHome.subPath | string | `nil` | Specifies the sub-directory of the local-home volume that will be mounted in to the Confluence container.  |
 | volumes.sharedHome.efs.enabled | bool | `false` |  |
 | volumes.sharedHome.efs.driver | string | `nil` | The EFS CSI driver used for mounting. For AWS EFS use 'efs.csi.aws.com'.  |
 | volumes.sharedHome.efs.efsid | string | `nil` | The File System ID of the EFS volume to mount   |
@@ -154,10 +155,6 @@ helm install confluence chart/
 | confluence.hazelcastService.annotations | object | `{}` | Additional annotations to apply to the Hazelcast Service  |
 | confluence.securityContextEnabled | bool | `true` | Whether to apply security context to pod.  |
 | confluence.securityContext.fsGroup | int | `2002` | The GID used by the Confluence docker image GID will default to 2002 if not supplied and securityContextEnabled is set to true. This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Confluence container. However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260 |
-| confluence.securityContext.runAsUser | int | `2002` |  |
-| confluence.securityContext.runAsGroup | int | `2002` |  |
-| confluence.securityContext.runAsNonRoot | bool | `true` |  |
-| confluence.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | confluence.securityContext.fsGroupChangePolicy | string | `"OnRootMismatch"` | fsGroupChangePolicy defines behavior for changing ownership and permission of the volume before being exposed inside a Pod. This field only applies to volume types that support fsGroup controlled ownership and permissions. https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#configure-volume-permission-and-ownership-change-policy-for-pods  |
 | confluence.containerSecurityContext | object | `{"capabilities":{"drop":["ALL"]},"runAsGroup":2002,"runAsNonRoot":true,"runAsUser":2002}` | Standard K8s field that holds security configurations that will be applied to a container. https://kubernetes.io/docs/tasks/configure-pod-container/security-context/  |
 | confluence.umask | string | `"0022"` |  |
@@ -327,7 +324,7 @@ helm install confluence chart/
 | postgresql.image.registry | string | `"registry1.dso.mil"` |  |
 | postgresql.image.debug | bool | `true` |  |
 | postgresql.image.repository | string | `"ironbank/opensource/postgres/postgresql"` |  |
-| postgresql.image.tag | string | `"17.4"` |  |
+| postgresql.image.tag | string | `"17.5"` |  |
 | postgresql.image.pullSecrets[0] | string | `"private-registry"` |  |
 | postgresql.auth.username | string | `"confuser"` |  |
 | postgresql.auth.password | string | `"bogus-satisfy-upgrade"` |  |
