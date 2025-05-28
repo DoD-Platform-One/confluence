@@ -2,8 +2,8 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 2.0.0-bb.0
-appVersion: 9.4.0
+version: 9.4.1-bb.0
+appVersion: 9.4.1
 kubeVersion: ">=1.22.x-0"
 keywords:
   - Confluence
@@ -22,7 +22,7 @@ dependencies:
     version: 1.2.7
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: gluon
-    version: 0.5.19
+    version: 0.5.21
     repository: oci://registry1.dso.mil/bigbang
   - name: postgresql
     version: 13.2.2
@@ -59,10 +59,10 @@ annotations:
     - "Fix shutdown with jmx javaagent enabled (#899)"
     - "Unset IDs for all the Grafana dashboards (#889)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 9.4.0
+    - Confluence: 9.4.1
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:9.4.0
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:9.4.1
     - name: fluentd-kubernetes-daemonset
       condition: fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
@@ -70,4 +70,4 @@ annotations:
       image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
     - name: postgres
       condition: postgresql.install
-      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:17.4
+      image: registry1.dso.mil/ironbank/opensource/postgres/postgresql:17.5

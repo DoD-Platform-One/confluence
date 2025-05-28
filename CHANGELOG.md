@@ -4,6 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [9.4.1-bb.0] (2025-05-22)
+### Changed
+- gluon updated from 0.5.19 to 0.5.21
+
 ## [2.0.0-bb.0] - 2025-05-08
 
 ### Changed
@@ -22,10 +26,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [1.22.7-bb.1] - 2025-04-30
 ### Changed
+
 - added disableCatalinaOpts to disable CATALINA_OPTS env from being created
 
 ## [1.22.7-bb.0] - 2025-04-04
+
 ### Changed
+
 - ironbank/atlassian/confluence-data-center/confluence-node updated from 9.3.2 to 9.4.0
 - Updated upstream chart to 1.22.7
 
