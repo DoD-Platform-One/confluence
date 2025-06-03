@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 9.4.1-bb.0](https://img.shields.io/badge/Version-9.4.1--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.4.1](https://img.shields.io/badge/AppVersion-9.4.1-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
+![Version: 9.4.1-bb.1](https://img.shields.io/badge/Version-9.4.1--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.4.1](https://img.shields.io/badge/AppVersion-9.4.1-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -153,7 +153,7 @@ helm install confluence chart/
 | confluence.hazelcastService.port | int | `5701` | The port on which the Confluence K8s Hazelcast Service will listen  |
 | confluence.hazelcastService.type | string | `"ClusterIP"` | The type of the Hazelcast K8s service to use for Confluence  |
 | confluence.hazelcastService.annotations | object | `{}` | Additional annotations to apply to the Hazelcast Service  |
-| confluence.securityContextEnabled | bool | `true` | Whether to apply security context to pod.  |
+| confluence.securityContext | object | `{"capabilities":{"drop":["ALL"]},"fsGroup":2002,"fsGroupChangePolicy":"OnRootMismatch","runAsGroup":2002,"runAsNonRoot":true,"runAsUser":2002}` | Whether to apply security context to pod.  securityContextEnabled: true |
 | confluence.securityContext.fsGroup | int | `2002` | The GID used by the Confluence docker image GID will default to 2002 if not supplied and securityContextEnabled is set to true. This is intended to ensure that the shared-home volume is group-writeable by the GID used by the Confluence container. However, this doesn't appear to work for NFS volumes due to a K8s bug: https://github.com/kubernetes/examples/issues/260 |
 | confluence.securityContext.fsGroupChangePolicy | string | `"OnRootMismatch"` | fsGroupChangePolicy defines behavior for changing ownership and permission of the volume before being exposed inside a Pod. This field only applies to volume types that support fsGroup controlled ownership and permissions. https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#configure-volume-permission-and-ownership-change-policy-for-pods  |
 | confluence.containerSecurityContext | object | `{"capabilities":{"drop":["ALL"]},"runAsGroup":2002,"runAsNonRoot":true,"runAsUser":2002}` | Standard K8s field that holds security configurations that will be applied to a container. https://kubernetes.io/docs/tasks/configure-pod-container/security-context/  |

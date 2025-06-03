@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 9.4.1-bb.0
+version: 9.4.1-bb.1
 appVersion: 9.4.1
 kubeVersion: ">=1.22.x-0"
 keywords:
@@ -22,7 +22,7 @@ dependencies:
     version: 1.2.7
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: gluon
-    version: 0.5.21
+    version: 0.6.2
     repository: oci://registry1.dso.mil/bigbang
   - name: postgresql
     version: 13.2.2
