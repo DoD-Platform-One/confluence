@@ -424,11 +424,11 @@ volumes:
 
       # -- Image repository for the permission fixer init container. Defaults to alpine
       #
-      imageRepo: alpine
+      imageRepo:  registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal
 
       # -- Image tag for the permission fixer init container. Defaults to latest
       #
-      imageTag: latest
+      imageTag: "8.10"
 
       # -- Resources requests and limits for nfsPermissionFixer init container
       # See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -2019,7 +2019,7 @@ testPods:
   schedulerName:
   image:
     permissionsTestContainer: debian:stable-slim
-    statusTestContainer: alpine:latest
+    statusTestContainer: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.10
 
 openshift:
 
