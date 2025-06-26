@@ -55,7 +55,7 @@ image:
   # -- The Confluence Docker image to use
   # https://hub.docker.com/r/atlassian/confluence
   #
-  repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node
+  repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts
 
   # -- Image pull policy
   #
@@ -66,7 +66,7 @@ image:
 
   # -- The docker image tag to be used - defaults to the Chart appVersion
   #
-  tag: "9.4.1"
+  tag: "9.2.5"
 
 # K8s ServiceAccount configuration. Give fine-grained identity and authorization
 # to Pods

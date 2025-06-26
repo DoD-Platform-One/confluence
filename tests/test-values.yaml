@@ -6,7 +6,7 @@ confluence:
   additionalJvmArgs:
     - "-Dcom.redhat.fips=false"
 
-helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.0.0"
+helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.1.0"
 
 image:
   imagePullSecrets: private-registry
