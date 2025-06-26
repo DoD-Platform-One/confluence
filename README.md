@@ -1,52 +1,26 @@
-<!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 2.0.1-bb.2](https://img.shields.io/badge/Version-2.0.1--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.4.1](https://img.shields.io/badge/AppVersion-9.4.1-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
+![Version: 2.0.2-bb.0](https://img.shields.io/badge/Version-2.0.2--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 9.4.1](https://img.shields.io/badge/AppVersion-9.4.1-informational?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
-## Upstream References
+**Homepage:** <https://atlassian.github.io/data-center-helm-charts/>
 
-- <https://atlassian.github.io/data-center-helm-charts/>
-- <https://github.com/atlassian/data-center-helm-charts>
-- <https://bitbucket.org/atlassian-docker/docker-atlassian-confluence-server/>
+## Source Code
 
-## Upstream Release Notes
+* <https://github.com/atlassian/data-center-helm-charts>
+* <https://bitbucket.org/atlassian-docker/docker-atlassian-confluence-server/>
 
-This package has no upstream release note links on file. Please add some to [chart/Chart.yaml](chart/Chart.yaml) under `annotations.bigbang.dev/upstreamReleaseNotesMarkdown`.
-Example:
-```yaml
-annotations:
-  bigbang.dev/upstreamReleaseNotesMarkdown: |
-    - [Find our upstream chart's CHANGELOG here](https://link-goes-here/CHANGELOG.md)
-    - [and our upstream application release notes here](https://another-link-here/RELEASE_NOTES.md)
-```
-
-## Learn More
-
-- [Application Overview](docs/overview.md)
-- [Other Documentation](docs/)
-
-## Pre-Requisites
-
-- Kubernetes Cluster deployed
-- Kubernetes config installed in `~/.kube/config`
-- Helm installed
+## Requirements
 
 Kubernetes: `>=1.21.x-0`
 
-Install Helm
-
-https://helm.sh/docs/intro/install/
-
-## Deployment
-
-- Clone down the repository
-- cd into directory
-
-```bash
-helm install confluence chart/
-```
+| Repository | Name | Version |
+|------------|------|---------|
+| https://atlassian.github.io/data-center-helm-charts | common | 1.2.7 |
+| https://charts.bitnami.com/bitnami | postgresql | 13.2.2 |
+| https://opensearch-project.github.io/helm-charts | opensearch | 3.0.0 |
+| oci://registry1.dso.mil/bigbang | gluon | 0.6.2 |
 
 ## Values
 
@@ -60,7 +34,7 @@ helm install confluence chart/
 | image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node"` | The Confluence Docker image to use https://hub.docker.com/r/atlassian/confluence  |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy  |
 | image.imagePullSecrets | string | `"private-registry"` | Optional image repository pull secret |
-| image.tag | string | `"9.4.1"` | The docker image tag to be used - defaults to the Chart appVersion  |
+| image.tag | string | `"9.2.5"` | The docker image tag to be used - defaults to the Chart appVersion  |
 | serviceAccount.create | bool | `true` | Set to 'true' if a ServiceAccount should be created, or 'false' if it already exists.  |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to be used by the pods. If not specified, but the "serviceAccount.create" flag is set to 'true', then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server  |
 | serviceAccount.imagePullSecrets | list | `[{"name":"private-registry"}]` | For Docker images hosted in private registries, define the list of image pull secrets that should be utilized by the created ServiceAccount https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod  |
@@ -72,11 +46,11 @@ helm install confluence chart/
 | serviceAccount.clusterRoleBinding.create | bool | `false` | Set to 'true' if a ClusterRoleBinding should be created, or 'false' if it already exists.  |
 | serviceAccount.clusterRoleBinding.name | string | `nil` | The name of the ClusterRoleBinding to be created. If not specified, but the "serviceAccount.clusterRoleBinding.create" flag is set to 'true', then the ClusterRoleBinding name will be auto-generated.  |
 | serviceAccount.eksIrsa.roleArn | string | `nil` |  |
-| database.type | string | `nil` | The database type that should be used. If not specified, then it will need to be provided via the browser during manual configuration post deployment. Valid values include: *'postgresql'* 'mysql' *'oracle'* 'mssql' https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#databasetype  |
+| database.type | string | `nil` | The database type that should be used. If not specified, then it will need to be provided via the browser during manual configuration post deployment. Valid values include: *'postgresql'*'mysql'*'oracle'*'mssql' https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#databasetype  |
 | database.user | string | `nil` |  |
 | database.password | string | `"userpassword"` |  |
-| database.url | string | `nil` | The jdbc URL of the database. If not specified, then it will need to be provided via the browser during manual configuration post deployment. Example URLs include: *'jdbc:postgresql://{dbhost}:5432/{dbname}'* 'jdbc:mysql://{dbhost}/{dbname}' *'jdbc:sqlserver://{dbhost}:1433;databaseName={dbname}'* 'jdbc:oracle:thin:@{dbhost}:1521:{SID}' https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#databaseurl  |
-| database.credentials.secretName | string | `nil` | from-literal=password={password}' https://kubernetes.io/docs/concepts/configuration/secret/#opaque-secrets  |
+| database.url | string | `nil` | The jdbc URL of the database. If not specified, then it will need to be provided via the browser during manual configuration post deployment. Example URLs include: *'jdbc:postgresql://`<dbhost>`:5432/`<dbname>`'*'jdbc:mysql://`<dbhost>`/`<dbname>`'*'jdbc:sqlserver://`<dbhost>`:1433;databaseName=`<dbname>`'*'jdbc:oracle:thin:@`<dbhost>`:1521:`<SID>`' https://atlassian.github.io/data-center-helm-charts/userguide/CONFIGURATION/#databaseurl  |
+| database.credentials.secretName | string | `nil` | from-literal=password=`<password>`' https://kubernetes.io/docs/concepts/configuration/secret/#opaque-secrets  |
 | database.credentials.usernameSecretKey | string | `"username"` | The key ('username') in the Secret used to store the database login username  |
 | database.credentials.passwordSecretKey | string | `"password"` | The key ('password') in the Secret used to store the database login password  |
 | volumes.localHome.persistentVolumeClaim.create | bool | `false` | If 'true', then a 'PersistentVolume' and 'PersistentVolumeClaim' will be dynamically created for each pod based on the 'StorageClassName' supplied below.  |
@@ -163,7 +137,7 @@ helm install confluence chart/
 | confluence.ports.hazelcast | int | `5701` | The port on which the Confluence container listens for Hazelcast traffic  |
 | confluence.ports.intersvc | int | `8081` | The port used for Confluence internal services |
 | confluence.ports.synchrony | int | `8091` | The port on which Synchrony is used for collaborative editing It is easier to manage Synchrony on the container itself rather than deploying a separate stateful set and services |
-| confluence.license.secretName | string | `nil` | The name of the K8s Secret that contains the Confluence license key. If specified, then the license will be automatically populated during Confluence setup. Otherwise, it will need to be provided via the browser after initial startup. An Example of creating a K8s secret for the license below: 'kubectl create secret generic {secret-name} --from-literal=license-key={license} https://kubernetes.io/docs/concepts/configuration/secret/#opaque-secrets  |
+| confluence.license.secretName | string | `nil` | The name of the K8s Secret that contains the Confluence license key. If specified, then the license will be automatically populated during Confluence setup. Otherwise, it will need to be provided via the browser after initial startup. An Example of creating a K8s secret for the license below: 'kubectl create secret generic `<secret-name>` --from-literal=license-key=`<license>` https://kubernetes.io/docs/concepts/configuration/secret/#opaque-secrets  |
 | confluence.license.secretKey | string | `"license-key"` | The key in the K8s Secret that contains the Confluence license key  |
 | confluence.readinessProbe.enabled | bool | `true` | Whether to apply the readinessProbe check to pod.  |
 | confluence.readinessProbe.initialDelaySeconds | int | `10` | The initial delay (in seconds) for the Confluence container readiness probe, after which the probe will start running.  |
@@ -299,7 +273,7 @@ helm install confluence chart/
 | fluentd.imageRepo | string | `"fluent/fluentd-kubernetes-daemonset"` | The Fluentd sidecar image repository  |
 | fluentd.imageTag | string | `"v1.11.5-debian-elasticsearch7-1.2"` | The Fluentd sidecar image tag  |
 | fluentd.resources | object | `{}` | Resources requests and limits for fluentd sidecar container See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/  |
-| fluentd.command | string | `nil` | The command used to start Fluentd. If not supplied the default command will be used: "fluentd -c /fluentd/etc/fluent.conf -v"  Note: The custom command can be free-form, however pay particular attention to the process that should ultimately be left running in the container. This process should be invoked with 'exec' so that signals are appropriately propagated to it, for instance SIGTERM. An example of how such a command may look is: "<command 1> && <command 2> && exec {primary command}" |
+| fluentd.command | string | `nil` | The command used to start Fluentd. If not supplied the default command will be used: "fluentd -c /fluentd/etc/fluent.conf -v"  Note: The custom command can be free-form, however pay particular attention to the process that should ultimately be left running in the container. This process should be invoked with 'exec' so that signals are appropriately propagated to it, for instance SIGTERM. An example of how such a command may look is: "`<command 1>` && `<command 2>` && exec `<primary command>`" |
 | fluentd.customConfigFile | bool | `false` | Set to 'true' if a custom config (see 'configmap-fluentd.yaml' for default) should be used for Fluentd. If enabled this config must be supplied via the 'fluentdCustomConfig' property below. If your custom config forces fluentd to run in a server mode, add `-Datlassian.logging.cloud.enabled=true` to `confluence.AdditionalJvmArgs` stanza in values file  |
 | fluentd.fluentdCustomConfig | object | `{}` | Custom fluent.conf file  |
 | fluentd.httpPort | int | `9880` | The port on which the Fluentd sidecar will listen  |
@@ -387,11 +361,5 @@ helm install confluence chart/
 | opensearch.extraEnvs[0].value | string | `"false"` |  |
 | opensearch.envFrom[0].secretRef.name | string | `"opensearch-initial-password"` | If using a pre-created secret, make sure to change secret name to match opensearch.credentials.existingSecretRef.name  |
 
-## Contributing
-
-Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
-
----
-
-*This file is programatically generated using `helm-docs` and some BigBang-specific templates. The `gluon` repository has [instructions for regenerating package READMEs](https://repo1.dso.mil/big-bang/product/packages/gluon/-/blob/master/docs/bb-package-readme.md).*
-
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
