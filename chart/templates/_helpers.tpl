@@ -695,18 +695,23 @@ volumeClaimTemplates:
   value: {{ printf "jdbc:postgresql://%s-postgresql.%s:%g/%s" (include "common.names.fullname" .) ($.Release.Namespace) ($.Values.postgresql.primary.service.ports.postgresql) ($.Values.postgresql.auth.database) | quote }}
 {{- end }}
 
-{{ with .Values.database.credentials.secretName }}
+{{- if .Values.database.credentials.secretName }}
 - name: ATL_JDBC_USER
   valueFrom:
     secretKeyRef:
-      name: {{ . }}
-      key: {{ $.Values.database.credentials.usernameSecretKey }}
+      name: {{ .Values.database.credentials.secretName | default (printf "%s-db-credentials" (include "common.names.fullname" .)) }}
+      key: {{ $.Values.database.credentials.usernameSecretKey | default "username" }}
 - name: ATL_JDBC_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ . }}
-      key: {{ $.Values.database.credentials.passwordSecretKey }}
-{{ end }}
+      name: {{ .Values.database.credentials.secretName | default (printf "%s-db-credentials" (include "common.names.fullname" .)) }}
+      key: {{ $.Values.database.credentials.passwordSecretKey | default "password" }}
+{{- else }}
+- name: ATL_JDBC_USER
+  value: {{ .Values.database.user | default "username" | quote }}
+- name: ATL_JDBC_PASSWORD
+  value: {{ .Values.database.password | default "password" | quote }}  
+{{- end }}
 
 {{- /* Default to embedded postgres */ -}}
 {{- if .Values.postgresql.install }}
