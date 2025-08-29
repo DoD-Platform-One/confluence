@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [2.0.3-bb.1] (2025-08-19)
+### Changed
+- Updated opensearch (source) 3.1.0 -> 3.2.1
+- Updated cypress (source) 14.0.0 -> 15.0.0
+- gluon updated from 0.7.0 to 0.8.0
+- Updated registry1.dso.mil/ironbank/opensource/postgres/postgresql (source) 17.5 -> 17.6
+
 ## [2.0.3-bb.0] (2025-08-08)
 ### Changed
 - Updated chart to 2.0.3
