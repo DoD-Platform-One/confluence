@@ -1,4 +1,4 @@
-{{- if .Values.monitoring.enabled }}
+{{- if .Values.upstream.monitoring.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -10,7 +10,7 @@ spec:
     matchLabels:
       {{- include "confluence.selectorLabels" . | nindent 6 }}
   endpoints:
-  - port: {{ .Values.confluence.service.port | quote }}
+  - port: {{ .Values.upstream.confluence.service.port | quote }}
     interval: 30s
     scheme: http
     path: "/plugins/servlet/prometheus/metrics"

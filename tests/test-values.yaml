@@ -1,35 +1,36 @@
-serviceAccount:
-  imagePullSecrets:
-  - name: private-registry
+upstream:
+  serviceAccount:
+    automountServiceAccountToken: false
+    imagePullSecrets:
+    - name: private-registry
 
-confluence:
-  additionalJvmArgs:
-    - "-Dcom.redhat.fips=false"
+  confluence:
+    additionalJvmArgs:
+      - "-Dcom.redhat.fips=false"
 
-helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.1.0"
+  helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.1.0"
 
-image:
-  imagePullSecrets: private-registry
+  image:
+    imagePullSecrets: private-registry
+
+  volumes:
+    sharedHome:
+      efs:
+        enabled: true
+        driver: efs.csi.aws.com
+        efsid: fs-0a2b2dccb0752dcfd
+        persistentVolumeClaim:
+          create: true
+          accessModes:
+          - ReadWriteMany        
+          storageClassName: efs-sc      
+          resources:
+            requests:
+              storage: 1Gi
 
 bbtests:
   enabled: true
   cypress:
     artifacts: true
     envs:
-      cypress_url: 'http://{{ include "common.names.fullname" . }}:{{ .Values.confluence.service.port }}/setup/setuplicense.action'
-
-
-volumes:
-  sharedHome:
-    efs:
-      enabled: true
-      driver: efs.csi.aws.com
-      efsid: fs-0a2b2dccb0752dcfd
-      persistentVolumeClaim:
-        create: true
-        accessModes:
-        - ReadWriteMany        
-        storageClassName: efs-sc      
-        resources:
-          requests:
-            storage: 1Gi
+      cypress_url: 'http://{{ include "common.names.fullname" . }}:{{ .Values.upstream.confluence.service.port }}/setup/setuplicense.action'

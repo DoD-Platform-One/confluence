@@ -13,7 +13,7 @@ spec:
     - {{ . }}
   {{- end }}
   http:
-  {{- if .Values.synchrony.enabled }}
+  {{- if .Values.upstream.synchrony.enabled }}
   - match:
     - uri:
         prefix: /synchrony
@@ -21,7 +21,7 @@ spec:
     - destination:
         host: {{ include "synchrony.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
         port:
-          number: {{ .Values.synchrony.service.port }}
+          number: {{ .Values.upstream.synchrony.service.port }}
       headers:
         request:
           remove:
@@ -36,7 +36,7 @@ spec:
     - destination:
         host: {{ include "common.names.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
         port:
-          number: {{ .Values.confluence.service.port }}
+          number: {{ .Values.upstream.confluence.service.port }}
       headers:
         request:
           remove:

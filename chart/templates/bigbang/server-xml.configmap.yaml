@@ -4,4 +4,3 @@ metadata:
   name: server-xml
 data:
 {{ (tpl (.Files.Glob "files/server.xml").AsConfig . ) | indent 2 }}
-

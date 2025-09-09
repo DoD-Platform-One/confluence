@@ -1,4 +1,4 @@
-{{- if .Values.volumes.sharedHome.efs.enabled }}
+{{- if .Values.upstream.volumes.sharedHome.efs.enabled }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -7,19 +7,19 @@ metadata:
   {{- include "common.labels.commonLabels" . | nindent 4 }}
 spec:
   capacity:
-    storage: {{ .Values.volumes.sharedHome.efs.persistentVolumeClaim.resources.requests.storage }}
+    storage: {{ .Values.upstream.volumes.sharedHome.efs.persistentVolumeClaim.resources.requests.storage }}
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ .Values.volumes.sharedHome.efs.persistentVolumeClaim.storageClassName | default "efs-sc" }}
+  storageClassName: {{ .Values.upstream.volumes.sharedHome.efs.persistentVolumeClaim.storageClassName | default "efs-sc" }}
   claimRef:
     name: {{ include "common.names.fullname" . }}-shared-home
     namespace: {{ .Release.Namespace }}
   csi:
-    driver: {{ .Values.volumes.sharedHome.efs.driver }}
-    volumeHandle: {{ .Values.volumes.sharedHome.efs.efsid }}
-{{- else if .Values.volumes.sharedHome.nfs.enabled }}
+    driver: {{ .Values.upstream.volumes.sharedHome.efs.driver }}
+    volumeHandle: {{ .Values.upstream.volumes.sharedHome.efs.efsid }}
+{{- else if .Values.upstream.volumes.sharedHome.nfs.enabled }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -28,16 +28,16 @@ metadata:
   {{- include "common.labels.commonLabels" . | nindent 4 }}
 spec:
   capacity:
-    storage: {{ .Values.volumes.sharedHome.nfs.persistentVolumeClaim.resources.requests.storage }}
+    storage: {{ .Values.upstream.volumes.sharedHome.nfs.persistentVolumeClaim.resources.requests.storage }}
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ .Values.volumes.sharedHome.nfs.persistentVolumeClaim.storageClassName | default "efs-sc" }}
+  storageClassName: {{ .Values.upstream.volumes.sharedHome.nfs.persistentVolumeClaim.storageClassName | default "efs-sc" }}
   claimRef:
     name: {{ include "common.names.fullname" . }}-shared-home
     namespace: {{ .Release.Namespace }}
   csi:
-    server: {{ .Values.volumes.sharedHome.nfs.server }}
-    path: {{ .Values.volumes.sharedHome.nfs.path }}
+    server: {{ .Values.upstream.volumes.sharedHome.nfs.server }}
+    path: {{ .Values.upstream.volumes.sharedHome.nfs.path }}
 {{- end }}

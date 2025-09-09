@@ -2,7 +2,7 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 2.0.3-bb.2
+version: 2.0.4-bb.0
 appVersion: 10.0.2
 kubeVersion: ">=1.21.x-0"
 keywords:
@@ -22,7 +22,7 @@ dependencies:
     version: 1.2.7
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: gluon
-    version: 0.8.0
+    version: 0.9.0
     repository: oci://registry1.dso.mil/bigbang
   - name: postgresql
     version: 13.2.2
@@ -31,7 +31,11 @@ dependencies:
   - name: opensearch
     version: 3.2.1
     repository: https://opensearch-project.github.io/helm-charts
-    condition: opensearch.enabled
+    condition: upstream.opensearch.enabled
+  - name: confluence 
+    version: 2.0.4
+    repository: https://atlassian.github.io/data-center-helm-charts/
+    alias: "upstream" 
 annotations:
   bigbang.dev/maintenanceTrack: bb_maintained
   artifacthub.io/containsSecurityUpdates: "true"
@@ -64,7 +68,7 @@ annotations:
     - name: confluence-node
       image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts:9.2.7 
     - name: fluentd-kubernetes-daemonset
-      condition: fluentd.enabled
+      condition: upstream.fluentd.enabled
       image: fluent/fluentd-kubernetes-daemonset:v1.11.5-debian-elasticsearch7-1.2
     - name: base
       image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
