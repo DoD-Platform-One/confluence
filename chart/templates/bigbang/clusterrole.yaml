@@ -1,4 +1,4 @@
-{{- if and .Values.confluence.clustering.enabled .Values.serviceAccount.clusterRole.create -}}
+{{- if and .Values.upstream.confluence.clustering.enabled .Values.upstream.serviceAccount.clusterRole.create -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:

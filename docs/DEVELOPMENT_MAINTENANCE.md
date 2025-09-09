@@ -156,4 +156,4 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
 - add conditional checks for `SYNCHRONY_DATABASE_URL`, `SYNCHRONY_DATABASE_USERNAME`, and `SYNCHRONY_DATABASE_PASSWORD` variable injection: use cluster-internal Postgres values if enabled
 
 ## Change image for patching
-- Updated registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:9.4.1 with registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts:9.2.5
+- Updated registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:9.4.1 with registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts:9.2.6

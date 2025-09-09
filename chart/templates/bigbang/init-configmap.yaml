@@ -4,4 +4,3 @@ metadata:
   name: init-script
 data:
 {{ (.Files.Glob "files/init-script.sh").AsConfig | indent 2 }}
-
