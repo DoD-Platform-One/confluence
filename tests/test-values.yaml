@@ -2,7 +2,7 @@ upstream:
   serviceAccount:
     automountServiceAccountToken: false
     imagePullSecrets:
-    - name: private-registry
+      - name: private-registry
 
   confluence:
     additionalJvmArgs:
@@ -22,8 +22,8 @@ upstream:
         persistentVolumeClaim:
           create: true
           accessModes:
-          - ReadWriteMany        
-          storageClassName: efs-sc      
+            - ReadWriteMany
+          storageClassName: efs-sc
           resources:
             requests:
               storage: 1Gi

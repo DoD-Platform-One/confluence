@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 2.0.4-bb.0](https://img.shields.io/badge/Version-2.0.4--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 10.0.2](https://img.shields.io/badge/AppVersion-10.0.2-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
+![Version: 2.0.4-bb.1](https://img.shields.io/badge/Version-2.0.4--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 10.0.2](https://img.shields.io/badge/AppVersion-10.0.2-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -52,11 +52,61 @@ helm install confluence chart/
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| hostnamePrefix | string | `"confluence"` |  |
+| hostname | string | `"dev.bigbang.mil"` |  |
+| istio.enabled | bool | `false` |  |
+| istio.gateways[0] | string | `"istio-system/public"` |  |
+| istio.hardened.enabled | bool | `false` |  |
+| istio.hardened.customAuthorizationPolicies | list | `[]` |  |
+| istio.hardened.outboundTrafficPolicyMode | string | `"REGISTRY_ONLY"` |  |
+| istio.hardened.customServiceEntries | list | `[]` |  |
+| postgresql.install | bool | `false` |  |
+| postgresql.image.registry | string | `"registry1.dso.mil"` |  |
+| postgresql.image.debug | bool | `true` |  |
+| postgresql.image.repository | string | `"ironbank/opensource/postgres/postgresql"` |  |
+| postgresql.image.tag | string | `"17.6"` |  |
+| postgresql.image.pullSecrets[0] | string | `"private-registry"` |  |
+| postgresql.auth.username | string | `"confuser"` |  |
+| postgresql.auth.password | string | `"bogus-satisfy-upgrade"` |  |
+| postgresql.auth.postgresPassword | string | `"bogus-satisfy-upgrade"` |  |
+| postgresql.auth.database | string | `"confluence"` |  |
+| postgresql.auth.existingSecret | string | `nil` |  |
+| postgresql.auth.secretKeys.adminPasswordKey | string | `nil` |  |
+| postgresql.auth.secretKeys.userPasswordKey | string | `nil` |  |
+| postgresql.primary.persistence.mountPath | string | `"/var/lib/postgresql"` |  |
+| postgresql.primary.initdb.args | string | `"-A scram-sha-256"` |  |
+| postgresql.primary.containerSecurityContext.runAsUser | int | `1001` |  |
+| postgresql.primary.containerSecurityContext.runAsGroup | int | `1001` |  |
+| postgresql.primary.containerSecurityContext.runAsNonRoot | bool | `true` |  |
+| postgresql.primary.extraEnvVars[0].name | string | `"POSTGRES_DB"` |  |
+| postgresql.primary.extraEnvVars[0].value | string | `"{{ .Values.auth.database }}"` |  |
+| postgresql.postgresqlDataDir | string | `"/var/lib/postgresql/pgdata/data"` |  |
+| postgresql.volumePermissions.enabled | bool | `false` |  |
+| bbtests.enabled | bool | `false` |  |
+| bbtests.cypress.artifacts | bool | `true` |  |
+| bbtests.cypress.envs.cypress_url | string | `"http://{{ include \"common.names.fullname\" . }}:{{ .Values.upstream.confluence.service.port }}/setup/setuplicense.action"` |  |
+| bbtests.cypress.resources.requests.cpu | string | `"1"` |  |
+| bbtests.cypress.resources.requests.memory | string | `"2Gi"` |  |
+| bbtests.cypress.resources.limits.cpu | string | `"1"` |  |
+| bbtests.cypress.resources.limits.memory | string | `"2Gi"` |  |
+| helmTestImage | string | `"registry1.dso.mil/ironbank/big-bang/base:2.1.0"` | Image used for the upstream provided helm tests |
+| hpa.enabled | bool | `false` |  |
+| hpa.maxReplicas | int | `4` |  |
+| hpa.cpu | int | `70` |  |
+| hpa.memory | int | `80` |  |
+| hpa.behavior.enabled | bool | `false` |  |
+| hpa.behavior.time | int | `300` |  |
+| networkPolicies.enabled | bool | `false` |  |
+| networkPolicies.ingressLabels.app | string | `"public-ingressgateway"` |  |
+| networkPolicies.ingressLabels.istio | string | `"ingressgateway"` |  |
+| networkPolicies.allowMinioOperatorIngress.enabled | bool | `false` |  |
+| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` |  |
+| networkPolicies.additionalPolicies | list | `[]` |  |
 | upstream.nameOverride | string | `"confluence"` |  |
 | upstream.image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts"` |  |
 | upstream.image.pullPolicy | string | `"IfNotPresent"` |  |
 | upstream.image.imagePullSecrets | string | `"private-registry"` |  |
-| upstream.image.tag | string | `"9.2.7"` |  |
+| upstream.image.tag | string | `"9.2.8"` |  |
 | upstream.serviceAccount.create | bool | `true` |  |
 | upstream.serviceAccount.name | string | `nil` |  |
 | upstream.serviceAccount.imagePullSecrets[0].name | string | `"private-registry"` |  |
@@ -128,65 +178,8 @@ helm install confluence chart/
 | upstream.monitoring.grafana.dashboardLabels.grafana_dashboard | string | `"1"` |  |
 | upstream.fluentd.imageRepo | string | `"fluent/fluentd-kubernetes-daemonset"` |  |
 | upstream.fluentd.imageTag | string | `"v1.11.5-debian-elasticsearch7-1.2"` |  |
-| upstream.testPods.resources | object | `{}` |  |
-| upstream.testPods.labels | object | `{}` |  |
-| upstream.testPods.annotations | object | `{}` |  |
-| upstream.testPods.nodeSelector | object | `{}` |  |
-| upstream.testPods.tolerations | list | `[]` |  |
-| upstream.testPods.affinity | object | `{}` |  |
-| upstream.testPods.schedulerName | string | `nil` |  |
 | upstream.testPods.image.permissionsTestContainer | string | `"registry1.dso.mil/ironbank/big-bang/base:2.1.0"` |  |
 | upstream.testPods.image.statusTestContainer | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.10"` |  |
-| hostnamePrefix | string | `"confluence"` |  |
-| hostname | string | `"dev.bigbang.mil"` |  |
-| istio.enabled | bool | `false` |  |
-| istio.gateways[0] | string | `"istio-system/public"` |  |
-| istio.hardened.enabled | bool | `false` |  |
-| istio.hardened.customAuthorizationPolicies | list | `[]` |  |
-| istio.hardened.outboundTrafficPolicyMode | string | `"REGISTRY_ONLY"` |  |
-| istio.hardened.customServiceEntries | list | `[]` |  |
-| postgresql.install | bool | `false` |  |
-| postgresql.image.registry | string | `"registry1.dso.mil"` |  |
-| postgresql.image.debug | bool | `true` |  |
-| postgresql.image.repository | string | `"ironbank/opensource/postgres/postgresql"` |  |
-| postgresql.image.tag | string | `"17.6"` |  |
-| postgresql.image.pullSecrets[0] | string | `"private-registry"` |  |
-| postgresql.auth.username | string | `"confuser"` |  |
-| postgresql.auth.password | string | `"bogus-satisfy-upgrade"` |  |
-| postgresql.auth.postgresPassword | string | `"bogus-satisfy-upgrade"` |  |
-| postgresql.auth.database | string | `"confluence"` |  |
-| postgresql.auth.existingSecret | string | `nil` |  |
-| postgresql.auth.secretKeys.adminPasswordKey | string | `nil` |  |
-| postgresql.auth.secretKeys.userPasswordKey | string | `nil` |  |
-| postgresql.primary.persistence.mountPath | string | `"/var/lib/postgresql"` |  |
-| postgresql.primary.initdb.args | string | `"-A scram-sha-256"` |  |
-| postgresql.primary.containerSecurityContext.runAsUser | int | `1001` |  |
-| postgresql.primary.containerSecurityContext.runAsGroup | int | `1001` |  |
-| postgresql.primary.containerSecurityContext.runAsNonRoot | bool | `true` |  |
-| postgresql.primary.extraEnvVars[0].name | string | `"POSTGRES_DB"` |  |
-| postgresql.primary.extraEnvVars[0].value | string | `"{{ .Values.auth.database }}"` |  |
-| postgresql.postgresqlDataDir | string | `"/var/lib/postgresql/pgdata/data"` |  |
-| postgresql.volumePermissions.enabled | bool | `false` |  |
-| bbtests.enabled | bool | `false` |  |
-| bbtests.cypress.artifacts | bool | `true` |  |
-| bbtests.cypress.envs.cypress_url | string | `"http://{{ include \"common.names.fullname\" . }}:{{ .Values.upstream.confluence.service.port }}/setup/setuplicense.action"` |  |
-| bbtests.cypress.resources.requests.cpu | string | `"1"` |  |
-| bbtests.cypress.resources.requests.memory | string | `"2Gi"` |  |
-| bbtests.cypress.resources.limits.cpu | string | `"1"` |  |
-| bbtests.cypress.resources.limits.memory | string | `"2Gi"` |  |
-| helmTestImage | string | `"registry1.dso.mil/ironbank/big-bang/base:2.1.0"` | Image used for the upstream provided helm tests |
-| hpa.enabled | bool | `false` |  |
-| hpa.maxReplicas | int | `4` |  |
-| hpa.cpu | int | `70` |  |
-| hpa.memory | int | `80` |  |
-| hpa.behavior.enabled | bool | `false` |  |
-| hpa.behavior.time | int | `300` |  |
-| networkPolicies.enabled | bool | `false` |  |
-| networkPolicies.ingressLabels.app | string | `"public-ingressgateway"` |  |
-| networkPolicies.ingressLabels.istio | string | `"ingressgateway"` |  |
-| networkPolicies.allowMinioOperatorIngress.enabled | bool | `false` |  |
-| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` |  |
-| networkPolicies.additionalPolicies | list | `[]` |  |
 
 ## Contributing
 

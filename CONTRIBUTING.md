@@ -15,7 +15,7 @@ To contribute a change:
 1. Create a branch on the cloned repository with a descriptive name, prefixed with your name or a tracking number (for work items). For example, `bb-123/add-ingress` is an appropriate branch name.
 1. Make code changes.  Test the changes in your local environment before pushing them to Git.
 1. Make commits using the [Conventional Commits](https://www.conventionalcommits.org/) format. This helps with automation for changelog. Update `CHANGELOG.md` in the same commit using the [Keep a Changelog](https://keepachangelog.com). Depending on tooling maturity, this step may be automated.
-1. Write tests using [KUTTL](https://kuttl.dev) and [Conftest](https://conftest.dev)
+1. Write tests using [KUTTL](https://github.com/kudobuilder/kuttl/blob/main/docs/README.md) and [Conftest](https://conftest.dev)
 1. Open a merge request using one of the provided templates. Reference any issues fixed in the merge request.
 1. During this time, ensure that all new commits are rebased into your branch so that it remains up to date with the `main` branch.
 1. Wait for a maintainer of the repository (see CODEOWNERS) to approve.
