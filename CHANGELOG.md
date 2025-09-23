@@ -3,15 +3,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [2.0.4-bb.1] (2025-09-16)
+### Changed
+- Update registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts 9.2.7 -> 9.2.8
+- Update cypress 15.0.0 -> 15.2.0
+
 ## [2.0.4-bb.0] (2025-09-08)
 ### Changed
 - Implement-pass-through-pattern
 - gluon updated from 0.8.0 to 0.9.0
 
 ## [2.0.3-bb.2] (2025-09-08)
-
 ### Changed
-
 - Fix db-secret quote bug
 
 ## [2.0.3-bb.1] (2025-08-19)
