@@ -1,36 +1,43 @@
-upstream:
-  serviceAccount:
-    automountServiceAccountToken: false
-    imagePullSecrets:
-      - name: private-registry
-
+kyverno:
+  enabled: false
+kyvernoPolicies:
+  enabled: false
+kyvernoReporter:
+  enabled: false
+packages:
   confluence:
-    additionalJvmArgs:
-      - "-Dcom.redhat.fips=false"
-
-  helmTestImage: "registry1.dso.mil/ironbank/big-bang/base:2.1.0"
-
-  image:
-    imagePullSecrets: private-registry
-
-  volumes:
-    sharedHome:
-      efs:
+    namespace:
+      name: confluence
+    helmRelease:
+      namespace: "bigbang"
+    enabled: true
+    sourceType: "git"
+    git:
+      repo: https://repo1.dso.mil/big-bang/product/maintained/confluence.git
+    values:
+      bbtests:
         enabled: true
-        driver: efs.csi.aws.com
-        efsid: fs-0a2b2dccb0752dcfd
-        persistentVolumeClaim:
-          create: true
-          accessModes:
-            - ReadWriteMany
-          storageClassName: efs-sc
-          resources:
+      confluence:
+        resources:
+          jvm:
+            maxHeap: 768M
+            minHeap: 384M
+            reservedCodeCache: 512M
+          container:
             requests:
-              storage: 1Gi
-
-bbtests:
-  enabled: true
-  cypress:
-    artifacts: true
-    envs:
-      cypress_url: 'http://{{ include "common.names.fullname" . }}:{{ .Values.upstream.confluence.service.port }}/setup/setuplicense.action'
+              cpu: 1
+              memory: 384M
+      volumes:
+        sharedHome:
+          efs:
+            enabled: true
+            driver: efs.csi.aws.com
+            efsid: fs-0a2b2dccb0752dcfd
+            persistentVolumeClaim:
+              create: true
+              accessModes:
+              - ReadWriteMany        
+              storageClassName: efs-sc      
+              resources:
+                requests:
+                  storage: 1Gi
