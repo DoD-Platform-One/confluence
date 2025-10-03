@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 2.0.4-bb.1](https://img.shields.io/badge/Version-2.0.4--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 10.0.2](https://img.shields.io/badge/AppVersion-10.0.2-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
+![Version: 2.0.4-bb.2](https://img.shields.io/badge/Version-2.0.4--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 10.0.3](https://img.shields.io/badge/AppVersion-10.0.3-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -178,8 +178,8 @@ helm install confluence chart/
 | upstream.monitoring.grafana.dashboardLabels.grafana_dashboard | string | `"1"` |  |
 | upstream.fluentd.imageRepo | string | `"fluent/fluentd-kubernetes-daemonset"` |  |
 | upstream.fluentd.imageTag | string | `"v1.11.5-debian-elasticsearch7-1.2"` |  |
-| upstream.testPods.image.permissionsTestContainer | string | `"registry1.dso.mil/ironbank/big-bang/base:2.1.0"` |  |
-| upstream.testPods.image.statusTestContainer | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.10"` |  |
+| upstream.testPods.image.permissionsTestContainer | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.10"` |  |
+| upstream.testPods.image.statusTestContainer | string | `"registry1.dso.mil/ironbank/big-bang/base:2.1.0"` |  |
 
 ## Contributing
 
