@@ -235,6 +235,8 @@ upstream:
     imageTag: v1.11.5-debian-elasticsearch7-1.2
   testPods:
     image:
-      permissionsTestContainer: registry1.dso.mil/ironbank/big-bang/base:2.1.0
-      statusTestContainer: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.10
+      permissionsTestContainer: registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.10
+      statusTestContainer: registry1.dso.mil/ironbank/big-bang/base:2.1.0
+
+
 
