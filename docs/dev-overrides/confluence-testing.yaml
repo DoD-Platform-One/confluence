@@ -7,27 +7,15 @@ packages:
       # It is recommended to update this to the latest bb tag
       path: chart
       tag: null
-      branch: renovate/ironbank
+      branch: main
     # Disabling this will bypass creating the istio VirtualService and NetworkPolicies.  
-    namespace: bigbang
+    namespace: 
+      name: confluence
     wrapper:
       enabled: true
-    # This section is ignored if `wrapper.enabled`, above, is false. 
-    istio:
-      enabled: true
-      hosts:
-        - names:
-            - "confluence"
-          gateways:
-            - "public" #<-- Set to "public-ingressgateway" when  big bang values .istioGateway.enabled=true
-          destination:
-            port: 8090  
-    dependsOn:
-    - name: istio #<-- Set to "istiod" when  big bang values .istioGateway.enabled=true        
+    istioGateway:
+      enabled: true        
     values:
-      confluence:
-        service:
-          port: 8090
-      postgresql:
-        install: false
+      gateways:
+        passthrough: {}  
   ### Additional components of Confluence should be changed to reflect testing changes introduced in the package MR

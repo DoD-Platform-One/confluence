@@ -113,6 +113,9 @@ networkPolicies:
   controlPlaneCidr: "0.0.0.0/0"
   additionalPolicies: []
 
+# -- Values to pass to [the upstream Confluence chart](https://github.com/atlassian/data-center-helm-charts/blob/main/src/main/charts/confluence/values.yaml)
+# @default -- Upstream chart values
+
 upstream:
   nameOverride: "confluence"
   image:
