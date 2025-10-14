@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # confluence
 
-![Version: 2.0.4-bb.2](https://img.shields.io/badge/Version-2.0.4--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 10.0.3](https://img.shields.io/badge/AppVersion-10.0.3-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
+![Version: 2.0.4-bb.3](https://img.shields.io/badge/Version-2.0.4--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 10.0.3](https://img.shields.io/badge/AppVersion-10.0.3-informational?style=flat-square) ![Maintenance Track: bb_maintained](https://img.shields.io/badge/Maintenance_Track-bb_maintained-yellow?style=flat-square)
 
 A chart for installing Confluence Data Center on Kubernetes
 
@@ -102,84 +102,7 @@ helm install confluence chart/
 | networkPolicies.allowMinioOperatorIngress.enabled | bool | `false` |  |
 | networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` |  |
 | networkPolicies.additionalPolicies | list | `[]` |  |
-| upstream.nameOverride | string | `"confluence"` |  |
-| upstream.image.repository | string | `"registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts"` |  |
-| upstream.image.pullPolicy | string | `"Always"` |  |
-| upstream.image.imagePullSecrets | string | `"private-registry"` |  |
-| upstream.image.tag | string | `"9.2.8"` |  |
-| upstream.serviceAccount.create | bool | `true` |  |
-| upstream.serviceAccount.name | string | `nil` |  |
-| upstream.serviceAccount.imagePullSecrets[0].name | string | `"private-registry"` |  |
-| upstream.serviceAccount.annotations | object | `{}` |  |
-| upstream.serviceAccount.role.create | bool | `true` |  |
-| upstream.serviceAccount.clusterRole.create | bool | `false` |  |
-| upstream.serviceAccount.clusterRole.name | string | `nil` |  |
-| upstream.serviceAccount.roleBinding.create | bool | `true` |  |
-| upstream.serviceAccount.clusterRoleBinding.create | bool | `false` |  |
-| upstream.serviceAccount.clusterRoleBinding.name | string | `nil` |  |
-| upstream.serviceAccount.eksIrsa.roleArn | string | `nil` |  |
-| upstream.database.type | string | `nil` |  |
-| upstream.database.user | string | `nil` |  |
-| upstream.database.password | string | `"userpassword"` |  |
-| upstream.database.url | string | `nil` |  |
-| upstream.database.credentials.secretName | string | `nil` |  |
-| upstream.database.credentials.usernameSecretKey | string | `"username"` |  |
-| upstream.database.credentials.passwordSecretKey | string | `"password"` |  |
-| upstream.volumes.sharedHome.efs.enabled | bool | `false` |  |
-| upstream.volumes.sharedHome.efs.driver | string | `nil` |  |
-| upstream.volumes.sharedHome.efs.efsid | string | `nil` |  |
-| upstream.volumes.sharedHome.efs.persistentVolumeClaim.create | bool | `false` |  |
-| upstream.volumes.sharedHome.efs.persistentVolumeClaim.accessModes[0] | string | `"ReadWriteMany"` |  |
-| upstream.volumes.sharedHome.efs.persistentVolumeClaim.storageClassName | string | `nil` |  |
-| upstream.volumes.sharedHome.efs.persistentVolumeClaim.resources.requests.storage | string | `"1Gi"` |  |
-| upstream.volumes.sharedHome.nfs.enabled | bool | `false` |  |
-| upstream.volumes.sharedHome.nfs.server | string | `"IP"` |  |
-| upstream.volumes.sharedHome.nfs.path | string | `"/"` |  |
-| upstream.volumes.sharedHome.nfs.persistentVolumeClaim.create | bool | `false` |  |
-| upstream.volumes.sharedHome.nfs.persistentVolumeClaim.accessModes[0] | string | `"ReadWriteMany"` |  |
-| upstream.volumes.sharedHome.nfs.persistentVolumeClaim.storageClassName | string | `nil` |  |
-| upstream.volumes.sharedHome.nfs.persistentVolumeClaim.resources.requests.storage | string | `"1Gi"` |  |
-| upstream.volumes.sharedHome.nfsPermissionFixer.enabled | bool | `false` |  |
-| upstream.volumes.sharedHome.nfsPermissionFixer.mountPath | string | `"/shared-home"` |  |
-| upstream.volumes.sharedHome.nfsPermissionFixer.imageRepo | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal"` |  |
-| upstream.volumes.sharedHome.nfsPermissionFixer.imageTag | string | `"8.10"` |  |
-| upstream.volumes.sharedHome.nfsPermissionFixer.resources | object | `{}` |  |
-| upstream.volumes.additional[0].name | string | `"server-xml-j2"` |  |
-| upstream.volumes.additional[0].configMap.name | string | `"server-xml-j2"` |  |
-| upstream.volumes.additional[0].configMap.defaultMode | int | `484` |  |
-| upstream.volumes.additional[1].name | string | `"server-xml"` |  |
-| upstream.volumes.additional[1].configMap.name | string | `"server-xml"` |  |
-| upstream.volumes.additional[1].configMap.defaultMode | int | `484` |  |
-| upstream.volumes.additional[2].name | string | `"footer-content-vm"` |  |
-| upstream.volumes.additional[2].configMap.name | string | `"footer-content-vm"` |  |
-| upstream.volumes.additional[2].configMap.defaultMode | int | `484` |  |
-| upstream.confluence.containerSecurityContext.runAsUser | int | `2002` |  |
-| upstream.confluence.containerSecurityContext.runAsGroup | int | `2002` |  |
-| upstream.confluence.containerSecurityContext.runAsNonRoot | bool | `true` |  |
-| upstream.confluence.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| upstream.confluence.readinessProbe.customProbe | object | `{}` |  |
-| upstream.confluence.startupProbe.enabled | bool | `false` |  |
-| upstream.confluence.livenessProbe.initialDelaySeconds | int | `60` |  |
-| upstream.confluence.additionalJvmArgs[0] | string | `"-Dcom.redhat.fips=false"` |  |
-| upstream.confluence.additionalVolumeMounts[0].name | string | `"server-xml-j2"` |  |
-| upstream.confluence.additionalVolumeMounts[0].mountPath | string | `"/opt/atlassian/etc/server.xml.j2"` |  |
-| upstream.confluence.additionalVolumeMounts[0].subPath | string | `"server.xml.j2"` |  |
-| upstream.confluence.additionalVolumeMounts[1].name | string | `"server-xml"` |  |
-| upstream.confluence.additionalVolumeMounts[1].mountPath | string | `"/opt/atlassian/confluence/conf/server.xml"` |  |
-| upstream.confluence.additionalVolumeMounts[1].subPath | string | `"server.xml"` |  |
-| upstream.confluence.additionalVolumeMounts[2].mountPath | string | `"/opt/atlassian/confluence/confluence/decorators/includes/footer-content.vm"` |  |
-| upstream.confluence.additionalVolumeMounts[2].name | string | `"footer-content-vm"` |  |
-| upstream.confluence.additionalVolumeMounts[2].subPath | string | `"footer-content.vm"` |  |
-| upstream.monitoring.jmxExporterInitContainer.runAsRoot | bool | `true` |  |
-| upstream.monitoring.jmxExporterInitContainer.customSecurityContext | object | `{}` |  |
-| upstream.monitoring.jmxExporterInitContainer.resources | object | `{}` |  |
-| upstream.monitoring.jmxExporterImageRepo | string | `"registry1.dso.mil/ironbank/opensource/prometheus/jmx-exporter"` |  |
-| upstream.monitoring.jmxExporterImageTag | string | `"0.18.0"` |  |
-| upstream.monitoring.grafana.dashboardLabels.grafana_dashboard | string | `"1"` |  |
-| upstream.fluentd.imageRepo | string | `"fluent/fluentd-kubernetes-daemonset"` |  |
-| upstream.fluentd.imageTag | string | `"v1.11.5-debian-elasticsearch7-1.2"` |  |
-| upstream.testPods.image.permissionsTestContainer | string | `"registry1.dso.mil/ironbank/redhat/ubi/ubi8-minimal:8.10"` |  |
-| upstream.testPods.image.statusTestContainer | string | `"registry1.dso.mil/ironbank/big-bang/base:2.1.0"` |  |
+| upstream | object | Upstream chart values | Values to pass to [the upstream Confluence chart](https://github.com/atlassian/data-center-helm-charts/blob/main/src/main/charts/confluence/values.yaml) |
 
 ## Contributing
 
