@@ -112,6 +112,19 @@ networkPolicies:
     enabled: false
   controlPlaneCidr: "0.0.0.0/0"
   additionalPolicies: []
+  
+## if dbSecret.enabled, a secret will be created with the specified values.
+#  dbSecret.secretName can be used in upstream.database.credentials.secretName
+#  dbSecret.secretName can be used in postgresql.auth.existingSecret
+#   
+
+dbSecret:
+  enabled: false
+  secretName: confluence-database
+  databaseUser: "" # if defined, is stored base-64 encoded into the secret
+  databasePassword: "" # if defined, is stored base-64 encoded into the secret
+  usernameSecretKey: "" # if undefined, defaults to username
+  passwordSecretKey: "" # if undefined, defaults to password
 
 # -- Values to pass to [the upstream Confluence chart](https://github.com/atlassian/data-center-helm-charts/blob/main/src/main/charts/confluence/values.yaml)
 # @default -- Upstream chart values
@@ -142,15 +155,6 @@ upstream:
       name:
     eksIrsa:
       roleArn:
-  database:
-    type:
-    user:
-    password: userpassword
-    url:
-    credentials:
-      secretName:
-      usernameSecretKey: username
-      passwordSecretKey: password
   volumes:
     sharedHome:
       efs:
