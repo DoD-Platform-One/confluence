@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [2.0.4-bb.5] (2025-10-15)
+### Changed
+- Updated gluon 0.9.2 -> 0.9.3
+- Updated registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts (source) 9.2.8 -> 9.2.9
+- Update cypress 15.3.0 -> 15.4.0
 
 ## [2.0.4-bb.4] (2025-10-14)
 
