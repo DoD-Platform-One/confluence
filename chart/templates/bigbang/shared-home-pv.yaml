@@ -14,7 +14,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: {{ .Values.upstream.volumes.sharedHome.efs.persistentVolumeClaim.storageClassName | default "efs-sc" }}
   claimRef:
-    name: {{ include "common.names.fullname" . }}-shared-home
+    name: {{ include "common.names.fullname" . }}-efs-shared-home
     namespace: {{ .Release.Namespace }}
   csi:
     driver: {{ .Values.upstream.volumes.sharedHome.efs.driver }}
@@ -35,7 +35,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: {{ .Values.upstream.volumes.sharedHome.nfs.persistentVolumeClaim.storageClassName | default "efs-sc" }}
   claimRef:
-    name: {{ include "common.names.fullname" . }}-shared-home
+    name: {{ include "common.names.fullname" . }}-nfs-shared-home
     namespace: {{ .Release.Namespace }}
   csi:
     server: {{ .Values.upstream.volumes.sharedHome.nfs.server }}

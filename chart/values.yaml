@@ -162,7 +162,6 @@ upstream:
         driver: 
         efsid: 
         persistentVolumeClaim:
-          create: false
           accessModes:
           - ReadWriteMany        
           storageClassName:         
@@ -174,13 +173,19 @@ upstream:
         server: IP
         path: /
         persistentVolumeClaim:
-          create: false
           accessModes:
           - ReadWriteMany
           storageClassName: 
           resources:
             requests:
               storage: 1Gi
+      # If using EFS or NFS, define the persistentVolumeClaim here with
+      # the name of the PVC that will be used for the shared-home volume
+      #
+      # This will also have to be created if volumes.sharedHome.persistentVolumeClaim.create is set to false
+      # customVolume:
+        # persistentVolumeClaim:
+        #   claimName: "<pvc>"
       nfsPermissionFixer:
         enabled: false
         mountPath: "/shared-home"
