@@ -29,7 +29,7 @@ postgresql:
     registry: registry1.dso.mil
     debug: true
     repository: ironbank/opensource/postgres/postgresql
-    tag: "17.6"
+    tag: "18.0"
     pullSecrets:
     - private-registry
 
