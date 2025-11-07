@@ -10,9 +10,9 @@ dependencies:
   version: 13.2.2
 - name: opensearch
   repository: https://opensearch-project.github.io/helm-charts
-  version: 3.3.0
+  version: 3.3.2
 - name: confluence
   repository: https://atlassian.github.io/data-center-helm-charts/
-  version: 2.0.4
-digest: sha256:b11cb5a4f26da2b8d865e36724a8aa5d9008d8389c321c93af7b2bdc4475fef2
-generated: "2025-10-20T12:34:29.7027614-04:00"
+  version: 2.0.6
+digest: sha256:f26a2e1f70b05ac908b3f4b1e3b4cba16a17a3f1c0ec2ce1e794c9ab81c7f829
+generated: "2025-11-06T10:06:06.0696888-05:00"
