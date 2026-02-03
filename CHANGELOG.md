@@ -3,6 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [2.0.8-bb.0] (2026-01-28)
+### Changed
+- Updated upstream confluence chart from 2.0.6 to 2.0.8
+- Updated registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts from 9.2.9 to 10.2.2
+- Updated registry1.dso.mil/ironbank/opensource/postgres/postgresql from 18.0 to 18.1
+- Updated opensearch from 3.3.2 to 3.4.0
+- Updated gluon from 0.9.5 to 0.9.7
+- Removed non-IronBank fluentd image from helm.sh/images annotation
+
 ## [2.0.6-bb.0] (2025-11-06)
 ### Changed
 - Updated confluence (source) 2.0.4 -> 2.0.6

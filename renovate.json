@@ -8,7 +8,8 @@
     "dependencyDashboardTitle": "Renovate: Upgrade Confluence Package Dependencies",
     "draftPR": true,
     "ignorePaths": [
-        "chart/charts/**"
+        "chart/charts/**",
+        "chart/tests/**"
     ],
     "labels": [
         "confluence",
@@ -26,6 +27,14 @@
             "matchPackageNames": [
                 "/postgresql/"
             ]
+        },
+        {
+            "description": "Group all updates into single Ironbank branch",
+            "matchPackagePatterns": [
+                "*"
+            ],
+            "groupName": "Ironbank",
+            "branchName": "renovate/ironbank"
         },
         {
             "matchDatasources": [
@@ -85,5 +94,8 @@
             "datasourceTemplate": "docker"
         }
     ],
-    "separateMajorMinor": false
+    "separateMajorMinor": false,
+    "postUpdateOptions": [
+        "helmUpdateSubChartArchives"
+    ]
 }
