@@ -29,7 +29,7 @@ postgresql:
     registry: registry1.dso.mil
     debug: true
     repository: ironbank/opensource/postgres/postgresql
-    tag: "18.0"
+    tag: "18.1"
     pullSecrets:
     - private-registry
 
@@ -135,7 +135,7 @@ upstream:
     repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts
     pullPolicy: Always
     imagePullSecrets: private-registry
-    tag: "9.2.9"
+    tag: "10.2.2"
   serviceAccount:
     create: true
     name:
