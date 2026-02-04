@@ -13,6 +13,6 @@ dependencies:
   version: 3.4.0
 - name: confluence
   repository: https://atlassian.github.io/data-center-helm-charts/
-  version: 2.0.8
-digest: sha256:4da94dce14759fadf96aea0dc71b1d283eefe02a6887f17f4ab0d94980d4180f
-generated: "2026-01-29T00:24:45.70773-06:00"
+  version: 2.0.9
+digest: sha256:7e52604249744261104f8198d77c8f0aa587a15ee1324deac1f19689149712d2
+generated: "2026-02-04T07:29:22.788673639Z"
