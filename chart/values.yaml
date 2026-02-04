@@ -135,7 +135,7 @@ upstream:
     repository: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts
     pullPolicy: Always
     imagePullSecrets: private-registry
-    tag: "10.2.2"
+    tag: "10.2.3"
   serviceAccount:
     create: true
     name:

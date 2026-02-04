@@ -30,11 +30,11 @@
         },
         {
             "description": "Group all updates into single Ironbank branch",
-            "matchPackagePatterns": [
-                "*"
-            ],
             "groupName": "Ironbank",
-            "branchName": "renovate/ironbank"
+            "branchName": "renovate/ironbank",
+            "matchPackageNames": [
+                "*"
+            ]
         },
         {
             "matchDatasources": [

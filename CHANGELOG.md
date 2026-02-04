@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [2.0.9-bb.0] (2026-02-04)
+### Changed
+- confluence (source) 2.0.8 -> 2.0.9
+- registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node (source) 10.2.2 -> 10.2.3
+- registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts (source) 10.2.2 -> 10.2.3
+
 ## [2.0.8-bb.0] (2026-01-28)
 ### Changed
 - Updated upstream confluence chart from 2.0.6 to 2.0.8
