@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [2.0.9-bb.1] (2026-02-19)
+### Changed
+- gluon updated from 0.9.7 to 0.9.8
+- Updated opensearch (source) 3.4.0 -> 3.5.0
+- Updated registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node (source) 10.2.3 -> 10.2.6
+- Updated registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts (source) 10.2.3 -> 10.2.6
+- Updated registry1.dso.mil/ironbank/opensource/postgres/postgresql (source) 18.1 -> 18.2
+
 ## [2.0.9-bb.0] (2026-02-04)
 ### Changed
 - confluence (source) 2.0.8 -> 2.0.9
