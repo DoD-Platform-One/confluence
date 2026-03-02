@@ -1,4 +1,5 @@
 # External PostgreSQL
+
 An external instance of Postgres is recommended for any production-indicative deployment scenario.
 
 This is configured through overriding values in `.Values.database`:
@@ -15,6 +16,7 @@ database:
 ```
 
 ## Amazon RDS Terraform Example
+
 This is an example Amazon RDS deployment (Postgres engine) that will work with Confluence.
 
 ```terraform
@@ -95,32 +97,38 @@ output "rds_username" {
 ```
 
 ### Usage
+
 Plan and provision the infrastructure:
-```
-$ terraform init
-$ terraform plan
-$ terraform apply
+
+```bash
+terraform init
+terraform plan
+terraform apply
 ```
 
 Viewing the outputs of `terraform apply`, enter in the appropriate connection information into your values override file (`database.url`, `database.user`, etc.).
 
+## Internal PostgreSQL
 
-# Internal PostgreSQL
 If you wish to use a cluster-internal Postgres instance, set the following value:
+
 ```yaml
 postgresql:
   install: true
 ```
+
 By default, `.Values.postgresql.install` is set to `false`, under the assumption that the chart user will specify an external database in `.Values.database`. 
 
-> __Note__: This cluster-internal Postgres instance should only be used for evaluation and development purposes. In production-indicative deployment scenarios, one should opt for an external database. 
+> __Note__: This cluster-internal Postgres instance should only be used for evaluation and development purposes. In production-indicative deployment scenarios, one should opt for an external database.
 
 To streamline the deployment of this internal Postgres, and to reduce maintenance over time, the [Bitnami Postgres chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) is configured as a [subchart](https://helm.sh/docs/chart_template_guide/subcharts_and_globals/) to the parent Confluence chart.
 
 ## Credentials
+
 There are three methods of passing credentials to the cluster-internal Postgres instance:
 
 1. Overriding values:
+
 ```yaml
 postgresql:
   install: true
@@ -128,10 +136,13 @@ postgresql:
     username: confuser
     password: confpass
 ```
+
 2. A custom secret:
+
 ```bash
 kubectl create secret generic mysecret -n confluence --from-literal=userpassword=confpass --from-literal=adminpassword=confadminpass
 ```
+
 ```yaml
 postgresql:
   install: true
@@ -143,6 +154,7 @@ postgresql:
 ```
 
 3. Supplying neither:
+
 ```yaml
 postgresql:
   install: true
@@ -153,19 +165,21 @@ postgresql:
     secretKeys:
       adminPasswordKey:
       userPasswordKey:
+
 ```
 In this scenario, the subchart will generate a random password for the Postgres user (in this case, `confuser`) and store it in the secret `confluence-postgresql`. The secret will be referenced by Confluence automatically (again by passing environment variables). 
 
 > __Note__: `values.yaml` is utilizing method #1 by default to workaround a Bitnami chart upgrading limitation in our Big Bang package pipeline.
 
-
 ## Helm Upgrade
+
 If you are not utilzing persistent volumes for local and shared home (`NOTES.txt` will warn you), and a `helm upgrade` causes the Confluence pod to restart, there will be data loss.
 
 In that scenario, the cluster-internal Postgres instance still retains data since it *does* use a persistent volume. 
 
 When the new Confluence pod comes up and tries to connect to the same database, you may see a message similar to the below:
-```
+
+```text
 The following error(s) occurred:
 * Confluence tables already exist in the selected database
 
@@ -176,11 +190,12 @@ This is expected behavior since Postgres has retained all of its tables and data
 
 Selecting `Continue and overwrite existing data` reformats the Postgres database and works correctly, as if it were a fresh database.
 
-
 ## Redeploy from Scratch
+
 If you wish to redeploy Confluence from a completely fresh scenario (with the cluster-internal Postgres), A `helm uninstall <release>` will not entirely suffice.
 
 In addition to the `helm uninstall`, You must delete the PVC `data-confluence-postgresql-0`:
+
 ```bash
 helm uninstall confluence -n monitoring
 kubectl delete pvc -n confluence data-confluence-postgresql-0
