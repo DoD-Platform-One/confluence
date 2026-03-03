@@ -48,9 +48,6 @@ twistlock:
   enabled: false
 
 addons:
-  anchore:
-    enabled: false
-
   argocd:
     enabled: false
 
@@ -66,13 +63,7 @@ addons:
   gitlabRunner:
     enabled: false
 
-  haproxy:
-    enabled: false
-
   harbor:
-    enabled: false
-
-  holocron:
     enabled: false
 
   keycloak:

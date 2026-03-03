@@ -2,12 +2,11 @@
 
 This section should include information about what updates need to be made to the package. This includes breaking changes from new upgrades, additional configurations needed.
 
-
-# How to upgrade the Confluence Package chart
+## How to upgrade the Confluence Package chart
 
 1. Checkout the branch that renovate created. This branch will have the image tag updates and typically some other necessary version changes that you will want. You can either work off of this branch or branch off of it.
-2. Visit the upstream Helm chart docs to see if there’s a new release ([link](https://atlassian.github.io/data-center-helm-charts/)). 
-Confirm the latest Confluence chart on the GitHub Releases page ([Latest Releases](https://github.com/atlassian/data-center-helm-charts/releases)). 
+2. Visit the [upstream Helm chart docs](https://atlassian.github.io/data-center-helm-charts/) to see if there’s a new release.
+Confirm the latest Confluence chart on the GitHub Releases page [Latest Releases](https://github.com/atlassian/data-center-helm-charts/releases).
 If a new version is available, proceed to Step 3.
 3. Bump the Confluence dependency version in chart.yaml, then run ```helm dependency update ./chart``` to pull in the new chart.
 4. Update version references for the Chart. `version` should be `<version>-bb.0` (ex: `1.14.3-bb.0`) and `appVersion` should be `<version>` (ex: `1.14.3`). Also validate that the BB annotation for confluence is updated.
@@ -15,18 +14,18 @@ If a new version is available, proceed to Step 3.
 6. Update the readme following the [steps in Gluon](https://repo1.dso.mil/platform-one/big-bang/apps/library-charts/gluon/-/blob/master/docs/bb-package-readme.md).
 7. Open MR (or check the one that Renovate created for you) and validate that the pipeline is successful. Also follow the testing steps below for some manual confirmations.
 
-# Testing new Confluence version
+## Testing new Confluence version
 
-## Branch/Tag Config
+### Branch/Tag Config
 
 If you'd like to install from a specific branch or tag, then the code block under confluence needs to be uncommented and used to target your changes.
 For example, this would target the renovate/ironbank branch.
 
-```
+```yaml
 confluence:
     enabled: true
     git:
-      repo: https://repo1.dso.mil/big-bang/product/community/confluence
+      repo: https://repo1.dso.mil/big-bang/product/maintained/confluence
       # It is recommended to update this to the latest bb tag
       path: chart
       tag: null
@@ -44,46 +43,52 @@ Always make sure your local bigbang repo is current before deploying.
 
 1. Export your Ironbank/Harbor credentials (this can be done in your ~/.bashrc or ~/.zshrc file if desired). These specific variables are expected by the k3d-dev.sh script when deploying metallb, and are referenced in other commands for consistency:
 
-```
+```bash
 export REGISTRY_USERNAME='<your_username>'
 export REGISTRY_PASSWORD='<your_password>'
 ```
-2. xport the path to your local bigbang repo (without a trailing /):
+
+1. Export the path to your local bigbang repo (without a trailing /):
  Note that wrapping your file path in quotes when exporting will break expansion of ~.
 
- ```
+ ```bash
  export BIGBANG_REPO_DIR=<absolute_path_to_local_bigbang_repo>
  ```
+
  e.g.
 
- ```
+ ```bash
  export BIGBANG_REPO_DIR=~/repos/bigbang
  ```
 
- 3. Run the k3d_dev.sh script to deploy a dev cluster (-a flag required if deploying a local Keycloak):
+ 1. Run the k3d_dev.sh script to deploy a dev cluster (-a flag required if deploying a local Keycloak):
  For login.dso.mil Keycloak:
 
- ```
+ ```bash
  "${BIGBANG_REPO_DIR}/docs/assets/scripts/developer/k3d-dev.sh"
  ```
+
  For local keycloak.dev.bigbang.mil Keycloak (-a deploys instance with a second public IP and metallb):
 
- ```
+ ```bash
  "${BIGBANG_REPO_DIR}/docs/assets/scripts/developer/k3d-dev.sh -a"
  ```
- 4. Export your kubeconfig:
 
- ```
+ 1. Export your kubeconfig:
+
+ ```bash
  export KUBECONFIG=~/.kube/<your_kubeconfig_file>
  ```
+
 e.g.
 
-```
+```bash
 export KUBECONFIG=~/.kube/Sam.Sarnowski-dev-config
 ```
-5. Deploy flux to your cluster:
 
-```
+1. Deploy flux to your cluster:
+
+```bash
 "${BIGBANG_REPO_DIR}/scripts/install_flux.sh -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD}"
 ```
 
@@ -92,7 +97,7 @@ export KUBECONFIG=~/.kube/Sam.Sarnowski-dev-config
 From the root of this repo, run one of the following deploy commands depending on which Keycloak you wish to reference:
 For login.dso.mil Keycloak:
 
-```
+```bash
 helm upgrade -i bigbang ${BIGBANG_REPO_DIR}/chart/ -n bigbang --create-namespace \
 --set registryCredentials.username=${REGISTRY_USERNAME} --set registryCredentials.password=${REGISTRY_PASSWORD} \
 -f https://repo1.dso.mil/big-bang/bigbang/-/raw/master/tests/test-values.yaml \
@@ -101,55 +106,61 @@ helm upgrade -i bigbang ${BIGBANG_REPO_DIR}/chart/ -n bigbang --create-namespace
 -f docs/dev-overrides/minimal.yaml \
 -f docs/dev-overrides/confluence-testing.yaml
 ```
+
 This will deploy the confluence for testing:
 
 ## Test Values Yaml / Validation
 
 1. Ensure that Confluence Pod (ie. confluence-0) is up and running successfully.
 2. Navigate to Confluence (if istio enabled and /etc/hosts edited, confluence.dev.bigbang.mil -- else, use Kubernetes port forwarding) and validate you are prompted to enter a license.
-3. You can obtain a trial license quickly here: https://my.atlassian.com/license/evaluation?_ga=2.40938405.644877387.1570464610-1349982554.1568648451
+3. You can obtain a trial license quickly from the [Atlassian Store](https://my.atlassian.com/license/evaluation?_ga=2.40938405.644877387.1570464610-1349982554.1568648451). See the [Atlassian article](https://confluence.atlassian.com/doc/get-a-confluence-data-center-trial-license-1189485221.html) for more details
 4. Validate that you can create and edit a post.
 
 ### Big Bang Integration Testing
 
 As part of your MR that modifies bigbang packages, you should modify the bigbang  [bigbang/tests/test-values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/tests/test-values.yaml?ref_type=heads) against your branch for the CI/CD MR testing by enabling your packages.
 
-    - To do this, at a minimum, you will need to follow the instructions at [bigbang/docs/developer/test-package-against-bb.md](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/developer/test-package-against-bb.md?ref_type=heads) with changes for Confluence enabled (the confluence-testing.yaml is a reference, actual changes could be more depending on what changes where made to Confluence in the package MR).
+- To do this, at a minimum, you will need to follow the instructions at [bigbang/docs/developer/test-package-against-bb.md](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/community/development/test-package-against-bb.md) with changes for Confluence enabled (the confluence-testing.yaml is a reference, actual changes could be more depending on what changes where made to Confluence in the package MR).
 
-# Files That Require Integration Testing
+## Files That Require Integration Testing
 
 If you modify any of these things, you should perform an integration test with your branch against the rest of bigbang. Some of these files have automatic tests already defined, but those automatic tests may not model corner cases found in full integration scenarios.
 
-* `./chart/templates/bigbang/networkpolicies`
-* `./chart/templates/bigbang/authorization-policies`
-* `./chart/templates/configmaps-*`
-* `./chart/templates/service*`
-* `./chart/values.yaml` if it involves any of:
-  * monitoring changes
-  * network policy changes
-  * kyverno policy changes
-  * istio hardening rule changes
-  * service definition changes
-  * TLS settings
-  * server ingress settings
-  * headless server settings (especially port or other comms settings)
+- `./chart/templates/bigbang/networkpolicies`
+- `./chart/templates/bigbang/authorization-policies`
+- `./chart/templates/configmaps-*`
+- `./chart/templates/service*`
+- `./chart/values.yaml` if it involves any of:
+  - monitoring changes
+  - network policy changes
+  - kyverno policy changes
+  - istio hardening rule changes
+  - service definition changes
+  - TLS settings
+  - server ingress settings
+  - headless server settings (especially port or other comms settings)
 
 Follow [the standard process](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/developer/test-package-against-bb.md?ref_type=heads) for performing an integration test against bigbang.
 
-# automountServiceAccountToken
+## automountServiceAccountToken
+
 The mutating Kyverno policy named `update-automountserviceaccounttokens` is leveraged to harden all ServiceAccounts in this package with `automountServiceAccountToken: false`. This policy is configured by namespace in the Big Bang umbrella chart repository at [chart/templates/kyverno-policies/values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/chart/templates/kyverno-policies/values.yaml?ref_type=heads).
 
 This policy revokes access to the K8s API for Pods utilizing said ServiceAccounts. If a Pod truly requires access to the K8s API (for app functionality), the Pod is added to the `pods:` array of the same mutating policy. This grants the Pod access to the API, and creates a Kyverno PolicyException to prevent an alert.
 
 ## chart/templates/statefulset.yaml
+
 - move `include "confluence.volumeClaimTemplates"` line to resolve template rendering issue
 - changed the initcontainer for jmx-exporter-fetch to explicitly set run as non root and arguments necessary after move to ironbank image
 
 ## chart/templates/config-jvm.yaml
+
 - add `-` indention to `include "confluence.sysprop.s3Config"` line to resolve template rendering issue
 
 ## chart/templates/statefulset-synchrony.yaml
+
 - add conditional check for `SYNCHRONY_SERVICE_URL` variable injection: use Istio URL if enabled, then default to .Values.ingress
 
 ## Change image for patching
+
 - Updated registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node:9.4.1 with registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts:9.2.6
