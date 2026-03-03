@@ -1,19 +1,12 @@
 # Confluence
-Confluence is a collaborative document and workflow tool.  This is a licensed poduct and will require a license code the first time you access the product (see [Operations](#operations) for instructions on requesting a trial license).  Additional docs for using confluence can be found at <https://www.atlassian.com/software/confluence/features>.
+
+Confluence is a collaborative document and workflow tool.  This is a licensed product and will require a license code the first time you access the product (see [Operations](#operations) for instructions on requesting a trial license).  Additional docs for using confluence can be found at <https://www.atlassian.com/software/confluence/features>.
 
 This repository provides a Helm chart for deploying Confluence using Iron Bank images.  It is also used by Big Bang to deploy Confluence as a 3rd party package.
 
-This baseline uses Confluence version 7.4.0.  This image was available in Iron Bank as a hardened container, but is in a peading approval status.  The image has been retagged and added to the public apps Confluence Registry.  
+This baseline uses Confluence version 10.2.6.  This image was available in Iron Bank as a hardened container, but is in a pending approval status.  The image has been retagged and added to the public apps Confluence Registry.  
 
-The generated yaml was produced by following these instructions
-
-* git clone <https://github.com/stevehipwell/helm-charts.git>
-
-* cd helm-charts
-
-* helm dep update charts/confluence-server/
-
-* helm template confluence charts/confluence-server/ -f ../generated/values.yaml > ../generated/generated.yaml
+The helm chart is provided by Atlassian via [Atlassian Data Center Helm Charts](https://atlassian.github.io/data-center-helm-charts/)
 
 ## Usage
 
@@ -24,7 +17,7 @@ The generated yaml was produced by following these instructions
 * Install kubectl (`brew install kubectl`)
 * Install kustomize (`brew install kustomize`)
 
-**Option 1: Deployment through Bigbang (recommended)**
+#### Option 1: Deployment through Bigbang (recommended)
 
 To install confluence as a community package in a Bigbang install, save the following YAML to a file (eg, confluence.yaml):
 
@@ -34,9 +27,9 @@ packages:
   confluence:
     enabled: true
     git:
-      repo: https://repo1.dso.mil/big-bang/product/community/confluence
+      repo: https://repo1.dso.mil/big-bang/product/maintained/confluence
       # It is recommended to update this to the latest bb tag
-      tag: 1.22.7-bb.0
+      tag: 2.0.9-bb.2
       path: chart
     # Disabling this will bypass creating the istio VirtualService and NetworkPolicies.  
     wrapper:
@@ -52,28 +45,30 @@ packages:
           destination:
             port: 8090  
     values:
-      confluence:
-        service:
-          port: 8090
-      postgresql:
-        install: false
+      upstream:
+        confluence:
+          service:
+            port: 8090
+        postgresql:
+          install: false
 ```
 
 Then install/update bigbang via the standard `helm upgrade` command, adding `-f <YAML file location>` to the end. This will install Confluence into the named namespace. 
 
 This method is recommended because it will also take care of creating private registry credentials, the istio virtual service, and network policies. Once the installation is complete, the Confluence UI will be reachable via `https://confluence.<your bigbang domain>`
 
-**Option 2: Standalone deployment**
+#### Option 2: Standalone deployment
 
 Deployment
-* Clone repository: `git clone https://repo1.dso.mil/big-bang/product/community/confluence.git`
+
+* Clone repository: `git clone https://repo1.dso.mil/big-bang/product/maintained/confluence.git`
 * Create the Confluence namespace: `kubectl create namespace confluence -o json|jq '.metadata += {"labels":{"istio-injection":"enabled"}}' | kubectl apply -f -`
 * Create the `private-registry` secret: `kubectl create secret docker-registry private-registry --docker-server=registry1.dso.mil --docker-username=<Your IronBank Username> --docker-password=<Your IronBank Password> --docker-email=<Your E-mail Address> --namespace confluence`
 * Helm install: `cd confluence && helm upgrade --install --namespace confluence confluence ./chart`; if modifying the values.yaml file directly is not desired, add `-f <override values YAML file>` to the end, or use `--set <key>=<value>`.
 
 #### Database
 
-See https://repo1.dso.mil/big-bang/product/community/confluence/-/blob/main/docs/PostgreSQL.md for more.
+See [PostgresQL Docs](./PostgreSQL.md) for more.
 
 Confluence requires a database to run. A Postgres database can be included as part of an install by including `--set postgresql.install=true`; note that this database will not be set up with **any** persistent storage and so is entirely unsuitable for any sort of non-development environment. It is **highly** recommended that in any other environment a separate database is stood up with persistent storage and a backup/restore schedule. Set up of that database is outside the scope of this document.
 
@@ -81,12 +76,12 @@ If no database information is provided with the helm setup, Confluence will ask 
 
 ### Operations
 
-Confluence is licensed by Atlassian; in order to use it, you will need a license key. Instructions to get a trial license are available at https://confluence.atlassian.com/confkb/how-to-generate-or-extend-an-evaluation-license-for-confluence-data-center-1027139877.html. 
+Confluence is licensed by Atlassian; in order to use it, you will need a license key. [Instructions to get a trial license](https://confluence.atlassian.com/doc/get-a-confluence-data-center-trial-license-1189485221.html).
 
 ### Contributing
 
-* Clone repository: `git clone https://repo1.dso.mil/big-bang/product/community/confluence.git`
+* Clone repository: `git clone https://repo1.dso.mil/big-bang/product/maintained/confluence.git`
 * Create a feature branch: `git checkout -b <branch>`
 * Stage and commit changes `git add . && git commit -m "Made a change for reasons"`
 * Push commits to upstream branch: `git push -u origin <branch>`
-* Create a merge request at https://repo1.dso.mil/big-bang/product/community/confluence/-/merge_requests
+* Create a merge request at https://repo1.dso.mil/big-bang/product/maintained/confluence/-/merge_requests

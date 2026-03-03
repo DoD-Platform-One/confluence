@@ -3,7 +3,7 @@ packages:
   confluence:
     enabled: true
     git:
-      repo: https://repo1.dso.mil/big-bang/product/community/confluence
+      repo: https://repo1.dso.mil/big-bang/product/maintained/confluence
       # It is recommended to update this to the latest bb tag
       path: chart
       tag: null

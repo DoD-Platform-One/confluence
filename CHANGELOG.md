@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [2.0.9-bb.2] (2026-03-02)
+### Changed
+- Updated registry1.dso.mil/ironbank/opensource/postgres/postgresql (source) 18.2 -> 18.3
+- Updated Development and Maintenance Guide, and Readme documentation.
+
 ## [2.0.9-bb.1] (2026-02-19)
 ### Changed
 - gluon updated from 0.9.7 to 0.9.8
