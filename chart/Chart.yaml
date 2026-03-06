@@ -2,8 +2,8 @@ apiVersion: v2
 name: confluence
 description: A chart for installing Confluence Data Center on Kubernetes
 type: application
-version: 2.0.9-bb.2
-appVersion: 10.2.6
+version: 2.0.9-bb.3
+appVersion: 10.2.7
 kubeVersion: ">=1.21.x-0"
 keywords:
   - Confluence
@@ -63,10 +63,10 @@ annotations:
     - "Fix shutdown with jmx javaagent enabled (#899)"
     - "Unset IDs for all the Grafana dashboards (#889)"
   bigbang.dev/applicationVersions: |
-    - Confluence: 10.2.6
+    - Confluence: 10.2.7
   helm.sh/images: |
     - name: confluence-node
-      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts:10.2.6
+      image: registry1.dso.mil/ironbank/atlassian/confluence-data-center/confluence-node-lts:10.2.7
     - name: base
       image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
     - name: postgres
